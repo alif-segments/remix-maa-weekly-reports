@@ -1,0 +1,88 @@
+import React from 'react';
+import { DollarSign, Target, TrendingUp, Award } from 'lucide-react';
+import { SlideWrapper } from '../SlideWrapper';
+import { KpiCard } from '../KpiCard';
+import { LOGOS } from '@/src/constants';
+import { MetricsSummary } from '@/src/types';
+import { fCurrency, fNumber, fROAS } from '@/src/lib/formatters';
+import { cn } from '@/src/lib/utils';
+
+interface GrantsSlideProps {
+  metrics: MetricsSummary;
+}
+
+export const GrantsSlide = ({ metrics }: GrantsSlideProps) => {
+  const grantItems = Object.values(metrics.current.byCampaign).filter(c => (c as any).source === 'google_ads_separate').map(c => c as any);
+  const pGrantItems = Object.values(metrics.prior.byCampaign).filter(c => (c as any).source === 'google_ads_separate').map(c => c as any);
+  const curS = grantItems.reduce((a, b) => a + b.spend, 0);
+  const priS = pGrantItems.reduce((a, b) => a + b.spend, 0);
+  const curC = grantItems.reduce((a, b) => a + b.conversions, 0);
+  const priC = pGrantItems.reduce((a, b) => a + b.conversions, 0);
+  const curR = grantItems.reduce((a, b) => a + b.revenue, 0);
+  const priR = pGrantItems.reduce((a, b) => a + b.revenue, 0);
+
+  const calcD = (c: number, p: number) => {
+    if (p === 0) return "NEW";
+    const d = ((c - p) / Math.max(1, p)) * 100;
+    return `${d > 0 ? '+' : ''}${d.toFixed(1)}%`;
+  };
+
+  return (
+    <SlideWrapper id="grants" innerClassName="border-l-[3px] border-l-[#0ea5e9]">
+      <div className="mb-10">
+        <div className="bg-[#e0f2fe] text-[#0369a1] text-[11px] font-[700] uppercase px-3 py-1 rounded inline-block mb-4 tracking-[1px] border border-[#bae6fd]">Separate Oversight Report</div>
+        <div className="flex items-center gap-3 mb-2">
+          <img src={LOGOS.google_ads} alt="Google" className="h-6 w-auto object-contain" />
+          <h2>Google Ads (Grants) (328-834-3137)</h2>
+        </div>
+        <p contentEditable suppressContentEditableWarning className="text-[#64748b] text-[15px] max-w-2xl font-[500] outline-none border-transparent hover:border-gray-200 border rounded transition-colors p-1 -m-1">
+          This account is managed distinctly for specific project oversight. Data below is excluded from blended performance metrics.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <KpiCard icon={DollarSign} label="Grants Spend" value={fCurrency(curS)} sublabel="Total ad cost" delta={calcD(curS, priS)} trend={curS <= priS ? 'up' : 'down'} variant="spend" />
+        <KpiCard icon={Target} label="Conversions" value={fNumber(Math.round(curC))} sublabel="Tracked actions" delta={calcD(curC, priC)} trend={curC >= priC ? 'up' : 'down'} variant="sales" />
+        <KpiCard icon={TrendingUp} label="Revenue" value={fCurrency(curR)} sublabel="Channel revenue" delta={calcD(curR, priR)} trend={curR >= priR ? 'up' : 'down'} variant="revenue" />
+        <KpiCard icon={Award} label="Grants ROAS" value={fROAS(curR, curS)} sublabel="Account efficiency" delta={calcD(curR/Math.max(1, curS), priR/Math.max(1, priS))} trend={curR/Math.max(1, curS) >= priR/Math.max(1, priS) ? 'up' : 'down'} variant="roas" />
+      </div>
+
+      <div className="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden shadow-sm">
+         <table className="w-full text-left">
+           <thead className="bg-[#f8fafc]">
+             <tr className="border-b border-[#f1f5f9]">
+               <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Campaign</th>
+               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Spend</th>
+               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Conv.</th>
+               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Revenue</th>
+               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">ROAS</th>
+             </tr>
+           </thead>
+           <tbody className="divide-y divide-[#f1f5f9]">
+             {Object.entries(metrics.current.byCampaign)
+               .filter(([, c]) => (c as any).source === 'google_ads_separate')
+               .sort(([, a], [, b]) => (b as any).spend - (a as any).spend)
+               .map(([name, c]) => {
+                 const campaign = c as any;
+                 const roas = campaign.revenue / Math.max(1, campaign.spend);
+                 return (
+                   <tr key={name} className="hover:bg-[#f8fafc] transition-colors">
+                     <td className="px-6 py-4 text-[14px] font-[600] text-[#1e293b]">{name}</td>
+                     <td className="px-6 py-4 text-right text-[14px] font-[500] text-[#64748b] tabular-nums">{fCurrency(campaign.spend)}</td>
+                     <td className="px-6 py-4 text-right text-[14px] font-[700] text-primary tabular-nums">{fNumber(Math.round(campaign.conversions))}</td>
+                     <td className="px-6 py-4 text-right text-[14px] font-[600] text-[#0f172a] tabular-nums">{fCurrency(campaign.revenue)}</td>
+                     <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5 text-[14px] font-[700] tracking-tight text-[#0f172a]">
+                          <span className={cn("w-1.5 h-1.5 rounded-full", roas > 2 ? "bg-[#16a34a]" : roas >= 1 ? "bg-[#f59e0b]" : "bg-[#dc2626]")} />
+                          {fROAS(campaign.revenue, campaign.spend)}
+                        </div>
+                     </td>
+                   </tr>
+                 );
+               })}
+           </tbody>
+         </table>
+      </div>
+    </SlideWrapper>
+  );
+};

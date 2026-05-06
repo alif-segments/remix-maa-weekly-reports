@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "DM Sans", serif;
+  
+  --color-primary: #2563eb;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+}
+
+@layer base {
+  html {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[#f1f5f9] text-[#1e293b] antialiased min-h-screen;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  h1 { @apply text-[42px] font-[800] text-[#0f172a] leading-[1.1] tracking-tight; }
+  h2 { @apply text-[28px] font-[700] text-[#0f172a] leading-[1.2] tracking-tight; }
+  h3 { @apply text-[20px] font-[700] text-[#0f172a] tracking-tight; }
+}
+
+.slide {
+  @apply snap-start min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 box-border relative;
+}
+
+.slide-inner {
+  @apply w-full max-w-[1100px] mx-auto bg-white border border-[#e2e8f0] rounded-2xl p-12 md:p-14 shadow-[0_4px_24px_rgba(0,0,0,0.06)] relative overflow-hidden;
+}
+
+.section-label { 
+  @apply text-[12px] font-[600] tracking-[1.5px] uppercase text-[#64748b] mb-2; 
+}
+
+/* Scroll Hint */
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+.scroll-hint {
+  @apply absolute bottom-8 left-1/2 -translate-x-1/2 text-[#94a3b8] text-2xl;
+  animation: bounce 2s infinite;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
