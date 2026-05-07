@@ -51,4 +51,30 @@ export interface MetricsSummary {
     sales: 'up' | 'down' | 'neutral';
   };
   weeklyPerf: any[];
+  dailyTrend: any[]; // Missing in previous read but seems to exist based on my edits
+  ga4?: GA4MetricsSummary;
+}
+
+export interface GA4MetricsSummary {
+  current: GA4PeriodMetrics;
+  prior: GA4PeriodMetrics;
+  deltas: {
+    sessions: string;
+    transactions: string;
+    revenue: string;
+  };
+  trends: {
+    sessions: 'up' | 'down' | 'neutral';
+    transactions: 'up' | 'down' | 'neutral';
+    revenue: 'up' | 'down' | 'neutral';
+  };
+  weeklyTrend: any[];
+  channelSplit: { channel: string; sessions: number; transactions: number; revenue: number }[];
+}
+
+export interface GA4PeriodMetrics {
+  sessions: number;
+  transactions: number;
+  revenue: number;
+  users: number;
 }

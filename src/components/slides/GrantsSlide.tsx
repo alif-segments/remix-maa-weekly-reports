@@ -35,7 +35,7 @@ export const GrantsSlide = ({ metrics }: GrantsSlideProps) => {
           <img src={LOGOS.google_ads} alt="Google" className="h-6 w-auto object-contain" />
           <h2>Google Ads (Grants) (328-834-3137)</h2>
         </div>
-        <p contentEditable suppressContentEditableWarning className="text-[#64748b] text-[15px] max-w-2xl font-[500] outline-none border-transparent hover:border-gray-200 border rounded transition-colors p-1 -m-1">
+        <p className="text-[#64748b] text-[15px] max-w-2xl font-[500]">
           This account is managed distinctly for specific project oversight. Data below is excluded from blended performance metrics.
         </p>
       </div>

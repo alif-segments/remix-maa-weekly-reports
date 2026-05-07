@@ -14,6 +14,8 @@ import { cn } from './lib/utils';
 import { LOGOS } from './constants';
 import { usePerformanceData } from './hooks/usePerformanceData';
 
+import { Preloader } from './components/Preloader';
+
 // Slide Components
 import { CoverSlide } from './components/slides/CoverSlide';
 import { SummarySlide } from './components/slides/SummarySlide';
@@ -22,6 +24,7 @@ import { CreativeBreakdownSlide } from './components/slides/CreativeBreakdownSli
 import { GoogleAdsSlide } from './components/slides/GoogleAdsSlide';
 import { MetaAdsSlide } from './components/slides/MetaAdsSlide';
 import { GrantsSlide } from './components/slides/GrantsSlide';
+import { GA4Slide } from './components/slides/GA4Slide';
 import { FooterSlide } from './components/slides/FooterSlide';
 
 export default function App() {
@@ -89,18 +92,7 @@ export default function App() {
   const topCreative = creatives[0];
 
   if (loading) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center bg-white">
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="flex flex-col items-center gap-4"
-        >
-          <img src={LOGOS.client} alt="MAA" className="h-12 object-contain grayscale opacity-50" />
-          <div className="text-xs font-bold tracking-widest text-gray-400 uppercase">Generating Report...</div>
-        </motion.div>
-      </div>
-    );
+    return <Preloader />;
   }
 
   if (!metrics) {
@@ -119,9 +111,10 @@ export default function App() {
     { id: 'cover', icon: Layers },
     { id: 'summary', icon: TrendingUp },
     { id: 'charts', icon: DollarSign },
-    { id: 'creatives', icon: Award },
     { id: 'google', icon: Globe },
     { id: 'meta', icon: Facebook },
+    { id: 'creatives', icon: Award },
+    { id: 'ga4', icon: TrendingUp },
     { id: 'grants', icon: Info },
     { id: 'footer', icon: ChevronDown }
   ];
@@ -148,9 +141,10 @@ export default function App() {
       <CoverSlide metrics={metrics} />
       <SummarySlide metrics={metrics} platformStats={platformStats} topCreative={topCreative} />
       <WeeklyTrendSlide metrics={metrics} />
-      <CreativeBreakdownSlide metrics={metrics} />
       <GoogleAdsSlide metrics={metrics} />
       <MetaAdsSlide metrics={metrics} />
+      <CreativeBreakdownSlide metrics={metrics} />
+      <GA4Slide metrics={metrics} />
       <GrantsSlide metrics={metrics} />
       <FooterSlide />
     </div>

@@ -17,13 +17,18 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
           <div className="w-[1px] h-[24px] bg-[#e2e8f0]" />
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
-              <img src={LOGOS.meta} alt="Meta" className="h-6 w-auto object-contain" referrerPolicy="no-referrer" />
+              <img src={LOGOS.meta} alt="Meta" className="w-[16.5px] h-[16.5px] object-contain" referrerPolicy="no-referrer" />
               <span className="text-[11px] font-bold text-gray-400">Facebook</span>
             </div>
             <div className="text-[10px] font-bold text-gray-300 mx-1">x</div>
             <div className="flex items-center gap-2">
-              <img src={LOGOS.google_ads} alt="Google Ads" className="h-6 w-auto object-contain" referrerPolicy="no-referrer" />
+              <img src={LOGOS.google_ads} alt="Google Ads" className="w-[16.5px] h-[16.5px] object-contain" referrerPolicy="no-referrer" />
               <span className="text-[11px] font-bold text-[#4285F4]">Google</span>
+            </div>
+            <div className="text-[10px] font-bold text-gray-300 mx-1">x</div>
+            <div className="flex items-center gap-2">
+              <img src={LOGOS.ga4} alt="GA4" className="w-[16.5px] h-[16.5px] object-contain" referrerPolicy="no-referrer" />
+              <span className="text-[11px] font-bold text-[#F9AB00]">GA4</span>
             </div>
           </div>
         </div>
@@ -42,7 +47,7 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
           <span className="text-primary italic">Dashboard</span>
         </h1>
         <p className="text-[20px] text-gray-500 font-medium mb-12">
-          7-Day Consolidated Report · MAA International
+          7-Day Consolidated Report · Meta, Google & GA4
         </p>
         <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-[#94a3b8]">
           <div className="flex items-center gap-2">

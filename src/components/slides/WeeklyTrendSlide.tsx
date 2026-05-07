@@ -50,7 +50,7 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
               <ResponsiveContainer width="100%" height="100%" minHeight={0} minWidth={0} debounce={1}>
                 <ComposedChart
                   data={metrics.weeklyPerf}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
                   barGap={8}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -65,14 +65,14 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
                     fontSize={11} 
                     tick={{ fill: '#64748b' }} 
                     tickFormatter={(v) => `$${fNumber(v)}`}
-                    label={{ value: 'Revenue / Spend', angle: -90, position: 'insideLeft', fontSize: 11, fill: '#64748b' }}
+                    label={{ value: 'Revenue / Spend', angle: -90, position: 'insideLeft', offset: -10, fontSize: 11, fill: '#64748b', style: { textAnchor: 'middle' } }}
                   />
                   <YAxis 
                     yAxisId="right"
                     orientation="right"
                     fontSize={11} 
                     tick={{ fill: '#64748b' }}
-                    label={{ value: 'Conversions', angle: 90, position: 'insideRight', fontSize: 11, fill: '#64748b' }}
+                    label={{ value: 'Conversions', angle: 90, position: 'insideRight', offset: 10, fontSize: 11, fill: '#64748b', style: { textAnchor: 'middle' } }}
                   />
                   <Tooltip 
                     cursor={{ fill: '#f8fafc' }}
@@ -84,7 +84,10 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
                       return [fNumber(value), name];
                     }}
                   />
-                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                  <Legend 
+                    wrapperStyle={{ paddingTop: '20px' }} 
+                    formatter={(value) => <span className="mr-6 inline-block">{value}</span>}
+                  />
                   <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={24} />
                   <Bar yAxisId="left" dataKey="spend" name="Spend" fill="#93c5fd" radius={[4, 4, 0, 0]} barSize={24} />
                   <Line yAxisId="right" type="monotone" dataKey="conversions" name="Conversions" stroke="#ef4444" strokeWidth={3} dot={{ fill: '#ef4444', r: 4 }} />

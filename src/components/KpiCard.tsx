@@ -8,7 +8,7 @@ interface KpiCardProps {
   icon: any;
   delta?: string;
   trend?: 'up' | 'down' | 'neutral';
-  variant?: 'revenue' | 'spend' | 'roas' | 'sales';
+  variant?: 'revenue' | 'spend' | 'roas' | 'sales' | 'g_blue' | 'g_green' | 'g_yellow' | 'g_red' | 'm_light' | 'm_mid' | 'm_blue' | 'm_dark';
 }
 
 export const KpiCard = ({ 
@@ -20,11 +20,21 @@ export const KpiCard = ({
   trend, 
   variant = 'revenue' 
 }: KpiCardProps) => {
-  const variants = {
+  const variants: Record<string, { bg: string, text: string }> = {
     revenue: { bg: 'bg-[#dbeafe]', text: 'text-[#2563eb]' },
     spend: { bg: 'bg-[#fce7f3]', text: 'text-[#db2777]' },
     roas: { bg: 'bg-[#d1fae5]', text: 'text-[#16a34a]' },
-    sales: { bg: 'bg-[#fef3c7]', text: 'text-[#f59e0b]' }
+    sales: { bg: 'bg-[#fef3c7]', text: 'text-[#f59e0b]' },
+    // Google Brand Colors
+    g_blue: { bg: 'bg-[#E8F0FE]', text: 'text-[#4285F4]' },
+    g_green: { bg: 'bg-[#E6F4EA]', text: 'text-[#34A853]' },
+    g_yellow: { bg: 'bg-[#FEF7E0]', text: 'text-[#FBBC04]' },
+    g_red: { bg: 'bg-[#FCE8E6]', text: 'text-[#EA4335]' },
+    // Meta Brand Colors (Shades of Blue)
+    m_light: { bg: 'bg-[#E7F3FF]', text: 'text-[#1877F2]' },
+    m_mid: { bg: 'bg-[#D1E7FF]', text: 'text-[#0064E0]' },
+    m_blue: { bg: 'bg-[#BBDDFF]', text: 'text-[#0056B3]' },
+    m_dark: { bg: 'bg-[#A6D1FF]', text: 'text-[#00479E]' }
   };
 
   const style = variants[variant] || variants.revenue;
@@ -38,7 +48,7 @@ export const KpiCard = ({
       {delta && (
         <div className={cn(
           "absolute top-4 right-4 text-[12px] font-[600] px-2.5 py-1 rounded-full",
-          trend === 'up' ? "bg-[#d1fae5] text-[#16a34a]" : trend === 'down' ? "bg-[#fecaca] text-[#dc2626]" : "bg-[#f1f5f9] text-[#64748b]"
+          trend === 'up' ? "bg-[#bbf7d0] text-[#15803d]" : trend === 'down' ? "bg-[#fecaca] text-[#b91c1c]" : "bg-[#e2e8f0] text-[#475569]"
         )}>
           {delta}
         </div>

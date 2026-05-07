@@ -1,24 +1,31 @@
 import { useMemo, useState, useEffect } from 'react';
-import { RawData, PeriodMetrics, MetricsSummary } from '@/src/types';
-import { API_URL } from '@/src/constants';
+import { RawData, PeriodMetrics, MetricsSummary, GA4PeriodMetrics, GA4MetricsSummary } from '@/src/types';
+import { API_URL, GA4_API_URL } from '@/src/constants';
 
 export function usePerformanceData() {
   const [data, setData] = useState<RawData[]>([]);
+  const [ga4Data, setGa4Data] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPerformance = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(API_URL);
-        const result = await response.json();
-        setData(result.data || result);
+        const [perfRes, ga4Res] = await Promise.all([
+          fetch(API_URL),
+          fetch(GA4_API_URL)
+        ]);
+        const perfResult = await perfRes.json();
+        const ga4Result = await ga4Res.json();
+        
+        setData(perfResult.data || perfResult);
+        setGa4Data(ga4Result.data || ga4Result);
       } catch (err) {
         console.error("Fetch failed", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchPerformance();
+    fetchData();
   }, []);
 
   const metrics = useMemo(() => {
@@ -43,6 +50,19 @@ export function usePerformanceData() {
       d.setDate(d.getDate() - i);
       priorDates.push(d.toISOString().split('T')[0]);
     }
+
+    const calcDelta = (cur: number, pri: number) => {
+      if (pri === 0) return "NEW";
+      const diff = ((cur - pri) / pri) * 100;
+      return `${diff > 0 ? '+' : ''}${diff.toFixed(1)}%`;
+    };
+
+    const getTrend = (cur: number, pri: number, invert = false) => {
+      if (pri === 0) return 'neutral';
+      if (cur === pri) return 'neutral';
+      const isUp = cur > pri;
+      return invert ? (isUp ? 'down' : 'up') : (isUp ? 'up' : 'down');
+    };
 
     const processPeriod = (periodDates: string[]) => {
       const pData = sortedData.filter(d => periodDates.includes(d.date));
@@ -175,18 +195,114 @@ export function usePerformanceData() {
       }))
       .slice(-12);
 
-    const calcDelta = (cur: number, pri: number) => {
-      if (pri === 0) return "NEW";
-      const diff = ((cur - pri) / pri) * 100;
-      return `${diff > 0 ? '+' : ''}${diff.toFixed(1)}%`;
+    // DAILY TREND DATA (last 7 days)
+    const dailyDataRaw = sortedData.filter(d => currentDates.includes(d.date)).reverse();
+    const dailyPerf = dailyDataRaw.reduce((acc: any, row) => {
+      const date = formatD(row.date);
+      if (!acc[date]) {
+        acc[date] = { date, facebook: { spend: 0, revenue: 0, conv: 0 }, google: { spend: 0, revenue: 0, conv: 0 } };
+      }
+      
+      const spend = parse(row.spend || row.cost);
+      let conv = 0;
+      let rev = 0;
+      if (row.datasource?.toLowerCase() === 'facebook') {
+        conv = parse(row.actions_offsite_conversion_fb_pixel_purchase) || parse(row.conversions);
+        rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
+      } else {
+        conv = parse(row.conversions);
+        rev = parse(row.conversion_value);
+      }
+
+      const source = row.datasource?.toLowerCase() === 'facebook' ? 'facebook' : 'google';
+      const isSeparate = row.account_name.includes("Grants") || row.account_name.includes("328-834-3137");
+
+      if (!isSeparate) {
+        acc[date][source].spend += spend;
+        acc[date][source].revenue += rev;
+        acc[date][source].conv += conv;
+      }
+      
+      return acc;
+    }, {});
+
+    const dailyTrend = Object.values(dailyPerf);
+
+    // GA4 PROCESSING
+    const processGA4 = () => {
+      if (!ga4Data.length) return undefined;
+      
+      const ga4Sorted = [...ga4Data].filter(d => d.date).sort((a, b) => a.date.localeCompare(b.date));
+      const parse = (v: any) => {
+        if (v === null || v === undefined) return 0;
+        const n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+      };
+
+      const processGA4Period = (pDates: string[]) => {
+        const filtered = ga4Sorted.filter(d => pDates.includes(d.date));
+        const res: GA4PeriodMetrics = { sessions: 0, transactions: 0, revenue: 0, users: 0 };
+        filtered.forEach(row => {
+          res.sessions += parse(row.sessions);
+          res.transactions += parse(row.transactions || row.ecommerce_purchases);
+          res.revenue += parse(row.purchase_revenue || row.totalrevenue);
+          res.users += parse(row.totalusers);
+        });
+        return res;
+      };
+
+      const curGA4 = processGA4Period(currentDates);
+      const priGA4 = processGA4Period(priorDates);
+
+      // Channel Split
+      const channelMap: Record<string, any> = {};
+      ga4Sorted.filter(d => currentDates.includes(d.date)).forEach(row => {
+        const channel = row.session_default_channel_group || "Unassigned";
+        if (!channelMap[channel]) channelMap[channel] = { channel, sessions: 0, transactions: 0, revenue: 0 };
+        channelMap[channel].sessions += parse(row.sessions);
+        channelMap[channel].transactions += parse(row.transactions || row.ecommerce_purchases);
+        channelMap[channel].revenue += parse(row.purchase_revenue || row.totalrevenue);
+      });
+
+      // Weekly Trend
+      const ga4Weeks: Record<string, any> = {};
+      ga4Sorted.forEach(row => {
+        const wk = row.week_iso || getWeekKey(row.date);
+        if (!ga4Weeks[wk]) ga4Weeks[wk] = { week: wk, sessions: 0, transactions: 0, revenue: 0, startDate: row.date, endDate: row.date };
+        ga4Weeks[wk].sessions += parse(row.sessions);
+        ga4Weeks[wk].transactions += parse(row.transactions || row.ecommerce_purchases);
+        ga4Weeks[wk].revenue += parse(row.purchase_revenue || row.totalrevenue);
+        if (row.date < ga4Weeks[wk].startDate) ga4Weeks[wk].startDate = row.date;
+        if (row.date > ga4Weeks[wk].endDate) ga4Weeks[wk].endDate = row.date;
+      });
+
+      const weeklyTrend = Object.values(ga4Weeks)
+        .sort((a: any, b: any) => a.week.localeCompare(b.week))
+        .map((w: any) => ({
+          ...w,
+          label: `${formatD(w.startDate)} - ${formatD(w.endDate)}`
+        }))
+        .slice(-12);
+
+      return {
+        current: curGA4,
+        prior: priGA4,
+        deltas: {
+          sessions: calcDelta(curGA4.sessions, priGA4.sessions),
+          transactions: calcDelta(curGA4.transactions, priGA4.transactions),
+          revenue: calcDelta(curGA4.revenue, priGA4.revenue)
+        },
+        trends: {
+          sessions: getTrend(curGA4.sessions, priGA4.sessions),
+          transactions: getTrend(curGA4.transactions, priGA4.transactions),
+          revenue: getTrend(curGA4.revenue, priGA4.revenue)
+        },
+        weeklyTrend,
+        channelSplit: Object.values(channelMap).sort((a: any, b: any) => b.revenue - a.revenue)
+      } as GA4MetricsSummary;
     };
 
-    const getTrend = (cur: number, pri: number, invert = false) => {
-      if (pri === 0) return 'neutral';
-      if (cur === pri) return 'neutral';
-      const isUp = cur > pri;
-      return invert ? (isUp ? 'down' : 'up') : (isUp ? 'up' : 'down');
-    };
+    const ga4 = processGA4();
 
     return {
       current,
@@ -205,9 +321,11 @@ export function usePerformanceData() {
         roas: getTrend(current.total.revenue / Math.max(1, current.total.spend), prior.total.revenue / Math.max(1, prior.total.spend)),
         sales: getTrend(current.total.conversions, prior.total.conversions)
       },
-      weeklyPerf
+      weeklyPerf,
+      dailyTrend,
+      ga4
     };
-  }, [data]);
+  }, [data, ga4Data]);
 
   return { metrics, loading };
 }

@@ -32,7 +32,7 @@ export const SummarySlide = ({ metrics, platformStats, topCreative }: SummarySli
           </div>
           <h2 className="mb-6">Executive Summary</h2>
           <div className="text-[#64748b] text-[16px] leading-[1.6] space-y-6">
-            <p contentEditable suppressContentEditableWarning className="outline-none border-transparent hover:border-gray-200 border rounded transition-colors p-1 -m-1">
+            <p>
               In this reporting period, the total advertising investment across <span className="font-bold text-[#0f172a]">Meta</span> and <span className="font-bold text-[#0f172a]">Google Ads</span> reached 
               <span className="font-bold text-[#0f172a] mx-1">{fCurrency(metrics.current.total.spend)}</span>, 
               generating a total gross revenue of 
@@ -40,12 +40,12 @@ export const SummarySlide = ({ metrics, platformStats, topCreative }: SummarySli
               This represents a blended ROAS of 
               <span className="font-bold text-primary mx-1">{fROAS(metrics.current.total.revenue, metrics.current.total.spend)}</span>.
             </p>
-            <p contentEditable suppressContentEditableWarning className="outline-none border-transparent hover:border-gray-200 border rounded transition-colors p-1 -m-1">
+            <p>
               {platformStats?.dominant} {platformStats?.shareText}, specifically with 
               <span className="font-bold text-[#0f172a]"> {Math.round(platformStats?.dominantConv || 0)} sales </span> 
               {platformStats?.trackingMethod}. This counts for approximately {((platformStats?.dominantConv || 0) / (platformStats?.totalConv || 1) * 100).toFixed(0)}% of total conversion volume.
             </p>
-            <p contentEditable suppressContentEditableWarning className="outline-none border-transparent hover:border-gray-200 border rounded transition-colors p-1 -m-1">
+            <p>
               Strategic focus remains on optimizing CPA for higher-intent segments while maintaining the 
               broad reach necessary for top-of-funnel contribution from Google Search campaigns.
             </p>
@@ -65,7 +65,7 @@ export const SummarySlide = ({ metrics, platformStats, topCreative }: SummarySli
                     <div className={cn("w-2 h-2 rounded-full mt-1.5 shrink-0 transition-all", item.color)} />
                     <div>
                       <div className="text-[14px] font-[700] text-[#0f172a] mb-1">{item.label}</div>
-                      <div contentEditable suppressContentEditableWarning className="text-[13px] text-[#64748b] leading-[1.5] outline-none">{item.text}</div>
+                      <div className="text-[13px] text-[#64748b] leading-[1.5]">{item.text}</div>
                     </div>
                   </li>
                 ))}
