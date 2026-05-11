@@ -197,12 +197,12 @@ UGC-style content remains dominant in driving conversions, specifically in the *
                 ROAS <SortIcon field="roas" />
               </th>
               <th 
-                className="px-3 py-3 text-left text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[70px]"
+                className="px-3 py-3 text-left text-[10px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[70px] no-underline"
                 onClick={() => toggleSort('performanceScore')}
               >
                 Score <SortIcon field="performanceScore" />
               </th>
-              <th className="px-3 py-3 text-right text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] w-[100px]">Preview</th>
+              <th className="px-3 py-3 text-center text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] w-[100px]">Preview</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#f1f5f9]">
@@ -265,7 +265,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
                   <td className="px-3 py-4 text-left">
                     <span className="text-[13px] font-medium text-[#64748b]">{creative.performanceScore?.toFixed(1)}</span>
                   </td>
-                  <td className="px-3 py-4 text-right">
+                  <td className="px-3 py-4 text-center">
                     <a 
                       href={creative.preview_url || '#'} 
                       target="_blank" 
