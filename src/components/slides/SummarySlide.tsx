@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingCart, DollarSign, Target } from 'lucide-react';
 import { SlideWrapper } from '../SlideWrapper';
 import { KpiCard } from '../KpiCard';
+import { EditableContent } from '../EditableContent';
 import { LOGOS } from '@/src/constants';
 import { MetricsSummary } from '@/src/types';
 import { fCurrency, fROAS, fCPA, fNumber } from '@/src/lib/formatters';
@@ -11,9 +12,25 @@ interface SummarySlideProps {
   metrics: MetricsSummary;
   platformStats: any;
   topCreative: any;
+  isEditMode?: boolean;
+  content?: string;
+  onUpdateContent?: (val: string) => void;
 }
 
-export const SummarySlide = ({ metrics, platformStats, topCreative }: SummarySlideProps) => {
+export const SummarySlide = ({ 
+  metrics, 
+  platformStats, 
+  topCreative,
+  isEditMode = false,
+  content,
+  onUpdateContent
+}: SummarySlideProps) => {
+  const defaultText = `In this reporting period, the total advertising investment across **Meta** and **Google Ads** reached **${fCurrency(metrics.current.total.spend)}**, generating a total gross revenue of **${fCurrency(metrics.current.total.revenue)}**. This represents a blended ROAS of **${fROAS(metrics.current.total.revenue, metrics.current.total.spend)}**.
+
+${platformStats?.dominant} ${platformStats?.shareText}, specifically with **${Math.round(platformStats?.dominantConv || 0)} sales** ${platformStats?.trackingMethod}. This counts for approximately ${((platformStats?.dominantConv || 0) / (platformStats?.totalConv || 1) * 100).toFixed(0)}% of total conversion volume.
+
+Strategic focus remains on optimizing CPA for higher-intent segments while maintaining the broad reach necessary for top-of-funnel contribution from Google Search campaigns.`;
+
   return (
     <SlideWrapper id="summary">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start mb-[35px]">
@@ -31,25 +48,11 @@ export const SummarySlide = ({ metrics, platformStats, topCreative }: SummarySli
              <div className="section-label !mb-0 ml-2">Consolidated Overview</div>
           </div>
           <h2 className="mb-6">Executive Summary</h2>
-          <div className="text-[#64748b] text-[16px] leading-[1.6] space-y-6">
-            <p>
-              In this reporting period, the total advertising investment across <span className="font-bold text-[#0f172a]">Meta</span> and <span className="font-bold text-[#0f172a]">Google Ads</span> reached 
-              <span className="font-bold text-[#0f172a] mx-1">{fCurrency(metrics.current.total.spend)}</span>, 
-              generating a total gross revenue of 
-              <span className="font-bold text-[#0f172a] mx-1">{fCurrency(metrics.current.total.revenue)}</span>. 
-              This represents a blended ROAS of 
-              <span className="font-bold text-primary mx-1">{fROAS(metrics.current.total.revenue, metrics.current.total.spend)}</span>.
-            </p>
-            <p>
-              {platformStats?.dominant} {platformStats?.shareText}, specifically with 
-              <span className="font-bold text-[#0f172a]"> {Math.round(platformStats?.dominantConv || 0)} sales </span> 
-              {platformStats?.trackingMethod}. This counts for approximately {((platformStats?.dominantConv || 0) / (platformStats?.totalConv || 1) * 100).toFixed(0)}% of total conversion volume.
-            </p>
-            <p>
-              Strategic focus remains on optimizing CPA for higher-intent segments while maintaining the 
-              broad reach necessary for top-of-funnel contribution from Google Search campaigns.
-            </p>
-          </div>
+          <EditableContent 
+            content={content || defaultText}
+            isEditMode={isEditMode}
+            onUpdate={onUpdateContent || (() => {})}
+          />
         </div>
         <div className="md:col-span-5">
           <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-8 sticky top-0">

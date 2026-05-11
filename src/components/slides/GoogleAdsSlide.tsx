@@ -1,28 +1,39 @@
-import React from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer
-} from 'recharts';
-import { DollarSign, Target, TrendingUp, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { DollarSign, Target, TrendingUp, Award, ChevronUp, ChevronDown } from 'lucide-react';
 import { SlideWrapper } from '../SlideWrapper';
 import { KpiCard } from '../KpiCard';
+import { EditableContent } from '../EditableContent';
 import { LOGOS } from '@/src/constants';
 import { MetricsSummary } from '@/src/types';
-import { fCurrency, fNumber, fROAS } from '@/src/lib/formatters';
+import { fCurrency, fNumber, fROAS, fCPA } from '@/src/lib/formatters';
 import { cn } from '@/src/lib/utils';
 
 interface GoogleAdsSlideProps {
   metrics: MetricsSummary;
+  isEditMode?: boolean;
+  content?: string;
+  onUpdateContent?: (val: string) => void;
 }
 
-export const GoogleAdsSlide = ({ metrics }: GoogleAdsSlideProps) => {
-  const googleSearchItems = Object.values(metrics.current.byCampaign).filter(c => (c as any).source === 'google_ads').map(c => c as any);
-  const pGoogleItems = Object.values(metrics.prior.byCampaign).filter(c => (c as any).source === 'google_ads').map(c => c as any);
+type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
+
+export const GoogleAdsSlide = ({ 
+  metrics,
+  isEditMode = false,
+  content,
+  onUpdateContent
+}: GoogleAdsSlideProps) => {
+  const [sortField, setSortField] = useState<SortField>('spend');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+  const googleSearchItems = Object.entries(metrics.current.byCampaign)
+    .filter(([, c]) => (c as any).source === 'google_ads')
+    .map(([name, c]) => ({ name, ...(c as any) }));
+  
+  const pGoogleItems = Object.entries(metrics.prior.byCampaign)
+    .filter(([, c]) => (c as any).source === 'google_ads')
+    .map(([name, c]) => ({ name, ...(c as any) }));
+  
   const curS = googleSearchItems.reduce((a, b) => a + b.spend, 0);
   const priS = pGoogleItems.reduce((a, b) => a + b.spend, 0);
   const curC = googleSearchItems.reduce((a, b) => a + b.conversions, 0);
@@ -36,25 +47,55 @@ export const GoogleAdsSlide = ({ metrics }: GoogleAdsSlideProps) => {
     return `${d > 0 ? '+' : ''}${d.toFixed(1)}%`;
   };
 
-  const trendData = (metrics as any).dailyTrend.map((t: any) => ({
-    date: t.date,
-    revenue: t.google.revenue,
-    spend: t.google.spend,
-    conv: t.google.conv,
-    roas: t.google.spend > 0 ? t.google.revenue / t.google.spend : 0
-  }));
+  const defaultText = `Google Search campaigns generated a total revenue of **${fCurrency(curR)}** this period. The blended ROAS for Google Ads stands at **${fROAS(curR, curS)}**, maintaining efficient lead acquisition.
+
+Conversion volume reached **${fNumber(Math.round(curC))} sales**, with a cost per acquisition of **${fCPA(curS, curC)}**.`;
+
+  const toggleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('desc');
+    }
+  };
+
+  const sortedCampaigns = [...googleSearchItems].sort((a, b) => {
+    let valA = a[sortField];
+    let valB = b[sortField];
+    
+    if (sortField === 'roas') {
+      valA = a.revenue / Math.max(1, a.spend);
+      valB = b.revenue / Math.max(1, b.spend);
+    }
+    
+    return sortDir === 'asc' ? valA - valB : valB - valA;
+  });
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) return null;
+    return sortDir === 'asc' ? <ChevronUp size={14} className="inline ml-1" /> : <ChevronDown size={14} className="inline ml-1" />;
+  };
 
   return (
     <SlideWrapper id="google" innerClassName="border-l-[3px] border-l-[#f59e0b]">
-      <div className="mb-10">
-        <div className="flex items-center gap-3 mb-2">
-          <img src={LOGOS.google_ads} alt="Google" className="h-6 w-auto object-contain" />
-          <h2>Google Ads Performance</h2>
-        </div>
-        <div className="text-[12px] font-[500] text-[#64748b]">
-           ~{(curS / Math.max(1, metrics.current.total.spend) * 100).toFixed(0)}% of total consolidated spend
+      <div className="mb-[35px]">
+        <div className="max-w-4xl">
+          <div className="flex items-center gap-3 mb-6">
+            <img src={LOGOS.google_ads} alt="Google" className="h-6 w-auto object-contain" />
+            <h2 className="!mb-0">Google Ads Performance</h2>
+          </div>
+          <div className="text-[12px] font-[500] text-[#64748b] mb-6">
+             ~{(curS / Math.max(1, metrics.current.total.spend) * 100).toFixed(0)}% of total consolidated spend
+          </div>
+          <EditableContent 
+            content={content || defaultText}
+            isEditMode={isEditMode}
+            onUpdate={onUpdateContent || (() => {})}
+          />
         </div>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <KpiCard icon={DollarSign} label="Google Spend" value={fCurrency(curS)} sublabel="Search & Display cost" delta={calcD(curS, priS)} trend={curS <= priS ? 'up' : 'down'} variant="g_blue" />
         <KpiCard icon={Target} label="Conversions" value={fNumber(Math.round(curC))} sublabel="Lead completions" delta={calcD(curC, priC)} trend={curC >= priC ? 'up' : 'down'} variant="g_green" />
@@ -62,23 +103,60 @@ export const GoogleAdsSlide = ({ metrics }: GoogleAdsSlideProps) => {
         <KpiCard icon={Award} label="Google ROAS" value={fROAS(curR, curS)} sublabel="Search efficiency" delta={calcD(curR/Math.max(1, curS), priR/Math.max(1, priS))} trend={curR/Math.max(1, curS) >= priR/Math.max(1, priS) ? 'up' : 'down'} variant="g_red" />
       </div>
 
-      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-8 mb-4 h-[350px]">
-         <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Last 7 Days Trend (Google)</h3>
-         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <XAxis dataKey="date" fontSize={10} tick={{ fill: '#94a3b8' }} />
-              <YAxis fontSize={10} tick={{ fill: '#94a3b8' }} tickFormatter={(v) => `$${fNumber(v)}`} />
-              <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px', color: '#0f172a' }}
-                itemStyle={{ color: '#0f172a' }}
-                labelStyle={{ color: '#64748b', fontWeight: 'bold', marginBottom: '4px' }}
-                formatter={(v: any, name: string) => [fCurrency(v), name]}
-              />
-              <Bar dataKey="revenue" fill="#FBBC04" radius={[4, 4, 0, 0]} name="Revenue" />
-              <Bar dataKey="spend" fill="#4285F4" radius={[4, 4, 0, 0]} name="Spend" />
-            </BarChart>
-         </ResponsiveContainer>
+      <div className="bg-white border border-[#e2e8f0] rounded-xl overflow-y-auto max-h-[280px] shadow-sm no-scrollbar">
+        <div className="px-6 py-4 border-b border-[#f1f5f9] bg-[#f8fafc]">
+          <h3 className="text-[12px] font-bold text-[#64748b] uppercase tracking-widest">Top Performing Campaigns</h3>
+        </div>
+        <table className="w-full text-left">
+          <thead>
+            <tr className="border-b border-[#f1f5f9] bg-white">
+              <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Campaign</th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('spend')}
+              >
+                Spend <SortIcon field="spend" />
+              </th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('conversions')}
+              >
+                Conv. <SortIcon field="conversions" />
+              </th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('revenue')}
+              >
+                Revenue <SortIcon field="revenue" />
+              </th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('roas')}
+              >
+                ROAS <SortIcon field="roas" />
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#f1f5f9]">
+            {sortedCampaigns.map((campaign) => {
+              const roasValue = campaign.revenue / Math.max(1, campaign.spend);
+              return (
+                <tr key={campaign.name} className="hover:bg-[#f8fafc] transition-colors">
+                  <td className="px-6 py-4 text-[14px] font-[600] text-[#1e293b]">{campaign.name}</td>
+                  <td className="px-6 py-4 text-right text-[14px] font-[500] text-[#64748b] tabular-nums">{fCurrency(campaign.spend)}</td>
+                  <td className="px-6 py-4 text-right text-[14px] font-[700] text-primary tabular-nums">{fNumber(Math.round(campaign.conversions))}</td>
+                  <td className="px-6 py-4 text-right text-[14px] font-[600] text-[#0f172a] tabular-nums">{fCurrency(campaign.revenue)}</td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-1.5 text-[14px] font-[700] tracking-tight text-[#0f172a]">
+                      <span className={cn("w-1.5 h-1.5 rounded-full", roasValue > 2 ? "bg-[#16a34a]" : roasValue >= 1 ? "bg-[#f59e0b]" : "bg-[#dc2626]")} />
+                      {fROAS(campaign.revenue, campaign.spend)}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </SlideWrapper>
   );

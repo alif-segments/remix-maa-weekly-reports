@@ -1,7 +1,8 @@
-import React from 'react';
-import { DollarSign, Target, TrendingUp, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { DollarSign, Target, TrendingUp, Award, ChevronUp, ChevronDown } from 'lucide-react';
 import { SlideWrapper } from '../SlideWrapper';
 import { KpiCard } from '../KpiCard';
+import { EditableContent } from '../EditableContent';
 import { LOGOS } from '@/src/constants';
 import { MetricsSummary } from '@/src/types';
 import { fCurrency, fNumber, fROAS } from '@/src/lib/formatters';
@@ -9,11 +10,30 @@ import { cn } from '@/src/lib/utils';
 
 interface GrantsSlideProps {
   metrics: MetricsSummary;
+  isEditMode?: boolean;
+  content?: string;
+  onUpdateContent?: (val: string) => void;
 }
 
-export const GrantsSlide = ({ metrics }: GrantsSlideProps) => {
-  const grantItems = Object.values(metrics.current.byCampaign).filter(c => (c as any).source === 'google_ads_separate').map(c => c as any);
-  const pGrantItems = Object.values(metrics.prior.byCampaign).filter(c => (c as any).source === 'google_ads_separate').map(c => c as any);
+type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
+
+export const GrantsSlide = ({ 
+  metrics,
+  isEditMode = false,
+  content,
+  onUpdateContent
+}: GrantsSlideProps) => {
+  const [sortField, setSortField] = useState<SortField>('spend');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+  const grantItems = Object.entries(metrics.current.byCampaign)
+    .filter(([, c]) => (c as any).source === 'google_ads_separate')
+    .map(([name, c]) => ({ name, ...(c as any) }));
+  
+  const pGrantItems = Object.entries(metrics.prior.byCampaign)
+    .filter(([, c]) => (c as any).source === 'google_ads_separate')
+    .map(([name, c]) => ({ name, ...(c as any) }));
+  
   const curS = grantItems.reduce((a, b) => a + b.spend, 0);
   const priS = pGrantItems.reduce((a, b) => a + b.spend, 0);
   const curC = grantItems.reduce((a, b) => a + b.conversions, 0);
@@ -27,17 +47,53 @@ export const GrantsSlide = ({ metrics }: GrantsSlideProps) => {
     return `${d > 0 ? '+' : ''}${d.toFixed(1)}%`;
   };
 
+  const defaultText = `This account is managed distinctly for specific project oversight. Data below is excluded from blended performance metrics.
+
+Google Grants campaigns continue to provide auxiliary support, contributing **${fNumber(Math.round(curC))} total conversions** at zero media cost.
+
+These campaigns focus on **high-intent informational queries**, helping to fill the upper-funnel pipeline for paid retargeting efforts.`;
+
+  const toggleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('desc');
+    }
+  };
+
+  const sortedCampaigns = [...grantItems].sort((a, b) => {
+    let valA = a[sortField];
+    let valB = b[sortField];
+    
+    if (sortField === 'roas') {
+      valA = a.revenue / Math.max(1, a.spend);
+      valB = b.revenue / Math.max(1, b.spend);
+    }
+    
+    return sortDir === 'asc' ? valA - valB : valB - valA;
+  });
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) return null;
+    return sortDir === 'asc' ? <ChevronUp size={14} className="inline ml-1" /> : <ChevronDown size={14} className="inline ml-1" />;
+  };
+
   return (
     <SlideWrapper id="grants" innerClassName="border-l-[3px] border-l-[#0ea5e9]">
-      <div className="mb-10">
+      <div className="mb-6">
         <div className="bg-[#e0f2fe] text-[#0369a1] text-[11px] font-[700] uppercase px-3 py-1 rounded inline-block mb-4 tracking-[1px] border border-[#bae6fd]">Separate Oversight Report</div>
         <div className="flex items-center gap-3 mb-2">
           <img src={LOGOS.google_ads} alt="Google" className="h-6 w-auto object-contain" />
           <h2>Google Ads (Grants) (328-834-3137)</h2>
         </div>
-        <p className="text-[#64748b] text-[15px] max-w-2xl font-[500]">
-          This account is managed distinctly for specific project oversight. Data below is excluded from blended performance metrics.
-        </p>
+        <div className="mb-6">
+          <EditableContent 
+            content={content || defaultText}
+            isEditMode={isEditMode}
+            onUpdate={onUpdateContent || (() => {})}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -47,39 +103,55 @@ export const GrantsSlide = ({ metrics }: GrantsSlideProps) => {
         <KpiCard icon={Award} label="Grants ROAS" value={fROAS(curR, curS)} sublabel="Account efficiency" delta={calcD(curR/Math.max(1, curS), priR/Math.max(1, priS))} trend={curR/Math.max(1, curS) >= priR/Math.max(1, priS) ? 'up' : 'down'} variant="roas" />
       </div>
 
-      <div className="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#e2e8f0] rounded-xl overflow-y-auto max-h-[250px] shadow-sm no-scrollbar">
          <table className="w-full text-left">
            <thead className="bg-[#f8fafc]">
              <tr className="border-b border-[#f1f5f9]">
                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Campaign</th>
-               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Spend</th>
-               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Conv.</th>
-               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Revenue</th>
-               <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">ROAS</th>
+               <th 
+                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                 onClick={() => toggleSort('spend')}
+               >
+                 Spend <SortIcon field="spend" />
+               </th>
+               <th 
+                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                 onClick={() => toggleSort('conversions')}
+               >
+                 Conv. <SortIcon field="conversions" />
+               </th>
+               <th 
+                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                 onClick={() => toggleSort('revenue')}
+               >
+                 Revenue <SortIcon field="revenue" />
+               </th>
+               <th 
+                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                 onClick={() => toggleSort('roas')}
+               >
+                 ROAS <SortIcon field="roas" />
+               </th>
              </tr>
            </thead>
            <tbody className="divide-y divide-[#f1f5f9]">
-             {Object.entries(metrics.current.byCampaign)
-               .filter(([, c]) => (c as any).source === 'google_ads_separate')
-               .sort(([, a], [, b]) => (b as any).spend - (a as any).spend)
-               .map(([name, c]) => {
-                 const campaign = c as any;
-                 const roas = campaign.revenue / Math.max(1, campaign.spend);
-                 return (
-                   <tr key={name} className="hover:bg-[#f8fafc] transition-colors">
-                     <td className="px-6 py-4 text-[14px] font-[600] text-[#1e293b]">{name}</td>
-                     <td className="px-6 py-4 text-right text-[14px] font-[500] text-[#64748b] tabular-nums">{fCurrency(campaign.spend)}</td>
-                     <td className="px-6 py-4 text-right text-[14px] font-[700] text-primary tabular-nums">{fNumber(Math.round(campaign.conversions))}</td>
-                     <td className="px-6 py-4 text-right text-[14px] font-[600] text-[#0f172a] tabular-nums">{fCurrency(campaign.revenue)}</td>
-                     <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5 text-[14px] font-[700] tracking-tight text-[#0f172a]">
-                          <span className={cn("w-1.5 h-1.5 rounded-full", roas > 2 ? "bg-[#16a34a]" : roas >= 1 ? "bg-[#f59e0b]" : "bg-[#dc2626]")} />
-                          {fROAS(campaign.revenue, campaign.spend)}
-                        </div>
-                     </td>
-                   </tr>
-                 );
-               })}
+             {sortedCampaigns.map((campaign) => {
+               const roasValue = campaign.revenue / Math.max(1, campaign.spend);
+               return (
+                 <tr key={campaign.name} className="hover:bg-[#f8fafc] transition-colors">
+                   <td className="px-6 py-4 text-[14px] font-[600] text-[#1e293b]">{campaign.name}</td>
+                   <td className="px-6 py-4 text-right text-[14px] font-[500] text-[#64748b] tabular-nums">{fCurrency(campaign.spend)}</td>
+                   <td className="px-6 py-4 text-right text-[14px] font-[700] text-primary tabular-nums">{fNumber(Math.round(campaign.conversions))}</td>
+                   <td className="px-6 py-4 text-right text-[14px] font-[600] text-[#0f172a] tabular-nums">{fCurrency(campaign.revenue)}</td>
+                   <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5 text-[14px] font-[700] tracking-tight text-[#0f172a]">
+                        <span className={cn("w-1.5 h-1.5 rounded-full", roasValue > 2 ? "bg-[#16a34a]" : roasValue >= 1 ? "bg-[#f59e0b]" : "bg-[#dc2626]")} />
+                        {fROAS(campaign.revenue, campaign.spend)}
+                      </div>
+                   </td>
+                 </tr>
+               );
+             })}
            </tbody>
          </table>
       </div>

@@ -21,6 +21,7 @@ import {
 } from 'recharts';
 import { SlideWrapper } from '../SlideWrapper';
 import { KpiCard } from '../KpiCard';
+import { EditableContent } from '../EditableContent';
 import { LOGOS } from '@/src/constants';
 import { MetricsSummary } from '@/src/types';
 import { fCurrency, fNumber } from '@/src/lib/formatters';
@@ -28,11 +29,23 @@ import { cn } from '@/src/lib/utils';
 
 interface GA4SlideProps {
   metrics: MetricsSummary;
+  isEditMode?: boolean;
+  content?: string;
+  onUpdateContent?: (val: string) => void;
 }
 
-export const GA4Slide = ({ metrics }: GA4SlideProps) => {
+export const GA4Slide = ({ 
+  metrics,
+  isEditMode = false,
+  content,
+  onUpdateContent
+}: GA4SlideProps) => {
   const ga4 = metrics.ga4;
   if (!ga4) return null;
+
+  const defaultText = `Google Analytics 4 data shows a **${ga4.trends.revenue === 'up' ? 'positive trend' : 'variance'}** in user engagement compared to the previous period.
+
+Direct and Organic Search remain the primary sources of traffic, accounting for the baseline sessions while paid channels drive total revenue attribution.`;
 
   const COLORS = ['#4285F4', '#34A853', '#FBBC04', '#EA4335', '#8E24AA', '#00ACC1', '#FF7043'];
 
@@ -50,7 +63,13 @@ export const GA4Slide = ({ metrics }: GA4SlideProps) => {
           <img src={LOGOS.ga4} alt="GA4" className="w-[25px] h-[25px] object-contain" />
           <h2>GA4 Performance Summary</h2>
         </div>
-        <p className="text-[#64748b] text-[15px] font-[500]">Consolidated analytics data across all traffic sources.</p>
+        <div className="mt-4">
+          <EditableContent 
+            content={content || defaultText}
+            isEditMode={isEditMode}
+            onUpdate={onUpdateContent || (() => {})}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">

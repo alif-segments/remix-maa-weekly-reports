@@ -7,12 +7,19 @@ import {
   Info,
   Layers,
   Facebook,
-  Globe
+  Globe,
+  Edit2,
+  Eye,
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 import { LOGOS } from './constants';
 import { usePerformanceData } from './hooks/usePerformanceData';
+import { contentService } from './services/contentService';
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
 
 import { Preloader } from './components/Preloader';
 
@@ -30,6 +37,36 @@ import { FooterSlide } from './components/slides/FooterSlide';
 export default function App() {
   const { metrics, loading } = usePerformanceData();
   const [activeSlide, setActiveSlide] = useState('cover');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [pageContent, setPageContent] = useState<Record<string, string>>({});
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+  // Detect edit mode and fetch content
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'edit') {
+      setIsEditMode(true);
+    }
+
+    const loadContent = async () => {
+      const content = await contentService.fetchAll();
+      setPageContent(content);
+    };
+    loadContent();
+  }, []);
+
+  const handleUpdateContent = async (section_id: string, newContent: string) => {
+    setPageContent(prev => ({ ...prev, [section_id]: newContent }));
+    setSaveStatus('saving');
+    const success = await contentService.updateSection(section_id, newContent);
+    if (success) {
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } else {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
 
   // Observer for active slide
   useEffect(() => {
@@ -139,14 +176,96 @@ export default function App() {
       </nav>
 
       <CoverSlide metrics={metrics} />
-      <SummarySlide metrics={metrics} platformStats={platformStats} topCreative={topCreative} />
+      <SummarySlide 
+        metrics={metrics} 
+        platformStats={platformStats} 
+        topCreative={topCreative} 
+        isEditMode={isEditMode}
+        content={pageContent.exec_summary}
+        onUpdateContent={(val) => handleUpdateContent('exec_summary', val)}
+      />
       <WeeklyTrendSlide metrics={metrics} />
-      <GoogleAdsSlide metrics={metrics} />
-      <MetaAdsSlide metrics={metrics} />
-      <CreativeBreakdownSlide metrics={metrics} />
-      <GA4Slide metrics={metrics} />
-      <GrantsSlide metrics={metrics} />
+      <GoogleAdsSlide 
+        metrics={metrics} 
+        isEditMode={isEditMode}
+        content={pageContent.google_summary}
+        onUpdateContent={(val) => handleUpdateContent('google_summary', val)}
+      />
+      <MetaAdsSlide 
+        metrics={metrics} 
+        isEditMode={isEditMode}
+        content={pageContent.meta_summary}
+        onUpdateContent={(val) => handleUpdateContent('meta_summary', val)}
+      />
+      <CreativeBreakdownSlide 
+        metrics={metrics} 
+        isEditMode={isEditMode}
+        content={pageContent.creatives_summary}
+        onUpdateContent={(val) => handleUpdateContent('creatives_summary', val)}
+      />
+      <GA4Slide 
+        metrics={metrics} 
+        isEditMode={isEditMode}
+        content={pageContent.ga4_summary}
+        onUpdateContent={(val) => handleUpdateContent('ga4_summary', val)}
+      />
+      <GrantsSlide 
+        metrics={metrics} 
+        isEditMode={isEditMode}
+        content={pageContent.grants_summary}
+        onUpdateContent={(val) => handleUpdateContent('grants_summary', val)}
+      />
       <FooterSlide />
+
+      {/* Persistence Bar */}
+      <AnimatePresence>
+        {saveStatus !== 'idle' && (
+          <motion.div 
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100]"
+          >
+            <div className={cn(
+              "px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 backdrop-blur-md",
+              saveStatus === 'saving' ? "bg-white/90 text-primary border border-primary/20" : 
+              saveStatus === 'saved' ? "bg-green-600 text-white" : 
+              "bg-red-600 text-white"
+            )}>
+              {saveStatus === 'saving' && <Loader2 className="animate-spin" size={18} />}
+              {saveStatus === 'saved' && <CheckCircle2 size={18} />}
+              <span className="font-bold text-[14px]">
+                {saveStatus === 'saving' ? 'Syncing to Google Sheets...' : 
+                 saveStatus === 'saved' ? 'All changes saved!' : 
+                 'Error syncing changes'}
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Mode Toggle (Desktop only) */}
+      <div className="fixed bottom-8 right-8 z-[60] flex items-center gap-2">
+         <button 
+           onClick={() => {
+             const newMode = !isEditMode;
+             setIsEditMode(newMode);
+             const url = new URL(window.location.href);
+             if (newMode) url.searchParams.set('mode', 'edit');
+             else url.searchParams.delete('mode');
+             window.history.replaceState({}, '', url);
+           }}
+           className={cn(
+             "px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all font-bold text-[13px] border",
+             isEditMode 
+              ? "bg-primary text-white border-primary" 
+              : "bg-white text-gray-700 border-gray-200 hover:border-primary"
+           )}
+         >
+           {isEditMode ? <Eye size={16} /> : <Edit2 size={16} />}
+           {isEditMode ? 'View Mode' : 'Edit Mode'}
+         </button>
+      </div>
     </div>
   );
 }
