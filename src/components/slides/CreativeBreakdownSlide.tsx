@@ -11,7 +11,9 @@ interface CreativeBreakdownSlideProps {
   metrics: MetricsSummary;
   isEditMode?: boolean;
   content?: string;
+  defaultText: string;
   onUpdateContent?: (val: string) => void;
+  onReset?: () => void;
 }
 
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas' | 'performanceScore';
@@ -20,7 +22,9 @@ export const CreativeBreakdownSlide = ({
   metrics,
   isEditMode = false,
   content,
-  onUpdateContent
+  defaultText,
+  onUpdateContent,
+  onReset
 }: CreativeBreakdownSlideProps) => {
   const [sortField, setSortField] = useState<SortField>('performanceScore');
   const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc');
@@ -93,10 +97,6 @@ export const CreativeBreakdownSlide = ({
     return sortDir === 'asc' ? <ChevronUp size={14} className="inline ml-1" /> : <ChevronDown size={14} className="inline ml-1" />;
   };
 
-  const defaultText = `Creative analysis reveals that **${topPerformer?.name}** is currently the highest performing asset with a **${fROAS(topPerformer?.revenue, topPerformer?.spend)} return**.
-
-UGC-style content remains dominant in driving conversions, specifically in the **Retargeting** segments where trust signals are paramount.`;
-
   return (
     <SlideWrapper id="creatives">
       <div className="mb-6">
@@ -107,9 +107,11 @@ UGC-style content remains dominant in driving conversions, specifically in the *
           </div>
           <h2 className="mb-6">Meta Creative Performance</h2>
           <EditableContent 
-            content={content || defaultText}
+            content={content ?? defaultText}
+            defaultText={defaultText}
             isEditMode={isEditMode}
             onUpdate={onUpdateContent || (() => {})}
+            onReset={onReset}
           />
         </div>
       </div>

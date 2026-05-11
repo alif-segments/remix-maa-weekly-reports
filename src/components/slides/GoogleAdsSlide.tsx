@@ -12,7 +12,9 @@ interface GoogleAdsSlideProps {
   metrics: MetricsSummary;
   isEditMode?: boolean;
   content?: string;
+  defaultText: string;
   onUpdateContent?: (val: string) => void;
+  onReset?: () => void;
 }
 
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
@@ -21,7 +23,9 @@ export const GoogleAdsSlide = ({
   metrics,
   isEditMode = false,
   content,
-  onUpdateContent
+  defaultText,
+  onUpdateContent,
+  onReset
 }: GoogleAdsSlideProps) => {
   const [sortField, setSortField] = useState<SortField>('spend');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -46,10 +50,6 @@ export const GoogleAdsSlide = ({
     const d = ((c - p) / Math.max(1, p)) * 100;
     return `${d > 0 ? '+' : ''}${d.toFixed(1)}%`;
   };
-
-  const defaultText = `Google Search campaigns generated a total revenue of **${fCurrency(curR)}** this period. The blended ROAS for Google Ads stands at **${fROAS(curR, curS)}**, maintaining efficient lead acquisition.
-
-Conversion volume reached **${fNumber(Math.round(curC))} sales**, with a cost per acquisition of **${fCPA(curS, curC)}**.`;
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -89,9 +89,11 @@ Conversion volume reached **${fNumber(Math.round(curC))} sales**, with a cost pe
              ~{(curS / Math.max(1, metrics.current.total.spend) * 100).toFixed(0)}% of total consolidated spend
           </div>
           <EditableContent 
-            content={content || defaultText}
+            content={content ?? defaultText}
+            defaultText={defaultText}
             isEditMode={isEditMode}
             onUpdate={onUpdateContent || (() => {})}
+            onReset={onReset}
           />
         </div>
       </div>

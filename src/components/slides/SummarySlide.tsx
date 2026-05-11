@@ -14,7 +14,9 @@ interface SummarySlideProps {
   topCreative: any;
   isEditMode?: boolean;
   content?: string;
+  defaultText: string;
   onUpdateContent?: (val: string) => void;
+  onReset?: () => void;
 }
 
 export const SummarySlide = ({ 
@@ -23,14 +25,10 @@ export const SummarySlide = ({
   topCreative,
   isEditMode = false,
   content,
-  onUpdateContent
+  defaultText,
+  onUpdateContent,
+  onReset
 }: SummarySlideProps) => {
-  const defaultText = `In this reporting period, the total advertising investment across **Meta** and **Google Ads** reached **${fCurrency(metrics.current.total.spend)}**, generating a total gross revenue of **${fCurrency(metrics.current.total.revenue)}**. This represents a blended ROAS of **${fROAS(metrics.current.total.revenue, metrics.current.total.spend)}**.
-
-${platformStats?.dominant} ${platformStats?.shareText}, specifically with **${Math.round(platformStats?.dominantConv || 0)} sales** ${platformStats?.trackingMethod}. This counts for approximately ${((platformStats?.dominantConv || 0) / (platformStats?.totalConv || 1) * 100).toFixed(0)}% of total conversion volume.
-
-Strategic focus remains on optimizing CPA for higher-intent segments while maintaining the broad reach necessary for top-of-funnel contribution from Google Search campaigns.`;
-
   return (
     <SlideWrapper id="summary">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start mb-[35px]">
@@ -49,9 +47,11 @@ Strategic focus remains on optimizing CPA for higher-intent segments while maint
           </div>
           <h2 className="mb-6">Executive Summary</h2>
           <EditableContent 
-            content={content || defaultText}
+            content={content ?? defaultText}
+            defaultText={defaultText}
             isEditMode={isEditMode}
             onUpdate={onUpdateContent || (() => {})}
+            onReset={onReset}
           />
         </div>
         <div className="md:col-span-5">

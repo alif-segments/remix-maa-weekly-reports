@@ -12,7 +12,9 @@ interface GrantsSlideProps {
   metrics: MetricsSummary;
   isEditMode?: boolean;
   content?: string;
+  defaultText: string;
   onUpdateContent?: (val: string) => void;
+  onReset?: () => void;
 }
 
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
@@ -21,7 +23,9 @@ export const GrantsSlide = ({
   metrics,
   isEditMode = false,
   content,
-  onUpdateContent
+  defaultText,
+  onUpdateContent,
+  onReset
 }: GrantsSlideProps) => {
   const [sortField, setSortField] = useState<SortField>('spend');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -46,12 +50,6 @@ export const GrantsSlide = ({
     const d = ((c - p) / Math.max(1, p)) * 100;
     return `${d > 0 ? '+' : ''}${d.toFixed(1)}%`;
   };
-
-  const defaultText = `This account is managed distinctly for specific project oversight. Data below is excluded from blended performance metrics.
-
-Google Grants campaigns continue to provide auxiliary support, contributing **${fNumber(Math.round(curC))} total conversions** at zero media cost.
-
-These campaigns focus on **high-intent informational queries**, helping to fill the upper-funnel pipeline for paid retargeting efforts.`;
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -89,9 +87,11 @@ These campaigns focus on **high-intent informational queries**, helping to fill 
         </div>
         <div className="mb-6">
           <EditableContent 
-            content={content || defaultText}
+            content={content ?? defaultText}
+            defaultText={defaultText}
             isEditMode={isEditMode}
             onUpdate={onUpdateContent || (() => {})}
+            onReset={onReset}
           />
         </div>
       </div>

@@ -12,7 +12,9 @@ interface MetaAdsSlideProps {
   metrics: MetricsSummary;
   isEditMode?: boolean;
   content?: string;
+  defaultText: string;
   onUpdateContent?: (val: string) => void;
+  onReset?: () => void;
 }
 
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
@@ -21,7 +23,9 @@ export const MetaAdsSlide = ({
   metrics,
   isEditMode = false,
   content,
-  onUpdateContent
+  defaultText,
+  onUpdateContent,
+  onReset
 }: MetaAdsSlideProps) => {
   const [sortField, setSortField] = useState<SortField>('spend');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -46,10 +50,6 @@ export const MetaAdsSlide = ({
     const d = ((c - p) / Math.max(1, p)) * 100;
     return `${d > 0 ? '+' : ''}${d.toFixed(1)}%`;
   };
-
-  const defaultText = `Meta (Facebook/Instagram) advertising generated **${fCurrency(curR)}** in revenue. The platform continues to be a major driver of volume with **${fNumber(Math.round(curC))} conversions**.
-
-Direct efficiency remains stable at **${fROAS(curR, curS)} ROAS**. This represents a CPA of **${fCPA(curS, curC)}** tracked via the Meta Pixel.`;
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -89,9 +89,11 @@ Direct efficiency remains stable at **${fROAS(curR, curS)} ROAS**. This represen
              ~{(curS / Math.max(1, metrics.current.total.spend) * 100).toFixed(0)}% of total consolidated spend
           </div>
           <EditableContent 
-            content={content || defaultText}
+            content={content ?? defaultText}
+            defaultText={defaultText}
             isEditMode={isEditMode}
             onUpdate={onUpdateContent || (() => {})}
+            onReset={onReset}
           />
         </div>
       </div>

@@ -28,7 +28,7 @@ class ContentService {
     }
   }
 
-  async updateSection(section_id: string, content: string): Promise<boolean> {
+  async updateSection(updates: { section_id: string; content: string } | { section_id: string; content: string }[]): Promise<boolean> {
     if (!this.gasUrl) {
       console.warn('VITE_GAS_URL not set. Review Mode only.');
       return true; // Pretend it worked for local dev
@@ -41,7 +41,7 @@ class ContentService {
           'Content-Type': 'application/json',
         },
         mode: 'no-cors',
-        body: JSON.stringify({ section_id, content }),
+        body: JSON.stringify(updates),
       });
       return true;
     } catch (error) {

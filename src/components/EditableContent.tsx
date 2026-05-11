@@ -7,16 +7,20 @@ import { Save } from 'lucide-react';
 
 interface EditableContentProps {
   content: string | undefined;
+  defaultText?: string;
   isEditMode: boolean;
   onUpdate: (val: string) => void;
+  onReset?: () => void;
   className?: string;
   previewClassName?: string;
 }
 
 export const EditableContent = ({ 
   content, 
+  defaultText,
   isEditMode, 
   onUpdate, 
+  onReset,
   className,
   previewClassName 
 }: EditableContentProps) => {
@@ -29,14 +33,8 @@ export const EditableContent = ({
   const processedContent = React.useMemo(() => {
     if (!localValue) return '';
     
-    // Normalize newlines
     const normalized = localValue.replace(/\r\n/g, '\n');
-    
-    // If the user has already explicitly used double newlines, respect their formatting
     if (normalized.includes('\n\n')) return normalized;
-    
-    // Otherwise, convert single newlines to double newlines to ensure paragraph spacing
-    // as requested by the user for readability
     return normalized.replace(/\n/g, '\n\n');
   }, [localValue]);
 
@@ -53,13 +51,24 @@ export const EditableContent = ({
             className="!border-none"
           />
         </div>
-        <button
-          onClick={() => onUpdate(localValue)}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all"
-        >
-          <Save size={14} />
-          Save Changes
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => onUpdate(localValue)}
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-[13px] font-bold shadow-md hover:shadow-lg transition-all"
+          >
+            <Save size={14} />
+            Update Section
+          </button>
+          
+          {onReset && (
+            <button
+              onClick={onReset}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-[13px] font-bold hover:bg-gray-200 transition-all border border-gray-200"
+            >
+              Back to Default
+            </button>
+          )}
+        </div>
       </div>
     );
   }

@@ -18,6 +18,7 @@ import { cn } from './lib/utils';
 import { LOGOS } from './constants';
 import { usePerformanceData } from './hooks/usePerformanceData';
 import { contentService } from './services/contentService';
+import { fCurrency, fNumber, fROAS, fCPA } from './lib/formatters';
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 
@@ -39,6 +40,7 @@ export default function App() {
   const [activeSlide, setActiveSlide] = useState('cover');
   const [isEditMode, setIsEditMode] = useState(false);
   const [pageContent, setPageContent] = useState<Record<string, string>>({});
+  const [localPageContent, setLocalPageContent] = useState<Record<string, string>>({});
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   // Detect edit mode and fetch content
@@ -51,41 +53,10 @@ export default function App() {
     const loadContent = async () => {
       const content = await contentService.fetchAll();
       setPageContent(content);
+      setLocalPageContent(content);
     };
     loadContent();
   }, []);
-
-  const handleUpdateContent = async (section_id: string, newContent: string) => {
-    setPageContent(prev => ({ ...prev, [section_id]: newContent }));
-    setSaveStatus('saving');
-    const success = await contentService.updateSection(section_id, newContent);
-    if (success) {
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } else {
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus('idle'), 3000);
-    }
-  };
-
-  // Observer for active slide
-  useEffect(() => {
-    if (loading) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSlide(entry.target.id);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    document.querySelectorAll('.slide').forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [loading]);
 
   const creatives = useMemo(() => {
     if (!metrics) return [];
@@ -125,6 +96,126 @@ export default function App() {
         : `showcased significant performance growth in conversion volume`
     };
   }, [metrics]);
+
+  const defaultContents = useMemo(() => {
+    if (!metrics || !platformStats) return {};
+    
+    // Safe extraction of metrics
+    const cur = metrics.current || {};
+    const gads = cur.google_ads || { revenue: 0, spend: 0, conversions: 0 };
+    const mads = cur.meta_ads || { revenue: 0, spend: 0, conversions: 0 };
+    const total = cur.total || { revenue: 0, spend: 0, conversions: 0 };
+    const grants = cur.google_grants || { clicks: 0, spend: 0 };
+
+    const maxSales = Math.max(...creatives.map(c => c.conversions || 0), 1);
+    const maxRevenue = Math.max(...creatives.map(c => c.revenue || 0), 1);
+    const maxROAS = Math.max(...creatives.map(c => (c.revenue / Math.max(1, c.spend)) || 0), 1);
+    
+    const creativesWithScore = creatives.map(c => {
+      const salesScore = ((c.conversions || 0) / maxSales) * 35;
+      const revenueScore = ((c.revenue || 0) / maxRevenue) * 35;
+      const roas = (c.revenue || 0) / Math.max(1, c.spend || 0);
+      const roasScore = (roas / maxROAS) * 20;
+      const spendConfidence = (Math.min((c.spend || 0) / 100, 1)) * 10;
+      return { ...c, performanceScore: salesScore + revenueScore + roasScore + spendConfidence, roas };
+    });
+    
+    const topPerformer = [...creativesWithScore].sort((a, b) => b.performanceScore - a.performanceScore)[0] || creativesWithScore[0];
+
+    return {
+      exec_summary: `In this reporting period, the total advertising investment across **Meta** and **Google Ads** reached **${fCurrency(total.spend)}**, generating a total gross revenue of **${fCurrency(total.revenue)}**. This represents a blended ROAS of **${fROAS(total.revenue, total.spend)}**.
+
+${platformStats?.dominant || 'Digital platforms'} ${platformStats?.shareText || 'driving traffic'}, specifically with **${Math.round(platformStats?.dominantConv || 0)} sales** ${platformStats?.trackingMethod || 'tracked'}. This counts for approximately ${((platformStats?.dominantConv || 0) / (platformStats?.totalConv || 1) * 100).toFixed(0)}% of total conversion volume.
+
+Strategic focus remains on optimizing CPA for higher-intent segments while maintaining the broad reach necessary for top-of-funnel contribution from Google Search campaigns.`,
+      google_summary: `Google Search campaigns generated a total revenue of **${fCurrency(gads.revenue)}** this period. The blended ROAS for Google Ads stands at **${fROAS(gads.revenue, gads.spend)}**, maintaining efficient lead acquisition.
+
+Conversion volume reached **${Math.round(gads.conversions)} sales**, with a cost per acquisition of **${fCPA(gads.spend, gads.conversions)}**.`,
+      meta_summary: `Meta Ads continues to show high efficiency with a **${fROAS(mads.revenue, mads.spend)} return**. The platform generated **${fCurrency(mads.revenue)}** in revenue from a spend of **${fCurrency(mads.spend)}**.
+
+Performance remains stable across prospecting and retargeting audiences, with Facebook placements driving the majority of volume.`,
+      creatives_summary: `Creative analysis reveals that **${topPerformer?.name || 'Top Ad'}** is currently the highest performing asset with a **${fROAS(topPerformer?.revenue, topPerformer?.spend)} return**.
+
+UGC-style content remains dominant in driving conversions, specifically in the **Retargeting** segments where trust signals are paramount.`,
+      ga4_summary: `Traffic analysis from GA4 shows **${fNumber(metrics.ga4?.sessions || 0)} sessions** with an engagement rate of **${(metrics.ga4?.engagementRate || 0).toFixed(1)}%**.
+
+New user acquisition remains steady, with paid channels contributing significantly to the overall traffic mix.`,
+      grants_summary: `The Google Grants account generated **${fNumber(grants.clicks)} clicks** with a CPC of **${fCurrency(grants.spend / Math.max(1, grants.clicks))}** (utilizing granted credit).
+
+Focus remains on brand awareness and information discovery for core mission keywords.`
+    };
+  }, [metrics, platformStats, creatives]);
+
+  const handleUpdateContent = (section_id: string, newContent: string) => {
+    setLocalPageContent(prev => ({ ...prev, [section_id]: newContent }));
+  };
+
+  const handleResetToDefault = (section_id: string) => {
+    setLocalPageContent(prev => {
+      const next = { ...prev };
+      delete next[section_id];
+      return next;
+    });
+  };
+
+  const handleResetAll = () => {
+    if (window.confirm('Are you sure you want to revert all sections to their default generated content?')) {
+      setLocalPageContent({});
+    }
+  };
+
+  const handleSaveAll = async () => {
+    setSaveStatus('saving');
+    
+    // We send all content keys to ensure they are updated/synced
+    const keys = ['exec_summary', 'google_summary', 'meta_summary', 'creatives_summary', 'ga4_summary', 'grants_summary'];
+    const updates = keys.map(key => ({
+      section_id: key,
+      content: localPageContent[key] || defaultContents[key as keyof typeof defaultContents] || ''
+    }));
+
+    const success = await contentService.updateSection(updates);
+    if (success) {
+      setPageContent({ ...localPageContent });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } else {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  const handleSaveSection = async (section_id: string, content: string) => {
+    setSaveStatus('saving');
+    const success = await contentService.updateSection({ section_id, content });
+    if (success) {
+      setPageContent(prev => ({ ...prev, [section_id]: content }));
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } else {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  // Observer for active slide
+  useEffect(() => {
+    if (loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSlide(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    document.querySelectorAll('.slide').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [loading]);
 
   const topCreative = creatives[0];
 
@@ -181,39 +272,51 @@ export default function App() {
         platformStats={platformStats} 
         topCreative={topCreative} 
         isEditMode={isEditMode}
-        content={pageContent.exec_summary}
-        onUpdateContent={(val) => handleUpdateContent('exec_summary', val)}
+        content={localPageContent.exec_summary}
+        defaultText={defaultContents.exec_summary}
+        onUpdateContent={(val) => handleSaveSection('exec_summary', val)}
+        onReset={() => handleResetToDefault('exec_summary')}
       />
       <WeeklyTrendSlide metrics={metrics} />
       <GoogleAdsSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
-        content={pageContent.google_summary}
-        onUpdateContent={(val) => handleUpdateContent('google_summary', val)}
+        content={localPageContent.google_summary}
+        defaultText={defaultContents.google_summary}
+        onUpdateContent={(val) => handleSaveSection('google_summary', val)}
+        onReset={() => handleResetToDefault('google_summary')}
       />
       <MetaAdsSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
-        content={pageContent.meta_summary}
-        onUpdateContent={(val) => handleUpdateContent('meta_summary', val)}
+        content={localPageContent.meta_summary}
+        defaultText={defaultContents.meta_summary}
+        onUpdateContent={(val) => handleSaveSection('meta_summary', val)}
+        onReset={() => handleResetToDefault('meta_summary')}
       />
       <CreativeBreakdownSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
-        content={pageContent.creatives_summary}
-        onUpdateContent={(val) => handleUpdateContent('creatives_summary', val)}
+        content={localPageContent.creatives_summary}
+        defaultText={defaultContents.creatives_summary}
+        onUpdateContent={(val) => handleSaveSection('creatives_summary', val)}
+        onReset={() => handleResetToDefault('creatives_summary')}
       />
       <GA4Slide 
         metrics={metrics} 
         isEditMode={isEditMode}
-        content={pageContent.ga4_summary}
-        onUpdateContent={(val) => handleUpdateContent('ga4_summary', val)}
+        content={localPageContent.ga4_summary}
+        defaultText={defaultContents.ga4_summary}
+        onUpdateContent={(val) => handleSaveSection('ga4_summary', val)}
+        onReset={() => handleResetToDefault('ga4_summary')}
       />
       <GrantsSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
-        content={pageContent.grants_summary}
-        onUpdateContent={(val) => handleUpdateContent('grants_summary', val)}
+        content={localPageContent.grants_summary}
+        defaultText={defaultContents.grants_summary}
+        onUpdateContent={(val) => handleSaveSection('grants_summary', val)}
+        onReset={() => handleResetToDefault('grants_summary')}
       />
       <FooterSlide />
 
@@ -235,7 +338,7 @@ export default function App() {
               {saveStatus === 'saving' && <Loader2 className="animate-spin" size={18} />}
               {saveStatus === 'saved' && <CheckCircle2 size={18} />}
               <span className="font-bold text-[14px]">
-                {saveStatus === 'saving' ? 'Syncing to Google Sheets...' : 
+                {saveStatus === 'saving' ? 'Syncing changes...' : 
                  saveStatus === 'saved' ? 'All changes saved!' : 
                  'Error syncing changes'}
               </span>
@@ -245,7 +348,24 @@ export default function App() {
       </AnimatePresence>
 
       {/* Floating Mode Toggle (Desktop only) */}
-      <div className="fixed bottom-8 right-8 z-[60] flex items-center gap-2">
+      <div className="fixed bottom-8 right-8 z-[60] flex flex-col items-end gap-3 translate-y-[-60px]">
+         {isEditMode && (
+           <>
+              <button 
+                onClick={handleSaveAll}
+                className="px-6 py-3 bg-green-600 text-white rounded-xl shadow-xl flex items-center gap-2 transition-all font-bold text-[14px] hover:bg-green-700 active:scale-95"
+              >
+                <CheckCircle2 size={18} />
+                Save All Changes
+              </button>
+              <button 
+                onClick={handleResetAll}
+                className="px-6 py-3 bg-white text-red-600 border border-red-200 rounded-xl shadow-lg flex items-center gap-2 transition-all font-bold text-[14px] hover:bg-red-50 active:scale-95"
+              >
+                Reset All to Default
+              </button>
+           </>
+         )}
          <button 
            onClick={() => {
              const newMode = !isEditMode;

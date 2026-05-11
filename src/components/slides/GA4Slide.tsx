@@ -31,21 +31,21 @@ interface GA4SlideProps {
   metrics: MetricsSummary;
   isEditMode?: boolean;
   content?: string;
+  defaultText: string;
   onUpdateContent?: (val: string) => void;
+  onReset?: () => void;
 }
 
 export const GA4Slide = ({ 
   metrics,
   isEditMode = false,
   content,
-  onUpdateContent
+  defaultText,
+  onUpdateContent,
+  onReset
 }: GA4SlideProps) => {
   const ga4 = metrics.ga4;
   if (!ga4) return null;
-
-  const defaultText = `Google Analytics 4 data shows a **${ga4.trends.revenue === 'up' ? 'positive trend' : 'variance'}** in user engagement compared to the previous period.
-
-Direct and Organic Search remain the primary sources of traffic, accounting for the baseline sessions while paid channels drive total revenue attribution.`;
 
   const COLORS = ['#4285F4', '#34A853', '#FBBC04', '#EA4335', '#8E24AA', '#00ACC1', '#FF7043'];
 
@@ -65,9 +65,11 @@ Direct and Organic Search remain the primary sources of traffic, accounting for 
         </div>
         <div className="mt-4">
           <EditableContent 
-            content={content || defaultText}
+            content={content ?? defaultText}
+            defaultText={defaultText}
             isEditMode={isEditMode}
             onUpdate={onUpdateContent || (() => {})}
+            onReset={onReset}
           />
         </div>
       </div>
