@@ -66,12 +66,29 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
                     tick={{ fill: '#64748b' }} 
                     tickFormatter={(v) => `$${fNumber(v)}`}
                     label={{ 
-                      value: 'Revenue / Spend', 
+                      value: 'Revenue', 
                       angle: -90, 
                       position: 'insideLeft', 
                       offset: -60, 
                       fontSize: 12, 
-                      fill: '#0f172a',
+                      fill: '#4285F4',
+                      fontWeight: 600,
+                      style: { textAnchor: 'middle' } 
+                    }}
+                  />
+                  <YAxis 
+                    yAxisId="right"
+                    orientation="right"
+                    fontSize={11} 
+                    tick={{ fill: '#64748b' }} 
+                    tickFormatter={(v) => `$${fNumber(v)}`}
+                    label={{ 
+                      value: 'Spend', 
+                      angle: 90, 
+                      position: 'insideRight', 
+                      offset: -60, 
+                      fontSize: 12, 
+                      fill: '#34A853',
                       fontWeight: 600,
                       style: { textAnchor: 'middle' } 
                     }}
@@ -87,8 +104,17 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
                     wrapperStyle={{ paddingTop: '20px' }} 
                     formatter={(value) => <span className="mr-6 inline-block font-bold" style={{ color: value === 'Revenue' ? '#4285F4' : '#34A853' }}>{value}</span>}
                   />
-                  <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#4285F4" radius={[4, 4, 0, 0]} barSize={32} />
-                  <Bar yAxisId="left" dataKey="spend" name="Spend" fill="#34A853" radius={[4, 4, 0, 0]} barSize={32} />
+                  <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#4285F4" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Line 
+                    yAxisId="right" 
+                    type="monotone" 
+                    dataKey="spend" 
+                    name="Spend" 
+                    stroke="#34A853" 
+                    strokeWidth={3} 
+                    dot={{ r: 4, fill: '#34A853', strokeWidth: 2, stroke: '#fff' }}
+                    activeDot={{ r: 6, strokeWidth: 0 }}
+                  />
                 </ComposedChart>
               </ResponsiveContainer>
             ) : (
