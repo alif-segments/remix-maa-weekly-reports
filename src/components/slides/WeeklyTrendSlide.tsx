@@ -25,33 +25,33 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
     <SlideWrapper id="charts">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         <div className="lg:col-span-12 mb-4">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-3 mb-4">
              <div className="flex items-center gap-2">
                <img src={LOGOS.meta} alt="Meta" className="h-5 w-auto object-contain" />
-               <span className="text-[10px] font-bold text-gray-400">Facebook</span>
+               <span className="text-[10px] font-bold text-gray-400 uppercase">Facebook</span>
              </div>
              <span className="text-[10px] font-bold text-gray-300">x</span>
              <div className="flex items-center gap-2">
                <img src={LOGOS.google_ads} alt="Google" className="h-5 w-auto object-contain" />
-               <span className="text-[10px] font-bold text-[#4285F4]">Google</span>
+               <span className="text-[10px] font-bold text-[#4285F4] uppercase">Google</span>
              </div>
-             <div className="section-label !mb-0 ml-2">12-Week Trend</div>
+             <div className="section-label !mb-0 ml-0 sm:ml-2">12-Week Trend</div>
           </div>
-          <h2>Weekly Performance Overview</h2>
-          <div className="text-[14px] text-[#64748b] font-[500]">
+          <h2 className="text-[24px] md:text-[28px]">Weekly Performance Overview</h2>
+          <div className="text-[12px] md:text-[14px] text-[#64748b] font-[500]">
             {metrics.weeklyPerf.length > 0 && (
               <>Trend Period: {metrics.weeklyPerf[0].startDate} – {metrics.weeklyPerf[metrics.weeklyPerf.length - 1].endDate}</>
             )}
           </div>
         </div>
         <div className="lg:col-span-12">
-          <div className="h-[400px] w-full mt-4 relative" style={{ minHeight: 400 }}>
+          <div className="h-[300px] md:h-[400px] w-full mt-4 relative">
             {metrics.weeklyPerf && metrics.weeklyPerf.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%" minHeight={0} minWidth={0} debounce={1}>
+              <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart
                   data={metrics.weeklyPerf}
-                  margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
-                  barGap={8}
+                  margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
+                  barGap={4}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis 
@@ -62,36 +62,18 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
                   />
                   <YAxis 
                     yAxisId="left"
-                    fontSize={11} 
+                    fontSize={10} 
                     tick={{ fill: '#64748b' }} 
                     tickFormatter={(v) => `$${fNumber(v)}`}
-                    label={{ 
-                      value: 'Revenue', 
-                      angle: -90, 
-                      position: 'insideLeft', 
-                      offset: -60, 
-                      fontSize: 12, 
-                      fill: '#4285F4',
-                      fontWeight: 600,
-                      style: { textAnchor: 'middle' } 
-                    }}
+                    width={50}
                   />
                   <YAxis 
                     yAxisId="right"
                     orientation="right"
-                    fontSize={11} 
+                    fontSize={10} 
                     tick={{ fill: '#64748b' }} 
                     tickFormatter={(v) => `$${fNumber(v)}`}
-                    label={{ 
-                      value: 'Spend', 
-                      angle: 90, 
-                      position: 'insideRight', 
-                      offset: -60, 
-                      fontSize: 12, 
-                      fill: '#34A853',
-                      fontWeight: 600,
-                      style: { textAnchor: 'middle' } 
-                    }}
+                    width={50}
                   />
                   <Tooltip 
                     cursor={{ fill: '#f8fafc' }}

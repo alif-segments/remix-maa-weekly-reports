@@ -30,11 +30,11 @@
 }
 
 .slide {
-  @apply snap-start min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 box-border relative;
+  @apply snap-start min-h-screen flex flex-col justify-center px-4 md:px-16 lg:px-24 box-border relative;
 }
 
 .slide-inner {
-  @apply w-full max-w-[1100px] mx-auto bg-white border border-[#e2e8f0] rounded-2xl p-12 md:p-14 shadow-[0_4px_24px_rgba(0,0,0,0.06)] relative overflow-hidden;
+  @apply w-full max-w-[1100px] mx-auto bg-white border border-[#e2e8f0] rounded-2xl p-6 md:p-14 shadow-[0_4px_24px_rgba(0,0,0,0.06)] relative overflow-hidden;
 }
 
 .section-label { 

@@ -57,7 +57,7 @@ export function usePerformanceData() {
       return `${diff > 0 ? '+' : ''}${diff.toFixed(1)}%`;
     };
 
-    const getTrend = (cur: number, pri: number, invert = false) => {
+    const getTrend = (cur: number, pri: number, invert = false): 'up' | 'down' | 'neutral' => {
       if (pri === 0) return 'neutral';
       if (cur === pri) return 'neutral';
       const isUp = cur > pri;

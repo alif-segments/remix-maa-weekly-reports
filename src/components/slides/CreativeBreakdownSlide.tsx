@@ -114,13 +114,13 @@ UGC-style content remains dominant in driving conversions, specifically in the *
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div className="flex flex-col gap-3">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-8">
+        <div className="flex flex-col gap-4 w-full xl:w-auto">
           <div>
-            <h3 className="text-[18px] font-bold text-[#0f172a]">Creative Performance Breakdown</h3>
-            <p className="text-[14px] text-[#64748b]">Detailed metrics for every active ad creative</p>
+            <h3 className="text-[16px] md:text-[18px] font-bold text-[#0f172a]">Creative Performance Breakdown</h3>
+            <p className="text-[13px] md:text-[14px] text-[#64748b]">Detailed metrics for every active ad creative</p>
           </div>
-          <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg w-fit">
+          <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg w-fit overflow-x-auto no-scrollbar max-w-full">
             <button 
               onClick={() => {
                 setFilterMode('all');
@@ -128,7 +128,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
                 setSortDir('desc');
               }}
               className={cn(
-                "px-3 py-1.5 text-[12px] font-bold rounded-md transition-all",
+                "px-2.5 md:px-3 py-1.5 text-[11px] md:text-[12px] font-bold rounded-md transition-all whitespace-nowrap",
                 filterMode === 'all' ? "bg-white text-primary shadow-sm" : "text-gray-500 hover:text-gray-700"
               )}
             >
@@ -137,7 +137,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
             <button 
               onClick={() => setFilterMode('top')}
               className={cn(
-                "px-3 py-1.5 text-[12px] font-bold rounded-md transition-all",
+                "px-2.5 md:px-3 py-1.5 text-[11px] md:text-[12px] font-bold rounded-md transition-all whitespace-nowrap",
                 filterMode === 'top' ? "bg-white text-green-600 shadow-sm" : "text-gray-500 hover:text-gray-700"
               )}
             >
@@ -146,7 +146,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
             <button 
               onClick={() => setFilterMode('bottom')}
               className={cn(
-                "px-3 py-1.5 text-[12px] font-bold rounded-md transition-all",
+                "px-2.5 md:px-3 py-1.5 text-[11px] md:text-[12px] font-bold rounded-md transition-all whitespace-nowrap",
                 filterMode === 'bottom' ? "bg-white text-red-600 shadow-sm" : "text-gray-500 hover:text-gray-700"
               )}
             >
@@ -154,7 +154,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
             </button>
           </div>
         </div>
-        <div className="relative w-full sm:w-64">
+        <div className="relative w-full xl:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input 
             type="text" 
