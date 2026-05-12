@@ -14,7 +14,7 @@ interface GrantsSlideProps {
   content?: string;
   defaultText: string;
   onUpdateContent?: (val: string) => void;
-  onReset?: () => void;
+  onSave?: (val: string) => void;
 }
 
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
@@ -25,7 +25,7 @@ export const GrantsSlide = ({
   content,
   defaultText,
   onUpdateContent,
-  onReset
+  onSave
 }: GrantsSlideProps) => {
   const [sortField, setSortField] = useState<SortField>('spend');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -87,11 +87,11 @@ export const GrantsSlide = ({
         </div>
         <div className="mb-6">
           <EditableContent 
-            content={content ?? defaultText}
+            content={content}
             defaultText={defaultText}
             isEditMode={isEditMode}
-            onUpdate={onUpdateContent || (() => {})}
-            onReset={onReset}
+            onChange={onUpdateContent}
+            onUpdate={onSave || (() => {})}
           />
         </div>
       </div>

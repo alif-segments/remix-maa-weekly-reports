@@ -10,7 +10,7 @@ interface EditableContentProps {
   defaultText?: string;
   isEditMode: boolean;
   onUpdate: (val: string) => void;
-  onReset?: () => void;
+  onChange?: (val: string) => void;
   className?: string;
   previewClassName?: string;
 }
@@ -20,23 +20,35 @@ export const EditableContent = ({
   defaultText,
   isEditMode, 
   onUpdate, 
-  onReset,
+  onChange,
   className,
   previewClassName 
 }: EditableContentProps) => {
   const [localValue, setLocalValue] = React.useState(content || '');
 
   React.useEffect(() => {
-    if (content !== undefined) setLocalValue(content);
+    // If content becomes undefined (Reset), we clear local value
+    if (content === undefined) {
+      setLocalValue('');
+    } else {
+      setLocalValue(content);
+    }
   }, [content]);
 
+  const handleChange = (val?: string) => {
+    const newVal = val || '';
+    setLocalValue(newVal);
+    if (onChange) onChange(newVal);
+  };
+
   const processedContent = React.useMemo(() => {
-    if (!localValue) return '';
+    const valToProcess = localValue || defaultText || '';
+    if (!valToProcess) return '';
     
-    const normalized = localValue.replace(/\r\n/g, '\n');
+    const normalized = valToProcess.replace(/\r\n/g, '\n');
     if (normalized.includes('\n\n')) return normalized;
     return normalized.replace(/\n/g, '\n\n');
-  }, [localValue]);
+  }, [localValue, defaultText]);
 
   if (isEditMode) {
     return (
@@ -44,7 +56,7 @@ export const EditableContent = ({
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm" data-color-mode="light">
           <MDEditor
             value={localValue}
-            onChange={(val) => setLocalValue(val || '')}
+            onChange={handleChange}
             preview="edit"
             hideToolbar={false}
             height={200}
@@ -59,15 +71,6 @@ export const EditableContent = ({
             <Save size={14} />
             Update Section
           </button>
-          
-          {onReset && (
-            <button
-              onClick={onReset}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-[13px] font-bold hover:bg-gray-200 transition-all border border-gray-200"
-            >
-              Back to Default
-            </button>
-          )}
         </div>
       </div>
     );

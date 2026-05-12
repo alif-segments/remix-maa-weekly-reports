@@ -51,6 +51,13 @@ function doPost(e) {
       }
     }
     
+    if (update.delete === true) {
+      if (foundIndex !== -1) {
+        sheet.deleteRow(foundIndex);
+      }
+      return;
+    }
+    
     if (foundIndex !== -1) {
       // Update existing row (Column B is index 2)
       sheet.getRange(foundIndex, 2).setValue(content);

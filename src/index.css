@@ -13,6 +13,14 @@
 }
 
 @layer base {
+  button, 
+  [role="button"],
+  .cursor-pointer,
+  input[type="button"],
+  input[type="submit"] { 
+    cursor: pointer !important; 
+  }
+  
   html {
     scroll-snap-type: y mandatory;
     overflow-y: scroll;

@@ -33,7 +33,7 @@ interface GA4SlideProps {
   content?: string;
   defaultText: string;
   onUpdateContent?: (val: string) => void;
-  onReset?: () => void;
+  onSave?: (val: string) => void;
 }
 
 export const GA4Slide = ({ 
@@ -42,7 +42,7 @@ export const GA4Slide = ({
   content,
   defaultText,
   onUpdateContent,
-  onReset
+  onSave
 }: GA4SlideProps) => {
   const ga4 = metrics.ga4;
   if (!ga4) return null;
@@ -65,11 +65,11 @@ export const GA4Slide = ({
         </div>
         <div className="mt-4">
           <EditableContent 
-            content={content ?? defaultText}
+            content={content}
             defaultText={defaultText}
             isEditMode={isEditMode}
-            onUpdate={onUpdateContent || (() => {})}
-            onReset={onReset}
+            onChange={onUpdateContent}
+            onUpdate={onSave || (() => {})}
           />
         </div>
       </div>

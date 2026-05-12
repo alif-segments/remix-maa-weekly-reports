@@ -16,7 +16,7 @@ interface SummarySlideProps {
   content?: string;
   defaultText: string;
   onUpdateContent?: (val: string) => void;
-  onReset?: () => void;
+  onSave?: (val: string) => void;
 }
 
 export const SummarySlide = ({ 
@@ -27,7 +27,7 @@ export const SummarySlide = ({
   content,
   defaultText,
   onUpdateContent,
-  onReset
+  onSave
 }: SummarySlideProps) => {
   return (
     <SlideWrapper id="summary">
@@ -47,11 +47,11 @@ export const SummarySlide = ({
           </div>
           <h2 className="mb-6">Executive Summary</h2>
           <EditableContent 
-            content={content ?? defaultText}
+            content={content}
             defaultText={defaultText}
             isEditMode={isEditMode}
-            onUpdate={onUpdateContent || (() => {})}
-            onReset={onReset}
+            onChange={onUpdateContent}
+            onUpdate={onSave || (() => {})}
           />
         </div>
         <div className="md:col-span-5">

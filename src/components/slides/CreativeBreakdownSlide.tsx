@@ -13,7 +13,7 @@ interface CreativeBreakdownSlideProps {
   content?: string;
   defaultText: string;
   onUpdateContent?: (val: string) => void;
-  onReset?: () => void;
+  onSave?: (val: string) => void;
 }
 
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas' | 'performanceScore';
@@ -24,7 +24,7 @@ export const CreativeBreakdownSlide = ({
   content,
   defaultText,
   onUpdateContent,
-  onReset
+  onSave
 }: CreativeBreakdownSlideProps) => {
   const [sortField, setSortField] = useState<SortField>('performanceScore');
   const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc');
@@ -107,11 +107,11 @@ export const CreativeBreakdownSlide = ({
           </div>
           <h2 className="mb-6">Meta Creative Performance</h2>
           <EditableContent 
-            content={content ?? defaultText}
+            content={content}
             defaultText={defaultText}
             isEditMode={isEditMode}
-            onUpdate={onUpdateContent || (() => {})}
-            onReset={onReset}
+            onChange={onUpdateContent}
+            onUpdate={onSave || (() => {})}
           />
         </div>
       </div>

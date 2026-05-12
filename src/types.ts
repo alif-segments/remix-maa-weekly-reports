@@ -29,6 +29,9 @@ export interface ProcessedMetric {
 
 export interface PeriodMetrics {
   total: ProcessedMetric;
+  google_ads: ProcessedMetric;
+  meta_ads: ProcessedMetric;
+  google_grants: { clicks: number; spend: number; conversions: number; revenue: number };
   byCampaign: Record<string, ProcessedMetric & { source: string }>;
   byCreative: Record<string, ProcessedMetric & { campaign: string, preview_url?: string }>;
 }
@@ -58,6 +61,7 @@ export interface MetricsSummary {
 export interface GA4MetricsSummary {
   current: GA4PeriodMetrics;
   prior: GA4PeriodMetrics;
+  engagementRate: number;
   deltas: {
     sessions: string;
     transactions: string;

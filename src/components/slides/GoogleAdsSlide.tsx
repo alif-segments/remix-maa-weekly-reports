@@ -14,7 +14,7 @@ interface GoogleAdsSlideProps {
   content?: string;
   defaultText: string;
   onUpdateContent?: (val: string) => void;
-  onReset?: () => void;
+  onSave?: (val: string) => void;
 }
 
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
@@ -25,7 +25,7 @@ export const GoogleAdsSlide = ({
   content,
   defaultText,
   onUpdateContent,
-  onReset
+  onSave
 }: GoogleAdsSlideProps) => {
   const [sortField, setSortField] = useState<SortField>('spend');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -89,11 +89,11 @@ export const GoogleAdsSlide = ({
              ~{(curS / Math.max(1, metrics.current.total.spend) * 100).toFixed(0)}% of total consolidated spend
           </div>
           <EditableContent 
-            content={content ?? defaultText}
+            content={content}
             defaultText={defaultText}
             isEditMode={isEditMode}
-            onUpdate={onUpdateContent || (() => {})}
-            onReset={onReset}
+            onChange={onUpdateContent}
+            onUpdate={onSave || (() => {})}
           />
         </div>
       </div>

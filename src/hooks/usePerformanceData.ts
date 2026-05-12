@@ -68,6 +68,9 @@ export function usePerformanceData() {
       const pData = sortedData.filter(d => periodDates.includes(d.date));
       const result: PeriodMetrics = {
         total: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
+        google_ads: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
+        meta_ads: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
+        google_grants: { clicks: 0, spend: 0, conversions: 0, revenue: 0 },
         byCampaign: {},
         byCreative: {}
       };
@@ -79,7 +82,14 @@ export function usePerformanceData() {
       };
 
       pData.forEach(row => {
-        const isSeparate = row.account_name.includes("Grants") || row.account_name.includes("328-834-3137");
+        const ds = row.datasource?.toLowerCase() || '';
+        const isFacebook = ds === 'facebook';
+        const isGoogle = ds === 'googleads' || ds === 'google_ads' || (ds !== 'facebook' && row.account_name.includes("-")); // Fallback for IDs
+
+        const isGrants = row.account_name.toLowerCase().includes("grants");
+        const accountId = row.account_name.match(/(\d{3}-\d{3}-\d{4})/)?.[0] || "";
+        const isSeparate = isGrants || accountId === "328-834-3137";
+        
         const spend = parse(row.spend || row.cost);
         const clicks = parseInt(String(row.clicks || "0"));
         
@@ -87,7 +97,7 @@ export function usePerformanceData() {
         let rev = 0;
         let lpv = parseInt(String(row.actions_landing_page_view || "0"));
 
-        if (row.datasource?.toLowerCase() === 'facebook') {
+        if (isFacebook) {
           conv = parse(row.actions_offsite_conversion_fb_pixel_purchase) || parse(row.conversions);
           rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
         } else {
@@ -101,10 +111,29 @@ export function usePerformanceData() {
           result.total.conversions += conv;
           result.total.revenue += rev;
           result.total.lpv += lpv;
+
+          if (isFacebook) {
+            result.meta_ads.spend += spend;
+            result.meta_ads.clicks += clicks;
+            result.meta_ads.conversions += conv;
+            result.meta_ads.revenue += rev;
+            result.meta_ads.lpv += lpv;
+          } else {
+            result.google_ads.spend += spend;
+            result.google_ads.clicks += clicks;
+            result.google_ads.conversions += conv;
+            result.google_ads.revenue += rev;
+            result.google_ads.lpv += lpv;
+          }
+        } else {
+          result.google_grants.spend += spend;
+          result.google_grants.clicks += clicks;
+          result.google_grants.conversions += conv;
+          result.google_grants.revenue += rev;
         }
 
         if (!result.byCampaign[row.campaign]) {
-          result.byCampaign[row.campaign] = { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0, source: row.datasource + (isSeparate ? "_separate" : "") };
+          result.byCampaign[row.campaign] = { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0, source: ds + (isSeparate ? "_separate" : "") };
         }
         const c = result.byCampaign[row.campaign];
         c.spend += spend;
@@ -113,7 +142,7 @@ export function usePerformanceData() {
         c.revenue += rev;
         c.lpv += lpv;
 
-        if (row.datasource?.toLowerCase() === 'facebook') {
+        if (isFacebook) {
           const creativeName = row.name || row.campaign || "Unnamed Creative";
           if (!result.byCreative[creativeName]) {
             result.byCreative[creativeName] = { 
@@ -287,6 +316,7 @@ export function usePerformanceData() {
       return {
         current: curGA4,
         prior: priGA4,
+        engagementRate: curGA4.sessions > 0 ? (curGA4.transactions / curGA4.sessions) * 100 : 0,
         deltas: {
           sessions: calcDelta(curGA4.sessions, priGA4.sessions),
           transactions: calcDelta(curGA4.transactions, priGA4.transactions),

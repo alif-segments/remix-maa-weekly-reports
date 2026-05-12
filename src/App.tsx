@@ -51,7 +51,9 @@ export default function App() {
     }
 
     const loadContent = async () => {
+      console.log('[App] Initializing content load...');
       const content = await contentService.fetchAll();
+      console.log('[App] Content loaded from GAS:', content);
       setPageContent(content);
       setLocalPageContent(content);
     };
@@ -101,7 +103,7 @@ export default function App() {
     if (!metrics || !platformStats) return {};
     
     // Safe extraction of metrics
-    const cur = metrics.current || {};
+    const cur = metrics.current;
     const gads = cur.google_ads || { revenue: 0, spend: 0, conversions: 0 };
     const mads = cur.meta_ads || { revenue: 0, spend: 0, conversions: 0 };
     const total = cur.total || { revenue: 0, spend: 0, conversions: 0 };
@@ -137,7 +139,7 @@ Performance remains stable across prospecting and retargeting audiences, with Fa
       creatives_summary: `Creative analysis reveals that **${topPerformer?.name || 'Top Ad'}** is currently the highest performing asset with a **${fROAS(topPerformer?.revenue, topPerformer?.spend)} return**.
 
 UGC-style content remains dominant in driving conversions, specifically in the **Retargeting** segments where trust signals are paramount.`,
-      ga4_summary: `Traffic analysis from GA4 shows **${fNumber(metrics.ga4?.sessions || 0)} sessions** with an engagement rate of **${(metrics.ga4?.engagementRate || 0).toFixed(1)}%**.
+      ga4_summary: `Traffic analysis from GA4 shows **${fNumber(metrics.ga4?.current?.sessions || 0)} sessions** with an engagement rate of **${(metrics.ga4?.engagementRate || 0).toFixed(1)}%**.
 
 New user acquisition remains steady, with paid channels contributing significantly to the overall traffic mix.`,
       grants_summary: `The Google Grants account generated **${fNumber(grants.clicks)} clicks** with a CPC of **${fCurrency(grants.spend / Math.max(1, grants.clicks))}** (utilizing granted credit).
@@ -150,50 +152,18 @@ Focus remains on brand awareness and information discovery for core mission keyw
     setLocalPageContent(prev => ({ ...prev, [section_id]: newContent }));
   };
 
-  const handleResetToDefault = (section_id: string) => {
-    setLocalPageContent(prev => {
-      const next = { ...prev };
-      delete next[section_id];
-      return next;
-    });
-  };
-
-  const handleResetAll = () => {
-    if (window.confirm('Are you sure you want to revert all sections to their default generated content?')) {
-      setLocalPageContent({});
-    }
-  };
-
-  const handleSaveAll = async () => {
-    setSaveStatus('saving');
-    
-    // We send all content keys to ensure they are updated/synced
-    const keys = ['exec_summary', 'google_summary', 'meta_summary', 'creatives_summary', 'ga4_summary', 'grants_summary'];
-    const updates = keys.map(key => ({
-      section_id: key,
-      content: localPageContent[key] || defaultContents[key as keyof typeof defaultContents] || ''
-    }));
-
-    const success = await contentService.updateSection(updates);
-    if (success) {
-      setPageContent({ ...localPageContent });
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } else {
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus('idle'), 3000);
-    }
-  };
-
   const handleSaveSection = async (section_id: string, content: string) => {
     setSaveStatus('saving');
     const success = await contentService.updateSection({ section_id, content });
     if (success) {
       setPageContent(prev => ({ ...prev, [section_id]: content }));
+      setLocalPageContent(prev => ({ ...prev, [section_id]: content }));
       setSaveStatus('saved');
+      alert("Section updated successfully.");
       setTimeout(() => setSaveStatus('idle'), 2000);
     } else {
       setSaveStatus('error');
+      alert("Update failed.");
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
   };
@@ -274,8 +244,8 @@ Focus remains on brand awareness and information discovery for core mission keyw
         isEditMode={isEditMode}
         content={localPageContent.exec_summary}
         defaultText={defaultContents.exec_summary}
-        onUpdateContent={(val) => handleSaveSection('exec_summary', val)}
-        onReset={() => handleResetToDefault('exec_summary')}
+        onUpdateContent={(val) => handleUpdateContent('exec_summary', val)}
+        onSave={(val) => handleSaveSection('exec_summary', val)}
       />
       <WeeklyTrendSlide metrics={metrics} />
       <GoogleAdsSlide 
@@ -283,40 +253,40 @@ Focus remains on brand awareness and information discovery for core mission keyw
         isEditMode={isEditMode}
         content={localPageContent.google_summary}
         defaultText={defaultContents.google_summary}
-        onUpdateContent={(val) => handleSaveSection('google_summary', val)}
-        onReset={() => handleResetToDefault('google_summary')}
+        onUpdateContent={(val) => handleUpdateContent('google_summary', val)}
+        onSave={(val) => handleSaveSection('google_summary', val)}
       />
       <MetaAdsSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
         content={localPageContent.meta_summary}
         defaultText={defaultContents.meta_summary}
-        onUpdateContent={(val) => handleSaveSection('meta_summary', val)}
-        onReset={() => handleResetToDefault('meta_summary')}
+        onUpdateContent={(val) => handleUpdateContent('meta_summary', val)}
+        onSave={(val) => handleSaveSection('meta_summary', val)}
       />
       <CreativeBreakdownSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
         content={localPageContent.creatives_summary}
         defaultText={defaultContents.creatives_summary}
-        onUpdateContent={(val) => handleSaveSection('creatives_summary', val)}
-        onReset={() => handleResetToDefault('creatives_summary')}
+        onUpdateContent={(val) => handleUpdateContent('creatives_summary', val)}
+        onSave={(val) => handleSaveSection('creatives_summary', val)}
       />
       <GA4Slide 
         metrics={metrics} 
         isEditMode={isEditMode}
         content={localPageContent.ga4_summary}
         defaultText={defaultContents.ga4_summary}
-        onUpdateContent={(val) => handleSaveSection('ga4_summary', val)}
-        onReset={() => handleResetToDefault('ga4_summary')}
+        onUpdateContent={(val) => handleUpdateContent('ga4_summary', val)}
+        onSave={(val) => handleSaveSection('ga4_summary', val)}
       />
       <GrantsSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
         content={localPageContent.grants_summary}
         defaultText={defaultContents.grants_summary}
-        onUpdateContent={(val) => handleSaveSection('grants_summary', val)}
-        onReset={() => handleResetToDefault('grants_summary')}
+        onUpdateContent={(val) => handleUpdateContent('grants_summary', val)}
+        onSave={(val) => handleSaveSection('grants_summary', val)}
       />
       <FooterSlide />
 
@@ -347,25 +317,18 @@ Focus remains on brand awareness and information discovery for core mission keyw
         )}
       </AnimatePresence>
 
+      {/* Editor Active Indicator */}
+      {isEditMode && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] bg-white p-2 px-6 rounded-2xl shadow-2xl border border-primary/10">
+          <div className="flex items-center gap-2 text-primary text-[13px] font-bold">
+            <Edit2 size={16} />
+            Editor Mode Active
+          </div>
+        </div>
+      )}
+
       {/* Floating Mode Toggle (Desktop only) */}
       <div className="fixed bottom-8 right-8 z-[60] flex flex-col items-end gap-3 translate-y-[-60px]">
-         {isEditMode && (
-           <>
-              <button 
-                onClick={handleSaveAll}
-                className="px-6 py-3 bg-green-600 text-white rounded-xl shadow-xl flex items-center gap-2 transition-all font-bold text-[14px] hover:bg-green-700 active:scale-95"
-              >
-                <CheckCircle2 size={18} />
-                Save All Changes
-              </button>
-              <button 
-                onClick={handleResetAll}
-                className="px-6 py-3 bg-white text-red-600 border border-red-200 rounded-xl shadow-lg flex items-center gap-2 transition-all font-bold text-[14px] hover:bg-red-50 active:scale-95"
-              >
-                Reset All to Default
-              </button>
-           </>
-         )}
          <button 
            onClick={() => {
              const newMode = !isEditMode;
@@ -383,7 +346,7 @@ Focus remains on brand awareness and information discovery for core mission keyw
            )}
          >
            {isEditMode ? <Eye size={16} /> : <Edit2 size={16} />}
-           {isEditMode ? 'View Mode' : 'Edit Mode'}
+           {isEditMode ? 'Exit Editor' : 'Enter Editor'}
          </button>
       </div>
     </div>
