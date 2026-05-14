@@ -34,20 +34,41 @@ export function usePerformanceData() {
     const sortedData = [...data].filter(d => d.date).sort((a, b) => a.date.localeCompare(b.date));
     if (!sortedData.length) return null;
     
-    const maxDateStr = sortedData[sortedData.length - 1].date;
-    const maxDate = new Date(maxDateStr);
+    // Calculate date range: Previous full week (Monday to Sunday)
+    const now = new Date();
+    // Normalize to midnight UTC for consistent calculations
+    const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    
+    // Day of week: 0=Sun, 1=Mon, ..., 6=Sat
+    const dayOfWeek = today.getUTCDay();
+    // Find Monday of the current calendar week (distance to Mon)
+    const offsetToCurrentMonday = (dayOfWeek + 6) % 7;
+    
+    // The report starts from the Monday of the PREVIOUS full week
+    const lastMonday = new Date(today);
+    lastMonday.setUTCDate(today.getUTCDate() - offsetToCurrentMonday - 7);
+    
+    // The report ends on the Sunday of the PREVIOUS full week
+    const lastSunday = new Date(lastMonday);
+    lastSunday.setUTCDate(lastMonday.getUTCDate() + 6);
     
     const currentDates: string[] = [];
     const priorDates: string[] = [];
     
+    // Current period: Last Monday to Last Sunday (6 days after last Monday)
     for (let i = 0; i < 7; i++) {
-      const d = new Date(maxDate);
-      d.setDate(d.getDate() - i);
+      const d = new Date(lastSunday);
+      d.setUTCDate(d.getUTCDate() - i);
       currentDates.push(d.toISOString().split('T')[0]);
     }
-    for (let i = 7; i < 14; i++) {
-      const d = new Date(maxDate);
-      d.setDate(d.getDate() - i);
+    
+    // Prior period: The week before last Monday
+    const priorSunday = new Date(lastMonday);
+    priorSunday.setUTCDate(lastMonday.getUTCDate() - 1);
+    
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(priorSunday);
+      d.setUTCDate(d.getUTCDate() - i);
       priorDates.push(d.toISOString().split('T')[0]);
     }
 
@@ -332,6 +353,15 @@ export function usePerformanceData() {
       } as GA4MetricsSummary;
     };
 
+    const formatRange = (s: string, e: string) => {
+      if (!s || !e) return '';
+      const d1 = new Date(s);
+      const d2 = new Date(e);
+      const sStr = d1.toLocaleDateString('en-AU', { day: '2-digit', month: 'short' });
+      const eStr = d2.toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+      return `${sStr} – ${eStr}`;
+    };
+
     const ga4 = processGA4();
 
     return {
@@ -339,6 +369,7 @@ export function usePerformanceData() {
       prior,
       startDate: currentDates[currentDates.length - 1],
       endDate: currentDates[0],
+      formattedRange: formatRange(currentDates[currentDates.length - 1], currentDates[0]),
       deltas: {
         revenue: calcDelta(current.total.revenue, prior.total.revenue),
         spend: calcDelta(current.total.spend, prior.total.spend),

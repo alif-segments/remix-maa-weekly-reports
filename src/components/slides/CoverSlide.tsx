@@ -36,7 +36,7 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
           <div className="text-[9px] md:text-[10px] font-[600] text-[#64748b] uppercase tracking-[1px] mb-0.5 md:mb-1">Prepared By</div>
           <img src={LOGOS.agency} alt="Segments" className="h-[16px] md:h-[20px] w-auto object-contain mx-auto sm:ml-auto mb-1 invert" referrerPolicy="no-referrer" />
           <div className="text-[10px] md:text-[12px] text-[#94a3b8]">
-            {metrics.startDate} – {metrics.endDate}
+            {metrics.formattedRange || `${metrics.startDate} – ${metrics.endDate}`}
           </div>
         </div>
       </header>
@@ -47,12 +47,12 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
           <span className="text-primary italic">Dashboard</span>
         </h1>
         <p className="text-[16px] md:text-[20px] text-gray-500 font-medium mb-8 md:mb-12">
-          7-Day Consolidated Report · Meta, Google & GA4
+          Weekly Performance Report · Meta, Google & GA4
         </p>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-[#94a3b8]">
           <div className="flex items-center gap-2">
             <Calendar size={14} className="text-primary" />
-            Period: {metrics.startDate} – {metrics.endDate}
+            Period: {metrics.formattedRange || `${metrics.startDate} – ${metrics.endDate}`}
           </div>
           <div className="flex items-center gap-2">
             <Target size={14} className="text-primary" />

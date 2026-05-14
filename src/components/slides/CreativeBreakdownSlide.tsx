@@ -16,7 +16,7 @@ interface CreativeBreakdownSlideProps {
   onSave?: (val: string) => void;
 }
 
-type SortField = 'spend' | 'conversions' | 'revenue' | 'roas' | 'performanceScore';
+type SortField = 'spend' | 'conversions' | 'revenue' | 'roas' | 'performanceScore' | 'status';
 
 export const CreativeBreakdownSlide = ({ 
   metrics,
@@ -31,11 +31,14 @@ export const CreativeBreakdownSlide = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState<'all' | 'top' | 'bottom'>('all');
 
-  const creatives = Object.entries(metrics.current.byCreative).map(([name, c]) => {
+  const creatives = Object.entries(metrics.current.byCreative).map(([name, c], idx) => {
     const data = c as any;
+    // Pre-calculate status for sorting consistency with the UI
+    const isActive = data.status !== 'paused' && (idx + 2) % 7 !== 0;
     return {
       name,
       ...data,
+      status: isActive ? 'Active' : 'Paused',
       roas: data.revenue / Math.max(1, data.spend)
     };
   });
@@ -61,7 +64,7 @@ export const CreativeBreakdownSlide = ({
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortDir('desc');
+      setSortDir(field === 'status' ? 'asc' : 'desc');
     }
   };
 
@@ -80,10 +83,16 @@ export const CreativeBreakdownSlide = ({
   const sortedCreatives = [...creativesWithScore]
     .filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || (c as any).campaign?.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => {
-      let valA = a[sortField];
-      let valB = b[sortField];
+      const valA = a[sortField];
+      const valB = b[sortField];
       
-      return sortDir === 'asc' ? valA - valB : valB - valA;
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      
+      const numA = (valA as number) || 0;
+      const numB = (valB as number) || 0;
+      return sortDir === 'asc' ? numA - numB : numB - numA;
     });
 
   const filteredCreatives = sortedCreatives.filter(c => {
@@ -94,7 +103,7 @@ export const CreativeBreakdownSlide = ({
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null;
-    return sortDir === 'asc' ? <ChevronUp size={14} className="inline ml-1" /> : <ChevronDown size={14} className="inline ml-1" />;
+    return sortDir === 'asc' ? <ChevronUp size={14} className="shrink-0 ml-1" /> : <ChevronDown size={14} className="shrink-0 ml-1" />;
   };
 
   return (
@@ -173,46 +182,63 @@ export const CreativeBreakdownSlide = ({
           <thead className="sticky top-0 z-20 bg-white shadow-sm">
             <tr className="border-b border-[#f1f5f9]">
               <th className="px-3 py-3 text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] w-[240px]">Ad Creative</th>
-              <th className="px-3 py-3 text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] w-[80px]">Status</th>
               <th 
-                className="px-3 py-3 text-right text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[70px]"
+                className="px-3 py-3 text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[90px]"
+                onClick={() => toggleSort('status')}
+              >
+                <div className="inline-flex items-center whitespace-nowrap">
+                  Status <SortIcon field="status" />
+                </div>
+              </th>
+              <th 
+                className="px-3 py-3 text-right text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[80px]"
                 onClick={() => toggleSort('spend')}
               >
-                Spend <SortIcon field="spend" />
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Spend <SortIcon field="spend" />
+                </div>
               </th>
               <th 
-                className="px-3 py-3 text-right text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[70px]"
+                className="px-3 py-3 text-right text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[80px]"
                 onClick={() => toggleSort('conversions')}
               >
-                Sales <SortIcon field="conversions" />
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Sales <SortIcon field="conversions" />
+                </div>
               </th>
               <th 
-                className="px-3 py-3 text-right text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[90px]"
+                className="px-3 py-3 text-right text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[100px]"
                 onClick={() => toggleSort('revenue')}
               >
-                Revenue <SortIcon field="revenue" />
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Revenue <SortIcon field="revenue" />
+                </div>
               </th>
               <th 
                 className="px-3 py-3 text-left text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[110px]"
                 onClick={() => toggleSort('roas')}
               >
-                ROAS <SortIcon field="roas" />
+                <div className="inline-flex items-center whitespace-nowrap">
+                  ROAS <SortIcon field="roas" />
+                </div>
               </th>
               <th 
-                className="px-3 py-3 text-left text-[10px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[70px] no-underline"
+                className="px-3 py-3 text-left text-[10px] font-[600] uppercase tracking-[0.5px] text-[#64748b] cursor-pointer hover:text-primary w-[75px] no-underline"
                 onClick={() => toggleSort('performanceScore')}
               >
-                Score <SortIcon field="performanceScore" />
+                <div className="inline-flex items-center whitespace-nowrap">
+                  Score <SortIcon field="performanceScore" />
+                </div>
               </th>
               <th className="px-3 py-3 text-center text-[11px] font-[600] uppercase tracking-[0.5px] text-[#64748b] w-[100px]">Preview</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#f1f5f9]">
-            {filteredCreatives.map((creative, idx) => {
-              const roas = creative.revenue / Math.max(1, creative.spend);
+            {filteredCreatives.map((creative) => {
+              const roas = creative.roas;
               const isBest = top3Performers.includes(creative.name);
               const isWorst = bottom3Performers.includes(creative.name) && creative.spend > 0;
-              const isActive = (creative as any).status !== 'paused' && (idx + 2) % 7 !== 0; 
+              const isActive = creative.status === 'Active'; 
 
               return (
                 <tr key={creative.name} className={cn(
@@ -241,7 +267,7 @@ export const CreativeBreakdownSlide = ({
                   <td className="px-3 py-4">
                     <div className="flex items-center gap-1.5">
                       <div className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-green-500" : "bg-gray-400")} />
-                      <span className="text-[12px] font-medium text-[#64748b]">{isActive ? 'Active' : 'Paused'}</span>
+                      <span className="text-[12px] font-medium text-[#64748b]">{creative.status}</span>
                     </div>
                   </td>
                   <td className="px-3 py-4 text-right text-[13px] font-[500] tabular-nums text-[#64748b]">{fCurrency(creative.spend)}</td>

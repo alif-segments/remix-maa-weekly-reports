@@ -41,6 +41,7 @@ export interface MetricsSummary {
   prior: PeriodMetrics;
   startDate: string;
   endDate: string;
+  formattedRange?: string;
   deltas: {
     revenue: string;
     spend: string;

@@ -106,33 +106,41 @@ export const GrantsSlide = ({
       <div className="bg-white border border-[#e2e8f0] rounded-xl overflow-y-auto max-h-[250px] shadow-sm no-scrollbar">
          <table className="w-full text-left">
            <thead className="bg-[#f8fafc]">
-             <tr className="border-b border-[#f1f5f9]">
-               <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Campaign</th>
-               <th 
-                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
-                 onClick={() => toggleSort('spend')}
-               >
-                 Spend <SortIcon field="spend" />
-               </th>
-               <th 
-                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
-                 onClick={() => toggleSort('conversions')}
-               >
-                 Conv. <SortIcon field="conversions" />
-               </th>
-               <th 
-                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
-                 onClick={() => toggleSort('revenue')}
-               >
-                 Revenue <SortIcon field="revenue" />
-               </th>
-               <th 
-                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
-                 onClick={() => toggleSort('roas')}
-               >
-                 ROAS <SortIcon field="roas" />
-               </th>
-             </tr>
+            <tr className="border-b border-[#f1f5f9]">
+              <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Campaign</th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('spend')}
+              >
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Spend <SortIcon field="spend" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('conversions')}
+              >
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Conv. <SortIcon field="conversions" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('revenue')}
+              >
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Revenue <SortIcon field="revenue" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
+                onClick={() => toggleSort('roas')}
+              >
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  ROAS <SortIcon field="roas" />
+                </div>
+              </th>
+            </tr>
            </thead>
            <tbody className="divide-y divide-[#f1f5f9]">
              {sortedCampaigns.map((campaign) => {

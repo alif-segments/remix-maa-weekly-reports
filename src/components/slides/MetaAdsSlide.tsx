@@ -117,25 +117,33 @@ export const MetaAdsSlide = ({
                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
                 onClick={() => toggleSort('spend')}
               >
-                Spend <SortIcon field="spend" />
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Spend <SortIcon field="spend" />
+                </div>
               </th>
               <th 
                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
                 onClick={() => toggleSort('conversions')}
               >
-                Conv. <SortIcon field="conversions" />
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Conv. <SortIcon field="conversions" />
+                </div>
               </th>
               <th 
                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
                 onClick={() => toggleSort('revenue')}
               >
-                Revenue <SortIcon field="revenue" />
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  Revenue <SortIcon field="revenue" />
+                </div>
               </th>
               <th 
                 className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-primary"
                 onClick={() => toggleSort('roas')}
               >
-                ROAS <SortIcon field="roas" />
+                <div className="inline-flex items-center justify-end w-full whitespace-nowrap">
+                  ROAS <SortIcon field="roas" />
+                </div>
               </th>
             </tr>
           </thead>
