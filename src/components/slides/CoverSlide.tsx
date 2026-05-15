@@ -34,7 +34,7 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
         </div>
         <div className="text-center sm:text-right w-full sm:w-auto">
           <div className="text-[9px] md:text-[10px] font-[600] text-[#64748b] uppercase tracking-[1px] mb-0.5 md:mb-1">Prepared By</div>
-          <img src={LOGOS.agency} alt="Segments" className="h-[16px] md:h-[20px] w-auto object-contain mx-auto sm:ml-auto mb-1 invert" referrerPolicy="no-referrer" />
+          <img src={LOGOS.agency} alt="Segments" className="h-[16px] md:h-[20px] w-auto object-contain mx-auto sm:ml-auto sm:mr-0 mb-1 invert" referrerPolicy="no-referrer" />
           <div className="text-[10px] md:text-[12px] text-[#94a3b8]">
             {metrics.formattedRange || `${metrics.startDate} – ${metrics.endDate}`}
           </div>

@@ -81,9 +81,14 @@ export const MetaAdsSlide = ({
     <SlideWrapper id="meta" innerClassName="border-l-[3px] border-l-[#2563eb]">
       <div className="mb-[35px]">
         <div className="max-w-4xl">
-          <div className="flex items-center gap-3 mb-6">
-            <img src={LOGOS.meta} alt="Meta" className="h-6 w-auto object-contain" />
-            <h2 className="!mb-0">Meta Ads Performance</h2>
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <img src={LOGOS.meta} alt="Meta" className="h-6 w-auto object-contain" />
+              <h2 className="!mb-0">Meta Ads Performance</h2>
+            </div>
+            <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
+              Period: {metrics.formattedRange}
+            </div>
           </div>
           <div className="text-[12px] font-[500] text-[#64748b] mb-6">
              ~{(curS / Math.max(1, metrics.current.total.spend) * 100).toFixed(0)}% of total consolidated spend

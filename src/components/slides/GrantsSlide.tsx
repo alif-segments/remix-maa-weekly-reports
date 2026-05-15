@@ -81,9 +81,14 @@ export const GrantsSlide = ({
     <SlideWrapper id="grants" innerClassName="border-l-[3px] border-l-[#0ea5e9]">
       <div className="mb-6">
         <div className="bg-[#e0f2fe] text-[#0369a1] text-[11px] font-[700] uppercase px-3 py-1 rounded inline-block mb-4 tracking-[1px] border border-[#bae6fd]">Separate Oversight Report</div>
-        <div className="flex items-center gap-3 mb-2">
-          <img src={LOGOS.google_ads} alt="Google" className="h-6 w-auto object-contain" />
-          <h2>Google Ads (Grants) (328-834-3137)</h2>
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <img src={LOGOS.google_ads} alt="Google" className="h-6 w-auto object-contain" />
+            <h2 className="!mb-0">Google Ads (Grants) (328-834-3137)</h2>
+          </div>
+          <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
+            Period: {metrics.formattedRange}
+          </div>
         </div>
         <div className="mb-6">
           <EditableContent 

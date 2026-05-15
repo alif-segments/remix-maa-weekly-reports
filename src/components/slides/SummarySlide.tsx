@@ -45,7 +45,12 @@ export const SummarySlide = ({
              </div>
              <div className="section-label !mb-0 ml-2">Consolidated Overview</div>
           </div>
-          <h2 className="mb-6">Executive Summary</h2>
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <h2 className="!mb-0">Executive Summary</h2>
+            <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
+              Period: {metrics.formattedRange}
+            </div>
+          </div>
           <EditableContent 
             content={content}
             defaultText={defaultText}

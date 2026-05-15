@@ -59,9 +59,14 @@ export const GA4Slide = ({
     <SlideWrapper id="ga4" innerClassName="border-l-[3px] border-l-[#4285F4]">
       <div className="mb-10">
         <div className="bg-[#E8F0FE] text-[#1967D2] text-[11px] font-[700] uppercase px-3 py-1 rounded inline-block mb-4 tracking-[1px] border border-[#D2E3FC]">Google Analytics 4 Overview</div>
-        <div className="flex items-center gap-3 mb-2">
-          <img src={LOGOS.ga4} alt="GA4" className="w-[25px] h-[25px] object-contain" />
-          <h2>GA4 Performance Summary</h2>
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <img src={LOGOS.ga4} alt="GA4" className="w-[25px] h-[25px] object-contain" />
+            <h2 className="!mb-0">GA4 Performance Summary</h2>
+          </div>
+          <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
+            Period: {metrics.formattedRange}
+          </div>
         </div>
         <div className="mt-4">
           <EditableContent 

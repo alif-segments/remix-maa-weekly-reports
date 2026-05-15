@@ -110,11 +110,16 @@ export const CreativeBreakdownSlide = ({
     <SlideWrapper id="creatives">
       <div className="mb-6">
         <div className="max-w-4xl">
-          <div className="flex items-center gap-3 mb-6">
-             <img src={LOGOS.meta} alt="Meta" className="h-6 w-auto object-contain" />
-             <div className="section-label !mb-0 ml-1">Creative Insight</div>
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <img src={LOGOS.meta} alt="Meta" className="h-6 w-auto object-contain" />
+              <div className="section-label !mb-0 ml-1">Creative Insight</div>
+            </div>
+            <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
+              Period: {metrics.formattedRange}
+            </div>
           </div>
-          <h2 className="mb-6">Meta Creative Performance</h2>
+          <h2 className="mb-2">Meta Creative Performance</h2>
           <EditableContent 
             content={content}
             defaultText={defaultText}

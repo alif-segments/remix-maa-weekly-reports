@@ -11,8 +11,7 @@ import {
   Edit2,
   Eye,
   CheckCircle2,
-  Loader2,
-  FileDown
+  Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -43,47 +42,6 @@ export default function App() {
   const [pageContent, setPageContent] = useState<Record<string, string>>({});
   const [localPageContent, setLocalPageContent] = useState<Record<string, string>>({});
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [isExporting, setIsExporting] = useState(false);
-
-  // Using internal proxy to browserless.io
-  const handleExportPDF = async () => {
-    try {
-      setIsExporting(true);
-      const response = await fetch('/api/export-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          url: window.location.href,
-          options: {
-            landscape: true,
-            width: 1122,
-            height: 793,
-            printBackground: true,
-          }
-        })
-      });
-      
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error || 'PDF generation failed');
-      }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Weekly_Report_${metrics?.endDate || 'Report'}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Export Error:', error);
-      alert('Failed to export PDF. Please try again.');
-    } finally {
-      setIsExporting(false);
-    }
-  };
 
   // Detect edit mode and fetch content
   useEffect(() => {
@@ -371,15 +329,6 @@ Focus remains on brand awareness and information discovery for core mission keyw
 
       {/* Floating Mode Toggle (Desktop only) */}
       <div className="fixed bottom-8 right-8 z-[60] flex flex-col items-end gap-3 translate-y-[-60px]">
-         <button 
-           onClick={handleExportPDF}
-           disabled={isExporting}
-           className="px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all font-bold text-[13px] border bg-white text-gray-700 border-gray-200 hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed group whitespace-nowrap"
-         >
-           {isExporting ? <Loader2 className="animate-spin text-primary" size={16} /> : <FileDown size={16} className="text-primary group-hover:scale-110 transition-transform" />}
-           {isExporting ? 'Generating PDF...' : 'Download PDF'}
-         </button>
-
          <button 
            onClick={() => {
              const newMode = !isEditMode;

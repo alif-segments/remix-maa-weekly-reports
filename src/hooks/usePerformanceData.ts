@@ -232,8 +232,13 @@ export function usePerformanceData() {
     });
 
     const formatD = (d: string) => {
-      const date = new Date(d);
-      return date.toLocaleDateString('en-AU', { day: '2-digit', month: 'short' });
+      // Split and reconstruct to avoid timezone shifts, or use UTC
+      const date = new Date(`${d}T00:00:00Z`);
+      return date.toLocaleDateString('en-AU', { 
+        day: '2-digit', 
+        month: 'short',
+        timeZone: 'UTC'
+      });
     };
 
     const weeklyPerf = Object.entries(weeks)
@@ -355,10 +360,19 @@ export function usePerformanceData() {
 
     const formatRange = (s: string, e: string) => {
       if (!s || !e) return '';
-      const d1 = new Date(s);
-      const d2 = new Date(e);
-      const sStr = d1.toLocaleDateString('en-AU', { day: '2-digit', month: 'short' });
-      const eStr = d2.toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+      const d1 = new Date(`${s}T00:00:00Z`);
+      const d2 = new Date(`${e}T00:00:00Z`);
+      const sStr = d1.toLocaleDateString('en-AU', { 
+        day: '2-digit', 
+        month: 'short',
+        timeZone: 'UTC'
+      });
+      const eStr = d2.toLocaleDateString('en-AU', { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric',
+        timeZone: 'UTC'
+      });
       return `${sStr} – ${eStr}`;
     };
 
