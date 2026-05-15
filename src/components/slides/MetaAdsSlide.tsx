@@ -80,7 +80,7 @@ export const MetaAdsSlide = ({
   return (
     <SlideWrapper id="meta" innerClassName="border-l-[3px] border-l-[#2563eb]">
       <div className="mb-[35px]">
-        <div className="max-w-4xl">
+        <div className="w-full">
           <div className="flex items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <img src={LOGOS.meta} alt="Meta" className="h-6 w-auto object-contain" />

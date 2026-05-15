@@ -31,9 +31,9 @@ export const SummarySlide = ({
 }: SummarySlideProps) => {
   return (
     <SlideWrapper id="summary">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start mb-[35px]">
-        <div className="md:col-span-7">
-          <div className="flex items-center gap-3 mb-6">
+      <div className="mb-8">
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
              <div className="flex items-center gap-2">
                <img src={LOGOS.meta} alt="Meta" className="h-5 w-auto object-contain" />
                <span className="text-[10px] font-bold text-gray-400">Facebook</span>
@@ -45,12 +45,15 @@ export const SummarySlide = ({
              </div>
              <div className="section-label !mb-0 ml-2">Consolidated Overview</div>
           </div>
-          <div className="flex items-center justify-between gap-4 mb-6">
-            <h2 className="!mb-0">Executive Summary</h2>
-            <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
-              Period: {metrics.formattedRange}
-            </div>
+          <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
+            Period: {metrics.formattedRange}
           </div>
+        </div>
+        <h2 className="mb-0">Executive Summary</h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start mb-[35px]">
+        <div className="md:col-span-7">
           <EditableContent 
             content={content}
             defaultText={defaultText}
