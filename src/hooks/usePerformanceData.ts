@@ -51,6 +51,24 @@ export function usePerformanceData() {
     // The report ends on the Sunday of the PREVIOUS full week
     const lastSunday = new Date(lastMonday);
     lastSunday.setUTCDate(lastMonday.getUTCDate() + 6);
+    const lastSundayStr = lastSunday.toISOString().split('T')[0];
+
+    const getMondayAndSundayOfDate = (dStr: string) => {
+      const d = new Date(`${dStr}T00:00:00Z`);
+      const day = d.getUTCDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      
+      const monday = new Date(d);
+      monday.setUTCDate(d.getUTCDate() + diffToMonday);
+      
+      const sunday = new Date(monday);
+      sunday.setUTCDate(monday.getUTCDate() + 6);
+      
+      return {
+        monday: monday.toISOString().split('T')[0],
+        sunday: sunday.toISOString().split('T')[0]
+      };
+    };
     
     const currentDates: string[] = [];
     const priorDates: string[] = [];
@@ -203,13 +221,21 @@ export function usePerformanceData() {
 
     data.forEach(row => {
       if (!row.date) return;
+      const { monday: monStr, sunday: sunStr } = getMondayAndSundayOfDate(row.date);
+      if (sunStr > lastSundayStr) return; // Skip rows after the report end date
+      
       const weekKey = row.week_iso || getWeekKey(row.date);
       
       if (!weeks[weekKey]) {
-        weeks[weekKey] = { week: weekKey, year: row.date.split('-')[0], spend: 0, conversions: 0, revenue: 0, startDate: row.date, endDate: row.date };
-      } else {
-        if (row.date < weeks[weekKey].startDate) weeks[weekKey].startDate = row.date;
-        if (row.date > weeks[weekKey].endDate) weeks[weekKey].endDate = row.date;
+        weeks[weekKey] = { 
+          week: weekKey, 
+          year: monStr.split('-')[0], 
+          spend: 0, 
+          conversions: 0, 
+          revenue: 0, 
+          startDate: monStr, 
+          endDate: sunStr 
+        };
       }
       
       const spend = parse(row.spend || row.cost);
@@ -322,13 +348,23 @@ export function usePerformanceData() {
       // Weekly Trend
       const ga4Weeks: Record<string, any> = {};
       ga4Sorted.forEach(row => {
+        const { monday: monStr, sunday: sunStr } = getMondayAndSundayOfDate(row.date);
+        if (sunStr > lastSundayStr) return; // Skip rows after the report end date
+        
         const wk = row.week_iso || getWeekKey(row.date);
-        if (!ga4Weeks[wk]) ga4Weeks[wk] = { week: wk, sessions: 0, transactions: 0, revenue: 0, startDate: row.date, endDate: row.date };
+        if (!ga4Weeks[wk]) {
+          ga4Weeks[wk] = { 
+            week: wk, 
+            sessions: 0, 
+            transactions: 0, 
+            revenue: 0, 
+            startDate: monStr, 
+            endDate: sunStr 
+          };
+        }
         ga4Weeks[wk].sessions += parse(row.sessions);
         ga4Weeks[wk].transactions += parse(row.transactions || row.ecommerce_purchases);
         ga4Weeks[wk].revenue += parse(row.purchase_revenue || row.totalrevenue);
-        if (row.date < ga4Weeks[wk].startDate) ga4Weeks[wk].startDate = row.date;
-        if (row.date > ga4Weeks[wk].endDate) ga4Weeks[wk].endDate = row.date;
       });
 
       const weeklyTrend = Object.values(ga4Weeks)
