@@ -60,13 +60,35 @@
   animation: bounce 2s infinite;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Section View mode override styles */
+html.view-section {
+  scroll-snap-type: none !important;
+  scroll-behavior: smooth;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+.view-section body {
+  background-color: #ffffff;
+}
+
+.view-section .slide {
+  scroll-snap-align: none !important;
+  min-height: auto !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  justify-content: flex-start !important;
+}
+
+.view-section .slide-inner {
+  box-shadow: none !important;
+  border: none !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-radius: 0 !important;
+}
+
+.view-section .slide:last-of-type .slide-inner {
+  border-bottom: none !important;
+}
+
+.view-section .scroll-hint {
+  display: none !important;
 }

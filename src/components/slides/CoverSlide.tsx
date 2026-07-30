@@ -3,15 +3,23 @@ import { Calendar, Target, DollarSign, ChevronDown } from 'lucide-react';
 import { SlideWrapper } from '../SlideWrapper';
 import { LOGOS } from '@/src/constants';
 import { MetricsSummary } from '@/src/types';
+import { useViewMode } from '@/src/context/ViewModeContext';
+import { cn } from '@/src/lib/utils';
 
 interface CoverSlideProps {
   metrics: MetricsSummary;
 }
 
 export const CoverSlide = ({ metrics }: CoverSlideProps) => {
+  const { viewMode } = useViewMode();
+  const isSection = viewMode === 'section';
+
   return (
     <SlideWrapper id="cover" innerClassName="bg-white border-0 shadow-none !p-0">
-      <header className="absolute top-0 left-0 right-0 py-4 px-4 md:px-8 border-b border-[#e2e8f0] bg-white flex flex-col sm:flex-row justify-between items-center gap-4">
+      <header className={cn(
+        "py-4 px-4 md:px-8 border-b border-[#e2e8f0] bg-white flex flex-col sm:flex-row justify-between items-center gap-4",
+        isSection ? "relative" : "absolute top-0 left-0 right-0"
+      )}>
         <div className="flex items-center gap-4 md:gap-6">
           <img src={LOGOS.client} alt="MAA" className="h-[24px] md:h-[32px] w-auto object-contain" referrerPolicy="no-referrer" />
           <div className="w-[1px] h-[24px] bg-[#e2e8f0] hidden sm:block" />
@@ -40,7 +48,10 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
           </div>
         </div>
       </header>
-      <div className="px-6 md:px-14 py-20 mt-32 sm:mt-16">
+      <div className={cn(
+        "px-6 md:px-14 py-12 md:py-16",
+        isSection ? "mt-0" : "mt-32 sm:mt-16 py-20"
+      )}>
         <div className="section-label">Performance Report</div>
         <h1 className="text-[32px] md:text-[48px] font-[800] text-[#0f172a] mb-4 md:mb-6 leading-[1.1] tracking-tight">
           Performance <br className="hidden md:block" />
@@ -64,9 +75,12 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
           </div>
         </div>
       </div>
-      <div className="scroll-hint">
-        <ChevronDown size={24} />
-      </div>
+      {!isSection && (
+        <div className="scroll-hint">
+          <ChevronDown size={24} />
+        </div>
+      )}
     </SlideWrapper>
   );
 };
+

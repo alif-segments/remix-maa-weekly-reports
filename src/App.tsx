@@ -11,7 +11,10 @@ import {
   Edit2,
   Eye,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Presentation,
+  LayoutList,
+  Pencil
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -19,6 +22,7 @@ import { LOGOS } from './constants';
 import { usePerformanceData } from './hooks/usePerformanceData';
 import { contentService } from './services/contentService';
 import { fCurrency, fNumber, fROAS, fCPA } from './lib/formatters';
+import { useViewMode } from './context/ViewModeContext';
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 
@@ -37,6 +41,7 @@ import { FooterSlide } from './components/slides/FooterSlide';
 
 export default function App() {
   const { metrics, loading } = usePerformanceData();
+  const { viewMode, setViewMode } = useViewMode();
   const [activeSlide, setActiveSlide] = useState('cover');
   const [isEditMode, setIsEditMode] = useState(false);
   const [pageContent, setPageContent] = useState<Record<string, string>>({});
@@ -327,28 +332,63 @@ Focus remains on brand awareness and information discovery for core mission keyw
         </div>
       )}
 
-      {/* Floating Mode Toggle (Desktop only) */}
-      <div className="fixed bottom-8 right-8 z-[60] flex flex-col items-end gap-3 translate-y-[-60px]">
-         <button 
-           onClick={() => {
-             const newMode = !isEditMode;
-             setIsEditMode(newMode);
-             const url = new URL(window.location.href);
-             if (newMode) url.searchParams.set('mode', 'edit');
-             else url.searchParams.delete('mode');
-             window.history.replaceState({}, '', url);
-           }}
-           className={cn(
-             "px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all font-bold text-[13px] border",
-             isEditMode 
-              ? "bg-primary text-white border-primary" 
-              : "bg-white text-gray-700 border-gray-200 hover:border-primary"
-           )}
-         >
-           {isEditMode ? <Eye size={16} /> : <Edit2 size={16} />}
-           {isEditMode ? 'Exit Editor' : 'Enter Editor'}
-         </button>
+      {/* Floating Controls Bar */}
+      <div className="fixed bottom-6 right-6 z-[60] flex items-center bg-white p-1.5 px-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-200/90 gap-2">
+        {/* View Mode Segmented Control */}
+        <div className="bg-[#f1f5f9] p-1 rounded-[14px] flex items-center gap-1">
+          <button 
+            onClick={() => setViewMode('slide')}
+            className={cn(
+              "px-3 py-1.5 rounded-[10px] transition-all flex items-center gap-2 text-[13px] font-bold",
+              viewMode === 'slide' 
+                ? "bg-white text-[#2563eb] shadow-sm border border-gray-200/60" 
+                : "text-slate-600 hover:text-slate-900"
+            )}
+            title="Slide View (?view=slide)"
+          >
+            <Presentation size={16} className={viewMode === 'slide' ? "text-[#2563eb]" : "text-slate-600"} />
+            Slides
+          </button>
+          <button 
+            onClick={() => setViewMode('section')}
+            className={cn(
+              "px-3 py-1.5 rounded-[10px] transition-all flex items-center gap-2 text-[13px] font-bold",
+              viewMode === 'section' 
+                ? "bg-white text-[#2563eb] shadow-sm border border-gray-200/60" 
+                : "text-slate-600 hover:text-slate-900"
+            )}
+            title="Section View (?view=section)"
+          >
+            <LayoutList size={16} className={viewMode === 'section' ? "text-[#2563eb]" : "text-slate-600"} />
+            Sections
+          </button>
+        </div>
+
+        {/* Vertical Divider */}
+        <div className="w-[1px] h-5 bg-gray-200/80 mx-0.5" />
+
+        {/* Editor Button */}
+        <button 
+          onClick={() => {
+            const newMode = !isEditMode;
+            setIsEditMode(newMode);
+            const url = new URL(window.location.href);
+            if (newMode) url.searchParams.set('mode', 'edit');
+            else url.searchParams.delete('mode');
+            window.history.replaceState({}, '', url);
+          }}
+          className={cn(
+            "px-3.5 py-1.5 rounded-[12px] border transition-all font-bold text-[13px] flex items-center gap-2",
+            isEditMode 
+             ? "bg-[#2563eb] text-white border-[#2563eb] shadow-sm" 
+             : "bg-white text-[#0f172a] border-gray-200 hover:bg-slate-50"
+          )}
+        >
+          {isEditMode ? <Eye size={16} /> : <Pencil size={16} className="text-[#0f172a]" />}
+          {isEditMode ? 'Exit Editor' : 'Editor'}
+        </button>
       </div>
+
     </div>
   );
 }
