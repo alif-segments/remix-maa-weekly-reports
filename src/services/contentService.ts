@@ -15,9 +15,17 @@ class ContentService {
     
     try {
       const cacheBuster = `${this.gasUrl.includes('?') ? '&' : '?'}t=${Date.now()}`;
-      const response = await fetch(`${this.gasUrl}${cacheBuster}`);
+      let response: Response;
+      try {
+        response = await fetch(`${this.gasUrl}${cacheBuster}`);
+      } catch (clientErr) {
+        console.warn('[ContentService] Direct GAS fetch blocked or failed, attempting proxy fallback...', clientErr);
+        response = await fetch('/api/proxy/gas');
+      }
+
       if (!response.ok) {
-        console.error(`[ContentService] Fetch failed with status: ${response.status}`);
+        console.warn(`[ContentService] Fetch returned status: ${response.status}`);
+        return {};
       }
       
       const data = await response.json();

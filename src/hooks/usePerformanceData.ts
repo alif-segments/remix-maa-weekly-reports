@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
-import { RawData, PeriodMetrics, MetricsSummary, GA4PeriodMetrics, GA4MetricsSummary } from '@/src/types';
+import { RawData, PeriodMetrics, MetricsSummary, GA4PeriodMetrics, GA4MetricsSummary, DateRange } from '@/src/types';
 import { API_URL, GA4_API_URL } from '@/src/constants';
 
-export function usePerformanceData() {
+export function usePerformanceData(customRange?: DateRange | null) {
   const [data, setData] = useState<RawData[]>([]);
   const [ga4Data, setGa4Data] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -10,17 +10,38 @@ export function usePerformanceData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [perfRes, ga4Res] = await Promise.all([
-          fetch(API_URL),
-          fetch(GA4_API_URL)
-        ]);
-        const perfResult = await perfRes.json();
-        const ga4Result = await ga4Res.json();
+        let perfResult: any = null;
+        let ga4Result: any = null;
+
+        // Try direct fetch first
+        try {
+          const [perfRes, ga4Res] = await Promise.all([
+            fetch(API_URL),
+            fetch(GA4_API_URL)
+          ]);
+          if (!perfRes.ok || !ga4Res.ok) {
+            throw new Error(`Direct fetch response status: ${perfRes.status} / ${ga4Res.status}`);
+          }
+          perfResult = await perfRes.json();
+          ga4Result = await ga4Res.json();
+        } catch (directErr) {
+          // If direct fetch is blocked by client ad-blocker or CORS, fallback to proxy
+          console.warn("[usePerformanceData] Direct fetch unavailable, falling back to server proxy:", directErr);
+          const [perfRes, ga4Res] = await Promise.all([
+            fetch('/api/proxy/perf'),
+            fetch('/api/proxy/ga4')
+          ]);
+          if (!perfRes.ok || !ga4Res.ok) {
+            throw new Error(`Proxy response status: ${perfRes.status} / ${ga4Res.status}`);
+          }
+          perfResult = await perfRes.json();
+          ga4Result = await ga4Res.json();
+        }
         
         setData(perfResult.data || perfResult);
         setGa4Data(ga4Result.data || ga4Result);
       } catch (err) {
-        console.error("Fetch failed", err);
+        console.error("Performance data fetch failed:", err);
       } finally {
         setLoading(false);
       }
@@ -34,24 +55,38 @@ export function usePerformanceData() {
     const sortedData = [...data].filter(d => d.date).sort((a, b) => a.date.localeCompare(b.date));
     if (!sortedData.length) return null;
     
-    // Calculate date range: Previous full week (Monday to Sunday)
-    const now = new Date();
-    // Normalize to midnight UTC for consistent calculations
-    const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    
-    // Day of week: 0=Sun, 1=Mon, ..., 6=Sat
-    const dayOfWeek = today.getUTCDay();
-    // Find Monday of the current calendar week (distance to Mon)
-    const offsetToCurrentMonday = (dayOfWeek + 6) % 7;
-    
-    // The report starts from the Monday of the PREVIOUS full week
-    const lastMonday = new Date(today);
-    lastMonday.setUTCDate(today.getUTCDate() - offsetToCurrentMonday - 7);
-    
-    // The report ends on the Sunday of the PREVIOUS full week
-    const lastSunday = new Date(lastMonday);
-    lastSunday.setUTCDate(lastMonday.getUTCDate() + 6);
-    const lastSundayStr = lastSunday.toISOString().split('T')[0];
+    // Calculate date range:
+    // If customRange is provided and valid, use it. Otherwise default to previous full week (Monday to Sunday)
+    let selectedStartDate = customRange?.startDate;
+    let selectedEndDate = customRange?.endDate;
+
+    if (!selectedStartDate || !selectedEndDate) {
+      const now = new Date();
+      // Normalize to midnight UTC for consistent calculations
+      const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      
+      // Day of week: 0=Sun, 1=Mon, ..., 6=Sat
+      const dayOfWeek = today.getUTCDay();
+      // Find Monday of the current calendar week (distance to Mon)
+      const offsetToCurrentMonday = (dayOfWeek + 6) % 7;
+      
+      // The report starts from the Monday of the PREVIOUS full week
+      const lastMonday = new Date(today);
+      lastMonday.setUTCDate(today.getUTCDate() - offsetToCurrentMonday - 7);
+      
+      // The report ends on the Sunday of the PREVIOUS full week
+      const lastSunday = new Date(lastMonday);
+      lastSunday.setUTCDate(lastMonday.getUTCDate() + 6);
+      
+      selectedStartDate = lastMonday.toISOString().split('T')[0];
+      selectedEndDate = lastSunday.toISOString().split('T')[0];
+    }
+
+    if (selectedStartDate > selectedEndDate) {
+      const swap = selectedStartDate;
+      selectedStartDate = selectedEndDate;
+      selectedEndDate = swap;
+    }
 
     const getMondayAndSundayOfDate = (dStr: string) => {
       const d = new Date(`${dStr}T00:00:00Z`);
@@ -69,23 +104,25 @@ export function usePerformanceData() {
         sunday: sunday.toISOString().split('T')[0]
       };
     };
+
+    const { sunday: reportEndSunday } = getMondayAndSundayOfDate(selectedEndDate);
     
+    // Build currentDates from selectedStartDate to selectedEndDate
     const currentDates: string[] = [];
-    const priorDates: string[] = [];
-    
-    // Current period: Last Monday to Last Sunday (6 days after last Monday)
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(lastSunday);
-      d.setUTCDate(d.getUTCDate() - i);
-      currentDates.push(d.toISOString().split('T')[0]);
+    const curD = new Date(`${selectedStartDate}T00:00:00Z`);
+    const endD = new Date(`${selectedEndDate}T00:00:00Z`);
+    const walkD = new Date(endD);
+    while (walkD >= curD) {
+      currentDates.push(walkD.toISOString().split('T')[0]);
+      walkD.setUTCDate(walkD.getUTCDate() - 1);
     }
     
-    // Prior period: The week before last Monday
-    const priorSunday = new Date(lastMonday);
-    priorSunday.setUTCDate(lastMonday.getUTCDate() - 1);
-    
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(priorSunday);
+    // Prior period: same duration (number of days) immediately preceding selectedStartDate
+    const priorDates: string[] = [];
+    const priorEndD = new Date(`${selectedStartDate}T00:00:00Z`);
+    priorEndD.setUTCDate(priorEndD.getUTCDate() - 1);
+    for (let i = 0; i < currentDates.length; i++) {
+      const d = new Date(priorEndD);
       d.setUTCDate(d.getUTCDate() - i);
       priorDates.push(d.toISOString().split('T')[0]);
     }
@@ -222,7 +259,7 @@ export function usePerformanceData() {
     data.forEach(row => {
       if (!row.date) return;
       const { monday: monStr, sunday: sunStr } = getMondayAndSundayOfDate(row.date);
-      if (sunStr > lastSundayStr) return; // Skip rows after the report end date
+      if (sunStr > reportEndSunday) return; // Skip rows after the report end date
       
       const weekKey = row.week_iso || getWeekKey(row.date);
       
@@ -276,8 +313,10 @@ export function usePerformanceData() {
       }))
       .slice(-12);
 
-    // DAILY TREND DATA (last 7 days)
-    const dailyDataRaw = sortedData.filter(d => currentDates.includes(d.date)).reverse();
+    // DAILY TREND DATA for the current period
+    const dailyDataRaw = sortedData
+      .filter(d => currentDates.includes(d.date))
+      .sort((a, b) => a.date.localeCompare(b.date));
     const dailyPerf = dailyDataRaw.reduce((acc: any, row) => {
       const date = formatD(row.date);
       if (!acc[date]) {
@@ -349,7 +388,7 @@ export function usePerformanceData() {
       const ga4Weeks: Record<string, any> = {};
       ga4Sorted.forEach(row => {
         const { monday: monStr, sunday: sunStr } = getMondayAndSundayOfDate(row.date);
-        if (sunStr > lastSundayStr) return; // Skip rows after the report end date
+        if (sunStr > reportEndSunday) return; // Skip rows after the report end date
         
         const wk = row.week_iso || getWeekKey(row.date);
         if (!ga4Weeks[wk]) {
@@ -398,9 +437,19 @@ export function usePerformanceData() {
       if (!s || !e) return '';
       const d1 = new Date(`${s}T00:00:00Z`);
       const d2 = new Date(`${e}T00:00:00Z`);
+      if (s === e) {
+        return d1.toLocaleDateString('en-AU', { 
+          day: '2-digit', 
+          month: 'short', 
+          year: 'numeric',
+          timeZone: 'UTC'
+        });
+      }
+      const sameYear = d1.getUTCFullYear() === d2.getUTCFullYear();
       const sStr = d1.toLocaleDateString('en-AU', { 
         day: '2-digit', 
         month: 'short',
+        ...(sameYear ? {} : { year: 'numeric' }),
         timeZone: 'UTC'
       });
       const eStr = d2.toLocaleDateString('en-AU', { 
@@ -417,9 +466,9 @@ export function usePerformanceData() {
     return {
       current,
       prior,
-      startDate: currentDates[currentDates.length - 1],
-      endDate: currentDates[0],
-      formattedRange: formatRange(currentDates[currentDates.length - 1], currentDates[0]),
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+      formattedRange: formatRange(selectedStartDate, selectedEndDate),
       deltas: {
         revenue: calcDelta(current.total.revenue, prior.total.revenue),
         spend: calcDelta(current.total.spend, prior.total.spend),
@@ -436,7 +485,7 @@ export function usePerformanceData() {
       dailyTrend,
       ga4
     };
-  }, [data, ga4Data]);
+  }, [data, ga4Data, customRange?.startDate, customRange?.endDate]);
 
   return { metrics, loading };
 }

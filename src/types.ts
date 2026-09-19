@@ -59,6 +59,18 @@ export interface MetricsSummary {
   ga4?: GA4MetricsSummary;
 }
 
+export interface DateRange {
+  startDate: string;
+  endDate: string;
+}
+
+export interface DatePreset {
+  id: string;
+  label: string;
+  startDate: string;
+  endDate: string;
+}
+
 export interface GA4MetricsSummary {
   current: GA4PeriodMetrics;
   prior: GA4PeriodMetrics;
@@ -82,4 +94,31 @@ export interface GA4PeriodMetrics {
   transactions: number;
   revenue: number;
   users: number;
+}
+
+export interface DonorBucket {
+  count: number;
+  value: number;
+}
+
+export interface DonorWeek {
+  week_start: string;
+  week_end: string;
+  total: DonorBucket;
+  new_donor: DonorBucket;
+  existing_donor: DonorBucket;
+  guest: DonorBucket;
+  recurring: DonorBucket;
+  one_time: DonorBucket;
+  mixed_count: number;
+}
+
+export interface DonorReportResponse {
+  generated_at: string;
+  timezone: string;
+  currency: string;
+  current: DonorWeek;
+  previous: DonorWeek;
+  weeks: DonorWeek[];
+  active_weeks?: DonorWeek[];
 }

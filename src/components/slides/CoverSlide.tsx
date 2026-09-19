@@ -8,9 +8,10 @@ import { cn } from '@/src/lib/utils';
 
 interface CoverSlideProps {
   metrics: MetricsSummary;
+  hasDateFilter?: boolean;
 }
 
-export const CoverSlide = ({ metrics }: CoverSlideProps) => {
+export const CoverSlide = ({ metrics, hasDateFilter }: CoverSlideProps) => {
   const { viewMode } = useViewMode();
   const isSection = viewMode === 'section';
 
@@ -40,7 +41,10 @@ export const CoverSlide = ({ metrics }: CoverSlideProps) => {
             </div>
           </div>
         </div>
-        <div className="text-center sm:text-right w-full sm:w-auto">
+        <div className={cn(
+          "text-center sm:text-right w-full sm:w-auto transition-all",
+          hasDateFilter && "sm:pr-60 md:pr-64"
+        )}>
           <div className="text-[9px] md:text-[10px] font-[600] text-[#64748b] uppercase tracking-[1px] mb-0.5 md:mb-1">Prepared By</div>
           <img src={LOGOS.agency} alt="Segments" className="h-[16px] md:h-[20px] w-auto object-contain mx-auto sm:ml-auto sm:mr-0 mb-1 invert" referrerPolicy="no-referrer" />
           <div className="text-[10px] md:text-[12px] text-[#94a3b8]">

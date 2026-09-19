@@ -14,7 +14,10 @@ import {
   Loader2,
   Presentation,
   LayoutList,
-  Pencil
+  Pencil,
+  HeartHandshake,
+  Table,
+  Calendar
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -23,6 +26,9 @@ import { usePerformanceData } from './hooks/usePerformanceData';
 import { contentService } from './services/contentService';
 import { fCurrency, fNumber, fROAS, fCPA } from './lib/formatters';
 import { useViewMode } from './context/ViewModeContext';
+import { DateRangePicker } from './components/DateRangePicker';
+import { DateRange } from './types';
+import { getDefaultDateRange } from './utils/datePresets';
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 
@@ -37,10 +43,33 @@ import { GoogleAdsSlide } from './components/slides/GoogleAdsSlide';
 import { MetaAdsSlide } from './components/slides/MetaAdsSlide';
 import { GrantsSlide } from './components/slides/GrantsSlide';
 import { GA4Slide } from './components/slides/GA4Slide';
+import { DonorInsightsSlide } from './components/slides/DonorInsightsSlide';
+import { DonorTableSlide } from './components/slides/DonorTableSlide';
 import { FooterSlide } from './components/slides/FooterSlide';
 
 export default function App() {
-  const { metrics, loading } = usePerformanceData();
+  const [showDateFilter, setShowDateFilter] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('date') === 'true';
+  });
+
+  const [dateRange, setDateRange] = useState<DateRange>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const startParam = params.get('start_date');
+    const endParam = params.get('end_date');
+    if (startParam && endParam) {
+      return { startDate: startParam, endDate: endParam };
+    }
+    return getDefaultDateRange();
+  });
+
+  // When loaded with date=true, popup appears automatically as requested
+  const [isDatePopupOpen, setIsDatePopupOpen] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('date') === 'true';
+  });
+
+  const { metrics, loading } = usePerformanceData(dateRange);
   const { viewMode, setViewMode } = useViewMode();
   const [activeSlide, setActiveSlide] = useState('cover');
   const [isEditMode, setIsEditMode] = useState(false);
@@ -147,6 +176,8 @@ UGC-style content remains dominant in driving conversions, specifically in the *
       ga4_summary: `Traffic analysis from GA4 shows **${fNumber(metrics.ga4?.current?.sessions || 0)} sessions** with an engagement rate of **${(metrics.ga4?.engagementRate || 0).toFixed(1)}%**.
 
 New user acquisition remains steady, with paid channels contributing significantly to the overall traffic mix.`,
+      donor_summary: `Donor transaction data highlights supporter acquisition and retention momentum across one-time and recurring giving channels for this weekly period.`,
+      donor_table_summary: `Weekly donor breakdown details transaction volume, supporter segments, and contribution values across giving channels.`,
       grants_summary: `The Google Grants account generated **${fNumber(grants.clicks)} clicks** with a CPC of **${fCurrency(grants.spend / Math.max(1, grants.clicks))}** (utilizing granted credit).
 
 Focus remains on brand awareness and information discovery for core mission keywords.`
@@ -218,6 +249,8 @@ Focus remains on brand awareness and information discovery for core mission keyw
     { id: 'meta', icon: Facebook },
     { id: 'creatives', icon: Award },
     { id: 'ga4', icon: TrendingUp },
+    { id: 'donor_insights', icon: HeartHandshake },
+    { id: 'donor_table', icon: Table },
     { id: 'grants', icon: Info },
     { id: 'footer', icon: ChevronDown }
   ];
@@ -241,7 +274,7 @@ Focus remains on brand awareness and information discovery for core mission keyw
         ))}
       </nav>
 
-      <CoverSlide metrics={metrics} />
+      <CoverSlide metrics={metrics} hasDateFilter={showDateFilter} />
       <SummarySlide 
         metrics={metrics} 
         platformStats={platformStats} 
@@ -285,6 +318,22 @@ Focus remains on brand awareness and information discovery for core mission keyw
         onUpdateContent={(val) => handleUpdateContent('ga4_summary', val)}
         onSave={(val) => handleSaveSection('ga4_summary', val)}
       />
+      <DonorInsightsSlide 
+        metrics={metrics}
+        isEditMode={isEditMode}
+        content={localPageContent.donor_summary}
+        defaultText={defaultContents.donor_summary}
+        onUpdateContent={(val) => handleUpdateContent('donor_summary', val)}
+        onSave={(val) => handleSaveSection('donor_summary', val)}
+      />
+      <DonorTableSlide 
+        metrics={metrics}
+        isEditMode={isEditMode}
+        content={localPageContent.donor_table_summary}
+        defaultText={defaultContents.donor_table_summary}
+        onUpdateContent={(val) => handleUpdateContent('donor_table_summary', val)}
+        onSave={(val) => handleSaveSection('donor_table_summary', val)}
+      />
       <GrantsSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
@@ -294,6 +343,26 @@ Focus remains on brand awareness and information discovery for core mission keyw
         onSave={(val) => handleSaveSection('grants_summary', val)}
       />
       <FooterSlide />
+
+      {/* Top Right Date Filter Trigger & Popover (when ?date=true is in URL or toggled) */}
+      {showDateFilter && (
+        <div className="fixed top-3.5 right-4 md:right-8 z-[90]">
+          <DateRangePicker
+            dateRange={dateRange}
+            onChange={(newRange) => {
+              setDateRange(newRange);
+              const url = new URL(window.location.href);
+              url.searchParams.set('date', 'true');
+              url.searchParams.set('start_date', newRange.startDate);
+              url.searchParams.set('end_date', newRange.endDate);
+              window.history.replaceState({}, '', url);
+            }}
+            isOpen={isDatePopupOpen}
+            onToggleOpen={() => setIsDatePopupOpen(prev => !prev)}
+            onClose={() => setIsDatePopupOpen(false)}
+          />
+        </div>
+      )}
 
       {/* Persistence Bar */}
       <AnimatePresence>
@@ -363,6 +432,38 @@ Focus remains on brand awareness and information discovery for core mission keyw
             Sections
           </button>
         </div>
+
+        {/* Vertical Divider */}
+        <div className="w-[1px] h-5 bg-gray-200/80 mx-0.5" />
+
+        {/* Date Filter Toggle Button */}
+        <button 
+          onClick={() => {
+            const next = !showDateFilter;
+            setShowDateFilter(next);
+            const url = new URL(window.location.href);
+            if (next) {
+              url.searchParams.set('date', 'true');
+              setIsDatePopupOpen(true);
+            } else {
+              url.searchParams.delete('date');
+              url.searchParams.delete('start_date');
+              url.searchParams.delete('end_date');
+              setIsDatePopupOpen(false);
+            }
+            window.history.replaceState({}, '', url);
+          }}
+          className={cn(
+            "px-3 py-1.5 rounded-[12px] border transition-all font-bold text-[13px] flex items-center gap-1.5",
+            showDateFilter 
+              ? "bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe] shadow-xs" 
+              : "bg-white text-slate-700 border-gray-200 hover:bg-slate-50"
+          )}
+          title="Toggle Date Filter (?date=true)"
+        >
+          <Calendar size={15} className={showDateFilter ? "text-[#2563eb]" : "text-slate-500"} />
+          <span>Date Filter</span>
+        </button>
 
         {/* Vertical Divider */}
         <div className="w-[1px] h-5 bg-gray-200/80 mx-0.5" />
