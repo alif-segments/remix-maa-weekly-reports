@@ -20,9 +20,10 @@ export async function listAllDocs(env: Env): Promise<Doc[]> {
   const endpoint = `${basePathWithKey}/v2/store/collections/${collection}/documents`;
 
   const allDocs: Doc[] = [];
+  const seenKeys = new Set<string>();
   let nextCursor: string | null = null;
   let pageCount = 0;
-  const MAX_PAGES = 100;
+  const MAX_PAGES = 50;
 
   do {
     pageCount++;
@@ -30,10 +31,12 @@ export async function listAllDocs(env: Env): Promise<Doc[]> {
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
     try {
-      const bodyPayload: Record<string, any> = {};
-      if (nextCursor) {
-        bodyPayload.cursor = nextCursor;
-      }
+      const bodyPayload: Record<string, any> = {
+        pagination: {
+          limit: 100,
+          ...(nextCursor ? { cursor: nextCursor } : {})
+        }
+      };
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -57,14 +60,21 @@ export async function listAllDocs(env: Env): Promise<Doc[]> {
       const items = json.data?.items || [];
       for (const item of items) {
         if (item && item.key && item.data) {
-          allDocs.push({
-            key: item.key,
-            data: item.data as Record<string, Txn>,
-          });
+          if (!seenKeys.has(item.key)) {
+            seenKeys.add(item.key);
+            allDocs.push({
+              key: item.key,
+              data: item.data as Record<string, Txn>,
+            });
+          }
         }
       }
 
-      nextCursor = json.data?.pagination?.next_cursor || null;
+      const newCursor = json.data?.pagination?.next_cursor || null;
+      if (!newCursor || newCursor === nextCursor) {
+        break;
+      }
+      nextCursor = newCursor;
     } finally {
       clearTimeout(timeoutId);
     }
@@ -76,13 +86,20 @@ export async function listAllDocs(env: Env): Promise<Doc[]> {
 export const onRequestGet = async ({ request, env }: { request: Request; env: Env }) => {
   try {
     const p = new URL(request.url).searchParams.get('week_start');
-    // default = last COMPLETED week, same as the report
-    const weekStart = p ? mondayOf(p) : addDays(mondayOf(sydneyDate(Date.now())), -7);
+    const nowSydney = sydneyDate(Date.now());
+    // In Sydney, if today is Sunday, the week ending today started on mondayOf(nowSydney).
+    // If today is Monday-Saturday, the completed week ended on last Sunday, so it started mondayOf(nowSydney) - 7.
+    const sydneyDayOfWeek = new Date(nowSydney + 'T00:00:00Z').getUTCDay();
+    const defaultCompletedWeek = sydneyDayOfWeek === 0
+      ? mondayOf(nowSydney)
+      : addDays(mondayOf(nowSydney), -7);
+
+    const weekStart = p ? mondayOf(p) : defaultCompletedWeek;
     const report = buildReport(await listAllDocs(env), weekStart, 12);
     return new Response(JSON.stringify(report), {
       headers: {
         'content-type': 'application/json',
-        'cache-control': 'public, max-age=300',
+        'cache-control': 'no-cache, no-store, max-age=0, must-revalidate',
       },
     });
   } catch (e) {

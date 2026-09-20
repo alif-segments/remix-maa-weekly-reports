@@ -47,6 +47,8 @@ type Flat = { week: string; cls: 'new' | 'existing' | 'guest'; total: number; on
 // the donor's earliest transaction is "new", every later one is "existing".
 export function flatten(docs: Doc[]): Flat[] {
   const out: Flat[] = [];
+  const seenTxnIds = new Set<string>();
+
   for (const doc of docs) {
     const guest = String(doc.key).indexOf('guest_') === 0;
     const txns = Object.keys(doc.data || {})
@@ -55,6 +57,12 @@ export function flatten(docs: Doc[]): Flat[] {
     txns.sort((a, b) => (a.timestamp as number) - (b.timestamp as number) ||
       String(a.transaction_id).localeCompare(String(b.transaction_id)));
     txns.forEach((t, i) => {
+      const txId = String(t.transaction_id || `${doc.key}_${t.timestamp}`);
+      if (seenTxnIds.has(txId)) {
+        return;
+      }
+      seenTxnIds.add(txId);
+
       out.push({
         week: mondayOf(sydneyDate(t.timestamp as number)),
         cls: guest ? 'guest' : i === 0 ? 'new' : 'existing',

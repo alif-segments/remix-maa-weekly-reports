@@ -62,21 +62,29 @@ export function usePerformanceData(customRange?: DateRange | null) {
 
     if (!selectedStartDate || !selectedEndDate) {
       const now = new Date();
-      // Normalize to midnight UTC for consistent calculations
-      const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      // Format current date in Australia/Sydney timezone (client timezone & Stape store timezone)
+      const sydneyFormatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Australia/Sydney',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      const sydneyDateParts = sydneyFormatter.format(now); // e.g. "2026-09-21"
+      const [sYear, sMonth, sDay] = sydneyDateParts.split('-').map(Number);
+      const sydneyToday = new Date(Date.UTC(sYear, sMonth - 1, sDay));
       
-      // Day of week: 0=Sun, 1=Mon, ..., 6=Sat
-      const dayOfWeek = today.getUTCDay();
-      // Find Monday of the current calendar week (distance to Mon)
-      const offsetToCurrentMonday = (dayOfWeek + 6) % 7;
+      // Day of week in Sydney: 0=Sun, 1=Mon, ..., 6=Sat
+      const dayOfWeek = sydneyToday.getUTCDay();
       
-      // The report starts from the Monday of the PREVIOUS full week
-      const lastMonday = new Date(today);
-      lastMonday.setUTCDate(today.getUTCDate() - offsetToCurrentMonday - 7);
+      // The most recent completed full week (Monday to Sunday):
+      // On Sunday (0), the completed full week ends today (Sunday).
+      // On Monday to Saturday (1-6), the completed full week ended on last Sunday.
+      const daysSinceLastSunday = dayOfWeek === 0 ? 0 : dayOfWeek;
+      const lastSunday = new Date(sydneyToday);
+      lastSunday.setUTCDate(sydneyToday.getUTCDate() - daysSinceLastSunday);
       
-      // The report ends on the Sunday of the PREVIOUS full week
-      const lastSunday = new Date(lastMonday);
-      lastSunday.setUTCDate(lastMonday.getUTCDate() + 6);
+      const lastMonday = new Date(lastSunday);
+      lastMonday.setUTCDate(lastSunday.getUTCDate() - 6);
       
       selectedStartDate = lastMonday.toISOString().split('T')[0];
       selectedEndDate = lastSunday.toISOString().split('T')[0];
