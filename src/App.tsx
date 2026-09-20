@@ -50,7 +50,7 @@ import { FooterSlide } from './components/slides/FooterSlide';
 export default function App() {
   const [showDateFilter, setShowDateFilter] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    return params.get('date') === 'true';
+    return params.get('date') === 'true' || params.get('date_filter') === 'true';
   });
 
   const [dateRange, setDateRange] = useState<DateRange>(() => {
@@ -66,8 +66,47 @@ export default function App() {
   // When loaded with date=true, popup appears automatically as requested
   const [isDatePopupOpen, setIsDatePopupOpen] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    return params.get('date') === 'true';
+    return params.get('date') === 'true' || params.get('date_filter') === 'true';
   });
+
+  // Secret keyboard shortcut to toggle date filter (Alt+D or Ctrl+Shift+D / Cmd+Shift+D)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        (e.target as HTMLElement)?.isContentEditable
+      ) {
+        return;
+      }
+
+      if (
+        (e.altKey && e.key.toLowerCase() === 'd') ||
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'd')
+      ) {
+        e.preventDefault();
+        setShowDateFilter((prev) => {
+          const next = !prev;
+          const url = new URL(window.location.href);
+          if (next) {
+            url.searchParams.set('date', 'true');
+            setIsDatePopupOpen(true);
+          } else {
+            url.searchParams.delete('date');
+            url.searchParams.delete('date_filter');
+            url.searchParams.delete('start_date');
+            url.searchParams.delete('end_date');
+            setIsDatePopupOpen(false);
+          }
+          window.history.replaceState({}, '', url);
+          return next;
+        });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const { metrics, loading } = usePerformanceData(dateRange);
   const { viewMode, setViewMode } = useViewMode();
@@ -433,37 +472,40 @@ Focus remains on brand awareness and information discovery for core mission keyw
           </button>
         </div>
 
-        {/* Vertical Divider */}
-        <div className="w-[1px] h-5 bg-gray-200/80 mx-0.5" />
-
-        {/* Date Filter Toggle Button */}
-        <button 
-          onClick={() => {
-            const next = !showDateFilter;
-            setShowDateFilter(next);
-            const url = new URL(window.location.href);
-            if (next) {
-              url.searchParams.set('date', 'true');
-              setIsDatePopupOpen(true);
-            } else {
-              url.searchParams.delete('date');
-              url.searchParams.delete('start_date');
-              url.searchParams.delete('end_date');
-              setIsDatePopupOpen(false);
-            }
-            window.history.replaceState({}, '', url);
-          }}
-          className={cn(
-            "px-3 py-1.5 rounded-[12px] border transition-all font-bold text-[13px] flex items-center gap-1.5",
-            showDateFilter 
-              ? "bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe] shadow-xs" 
-              : "bg-white text-slate-700 border-gray-200 hover:bg-slate-50"
-          )}
-          title="Toggle Date Filter (?date=true)"
-        >
-          <Calendar size={15} className={showDateFilter ? "text-[#2563eb]" : "text-slate-500"} />
-          <span>Date Filter</span>
-        </button>
+        {/* Date Filter Toggle Button - Kept secret, only accessible via URL (?date=true), Alt+D shortcut, or when Editor mode is active */}
+        {(showDateFilter || isEditMode) && (
+          <>
+            <div className="w-[1px] h-5 bg-gray-200/80 mx-0.5" />
+            <button 
+              onClick={() => {
+                const next = !showDateFilter;
+                setShowDateFilter(next);
+                const url = new URL(window.location.href);
+                if (next) {
+                  url.searchParams.set('date', 'true');
+                  setIsDatePopupOpen(true);
+                } else {
+                  url.searchParams.delete('date');
+                  url.searchParams.delete('date_filter');
+                  url.searchParams.delete('start_date');
+                  url.searchParams.delete('end_date');
+                  setIsDatePopupOpen(false);
+                }
+                window.history.replaceState({}, '', url);
+              }}
+              className={cn(
+                "px-3 py-1.5 rounded-[12px] border transition-all font-bold text-[13px] flex items-center gap-1.5",
+                showDateFilter 
+                  ? "bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe] shadow-xs" 
+                  : "bg-white text-slate-700 border-gray-200 hover:bg-slate-50"
+              )}
+              title="Toggle Date Filter (?date=true | Alt+D)"
+            >
+              <Calendar size={15} className={showDateFilter ? "text-[#2563eb]" : "text-slate-500"} />
+              <span>Date Filter</span>
+            </button>
+          </>
+        )}
 
         {/* Vertical Divider */}
         <div className="w-[1px] h-5 bg-gray-200/80 mx-0.5" />
