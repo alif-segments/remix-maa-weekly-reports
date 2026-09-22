@@ -58,8 +58,8 @@ export const DonorInsightsSlide = ({
                 Donor Performance & Giving Breakdown
               </h2>
             </div>
-            <div className="text-[12px] font-medium text-slate-500 bg-slate-100 border border-slate-200/80 px-2.5 py-1 rounded-md self-start sm:self-auto whitespace-nowrap">
-              Tracked via Stape Store • Started 19 Sep
+            <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">
+              Period: {metrics.formattedRange || '14 Sept – 20 Sept 2026'}
             </div>
           </div>
           <EditableContent 
