@@ -213,7 +213,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
       ga4_summary: `Traffic analysis from GA4 shows **${fNumber(metrics.ga4?.current?.sessions || 0)} sessions** with an engagement rate of **${(metrics.ga4?.engagementRate || 0).toFixed(1)}%**.
 
 New user acquisition remains steady, with paid channels contributing significantly to the overall traffic mix.`,
-      donor_summary: `Donor giving generated new supporter transactions alongside returning donor contributions, with subscription sign-ups (such as Orphan Sponsorship and Giving Friday) and one-time appeal donations actively tracked.`,
+      donor_summary: `Donor acquisition and giving frequency tracked via Stape Store (started 19 Sep).`,
       grants_summary: `The Google Grants account generated **${fNumber(grants.clicks)} clicks** with a CPC of **${fCurrency(grants.spend / Math.max(1, grants.clicks))}** (utilizing granted credit).
 
 Focus remains on brand awareness and information discovery for core mission keywords.`

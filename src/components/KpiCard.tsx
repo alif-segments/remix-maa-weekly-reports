@@ -9,6 +9,7 @@ interface KpiCardProps {
   delta?: string;
   trend?: 'up' | 'down' | 'neutral';
   variant?: 'revenue' | 'spend' | 'roas' | 'sales' | 'g_blue' | 'g_green' | 'g_yellow' | 'g_red' | 'm_light' | 'm_mid' | 'm_blue' | 'm_dark';
+  tooltip?: string;
 }
 
 export const KpiCard = ({ 
@@ -18,7 +19,8 @@ export const KpiCard = ({
   icon: Icon, 
   delta, 
   trend, 
-  variant = 'revenue' 
+  variant = 'revenue',
+  tooltip
 }: KpiCardProps) => {
   const variants: Record<string, { bg: string, text: string }> = {
     revenue: { bg: 'bg-[#dbeafe]', text: 'text-[#2563eb]' },
@@ -40,8 +42,11 @@ export const KpiCard = ({
   const style = variants[variant] || variants.revenue;
 
   return (
-    <div className="bg-white border border-[#e2e8f0] rounded-xl p-6 relative flex-1 min-w-[200px]">
-      <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center mb-4", style.bg, style.text)}>
+    <div 
+      className="bg-white border border-[#e2e8f0] rounded-xl p-5 relative flex-1 min-w-[180px] transition-shadow hover:shadow-xs"
+      title={tooltip || label}
+    >
+      <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center mb-3.5", style.bg, style.text)}>
         <Icon size={18} />
       </div>
       
@@ -54,9 +59,21 @@ export const KpiCard = ({
         </div>
       )}
 
-      <div className="text-[11px] font-[600] tracking-[1px] uppercase text-[#64748b] mb-0.5">{label}</div>
-      <div className="text-[32px] font-[700] text-[#0f172a] mb-1 leading-none">{value}</div>
-      <div className="text-[12px] text-[#94a3b8]">{sublabel}</div>
+      <div 
+        className="text-[11px] font-[600] tracking-[0.5px] uppercase text-[#64748b] mb-1 truncate whitespace-nowrap"
+        title={tooltip || label}
+      >
+        {label}
+      </div>
+      <div className="text-[26px] xl:text-[28px] font-[700] text-[#0f172a] mb-1 leading-none tracking-tight">
+        {value}
+      </div>
+      <div 
+        className="text-[11.5px] text-[#94a3b8] truncate whitespace-nowrap"
+        title={sublabel}
+      >
+        {sublabel}
+      </div>
     </div>
   );
 };
