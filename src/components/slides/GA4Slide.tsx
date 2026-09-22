@@ -94,13 +94,27 @@ export const GA4Slide = ({
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={ga4.weeklyTrend}>
                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                 <XAxis dataKey="label" fontSize={10} tick={{ fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                 <YAxis fontSize={10} tick={{ fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${fNumber(v)}`} />
+                 <XAxis 
+                   dataKey="label" 
+                   fontSize={9} 
+                   tick={{ fill: '#64748b', fontSize: 9 }} 
+                   axisLine={{ stroke: '#e2e8f0' }} 
+                   tickLine={false} 
+                 />
+                 <YAxis 
+                   fontSize={9} 
+                   tick={{ fill: '#64748b', fontSize: 9 }} 
+                   axisLine={false} 
+                   tickLine={false} 
+                   tickFormatter={(v) => v >= 1000 ? `$${Math.round(v / 1000)}k` : `$${v}`} 
+                   width={42}
+                 />
                  <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '12px' }}
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.08)', fontSize: '11px', padding: '8px 12px' }}
+                    labelFormatter={(label, payload) => payload?.[0]?.payload?.rangeLabel || label}
                     formatter={(v: any) => [fCurrency(v), 'Revenue']}
                  />
-                 <Bar dataKey="revenue" fill="#4285F4" radius={[4, 4, 0, 0]} barSize={24} />
+                 <Bar dataKey="revenue" fill="#4285F4" radius={[4, 4, 0, 0]} barSize={18} />
               </BarChart>
             </ResponsiveContainer>
           </div>

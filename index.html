@@ -3,9 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Segments | Weekly Ads Performance</title>
+    <title>Remix: Segments | MAA Performance Dashboard</title>
     <meta name="description" content="Premium slide-based performance report for MAA International, tracking Meta and Google Ads performance with deep-dive creative analysis and donor insights." />
     <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/65dda59c71b3cf6ade9106fe/663aef8d98a372edb060b304_file.png" />
+    <script>
+      // Safeguard against environments where window.fetch has only a getter on Window.prototype,
+      // preventing "TypeError: Cannot set property fetch of #<Window> which has only a getter"
+      (function() {
+        try {
+          var win = typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : null;
+          if (win) {
+            var nativeFetch = typeof win.fetch === 'function' ? win.fetch.bind(win) : null;
+            var currentFetch = nativeFetch;
+            var defineFetch = function(target) {
+              try {
+                Object.defineProperty(target, 'fetch', {
+                  get: function() {
+                    return currentFetch || (typeof win.fetch === 'function' ? win.fetch.bind(win) : undefined);
+                  },
+                  set: function(fn) {
+                    currentFetch = typeof fn === 'function' ? fn.bind(win) : fn;
+                  },
+                  configurable: true,
+                  enumerable: true
+                });
+                return true;
+              } catch (e) {
+                return false;
+              }
+            };
+            if (!defineFetch(win)) {
+              if (typeof Window !== 'undefined' && Window.prototype) {
+                defineFetch(Window.prototype);
+              }
+            }
+          }
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

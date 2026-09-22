@@ -317,7 +317,8 @@ export function usePerformanceData(customRange?: DateRange | null) {
       .map(([key, w]) => ({
         ...w,
         roas: w.spend > 0 ? w.revenue / w.spend : 0,
-        label: `${formatD(w.startDate)} - ${formatD(w.endDate)}`
+        label: formatD(w.startDate),
+        rangeLabel: `${formatD(w.startDate)} – ${formatD(w.endDate)}`
       }))
       .slice(-12);
 
@@ -418,7 +419,8 @@ export function usePerformanceData(customRange?: DateRange | null) {
         .sort((a: any, b: any) => a.week.localeCompare(b.week))
         .map((w: any) => ({
           ...w,
-          label: `${formatD(w.startDate)} - ${formatD(w.endDate)}`
+          label: formatD(w.startDate),
+          rangeLabel: `${formatD(w.startDate)} – ${formatD(w.endDate)}`
         }))
         .slice(-12);
 

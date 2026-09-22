@@ -41,7 +41,18 @@ const num = (v: unknown): number => (typeof v === 'number' && v === v ? v : 0);
 const bucket = (): Bucket => ({ count: 0, value: 0 });
 const add = (b: Bucket, v: number) => { b.count += 1; b.value = Math.round((b.value + v) * 100) / 100; };
 
-type Flat = { week: string; cls: 'new' | 'existing' | 'guest'; total: number; one: number; rec: number; mixed: boolean };
+export type Flat = {
+  id: string;
+  date: string; // YYYY-MM-DD (Australia/Sydney)
+  week: string; // Monday, YYYY-MM-DD (Australia/Sydney)
+  cls: 'new' | 'existing' | 'guest';
+  total: number;
+  one: number;
+  rec: number;
+  mixed: boolean;
+  type: string;
+  timestamp: number;
+};
 
 // New vs existing is decided from the donor's WHOLE history, never from the requested week:
 // the donor's earliest transaction is "new", every later one is "existing".
@@ -63,13 +74,18 @@ export function flatten(docs: Doc[]): Flat[] {
       }
       seenTxnIds.add(txId);
 
+      const d = sydneyDate(t.timestamp as number);
       out.push({
-        week: mondayOf(sydneyDate(t.timestamp as number)),
+        id: txId,
+        date: d,
+        week: mondayOf(d),
         cls: guest ? 'guest' : i === 0 ? 'new' : 'existing',
         total: num(t.transaction_value),
         one: num(t.one_time_value),
         rec: num(t.recurring_value),
         mixed: t.transaction_type === 'mixed',
+        type: t.transaction_type || (num(t.recurring_value) > 0 ? 'recurring' : 'one_time'),
+        timestamp: t.timestamp as number,
       });
     });
   }
@@ -84,8 +100,9 @@ export function buildReport(docs: Doc[], weekStart: string, weeks = 12) {
     recurring: bucket(), one_time: bucket(), mixed_count: 0,
   }]));
   const activeWeeksMap = new Map<string, Week>();
+  const flatList = flatten(docs);
 
-  for (const f of flatten(docs)) {
+  for (const f of flatList) {
     if (!activeWeeksMap.has(f.week)) {
       activeWeeksMap.set(f.week, {
         week_start: f.week, week_end: addDays(f.week, 6),
@@ -119,5 +136,6 @@ export function buildReport(docs: Doc[], weekStart: string, weeks = 12) {
     previous: series[series.length - 2],
     weeks: series,
     active_weeks: activeWeeks,
+    transactions: flatList,
   };
 }

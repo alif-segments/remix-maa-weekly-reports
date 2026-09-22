@@ -37,65 +37,72 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
              </div>
              <div className="section-label !mb-0 ml-0 sm:ml-2">12-Week Trend</div>
           </div>
-          <h2 className="text-[24px] md:text-[28px]">Weekly Performance Overview</h2>
-          <div className="text-[12px] md:text-[14px] text-[#64748b] font-[500]">
+          <h2 className="text-[20px] font-[800] text-slate-900 tracking-tight mb-1">Weekly Performance Overview</h2>
+          <div className="text-[12px] text-[#64748b] font-[500]">
             {metrics.weeklyPerf.length > 0 && (
               <>Trend Period: {metrics.weeklyPerf[0].startDate} – {metrics.weeklyPerf[metrics.weeklyPerf.length - 1].endDate}</>
             )}
           </div>
         </div>
         <div className="lg:col-span-12">
-          <div className="h-[300px] md:h-[400px] w-full mt-4 relative">
+          <div className="h-[300px] md:h-[380px] w-full mt-2 relative">
             {metrics.weeklyPerf && metrics.weeklyPerf.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart
                   data={metrics.weeklyPerf}
-                  margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
+                  margin={{ top: 16, right: 10, left: 0, bottom: 10 }}
                   barGap={4}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis 
                     dataKey="label" 
-                    fontSize={10} 
+                    fontSize={9} 
                     fontWeight={500}
-                    tick={{ fill: '#64748b' }}
+                    tick={{ fill: '#64748b', fontSize: 9 }}
+                    axisLine={{ stroke: '#e2e8f0' }}
+                    tickLine={false}
                   />
                   <YAxis 
                     yAxisId="left"
-                    fontSize={10} 
-                    tick={{ fill: '#64748b' }} 
-                    tickFormatter={(v) => `$${fNumber(v)}`}
-                    width={50}
+                    fontSize={9} 
+                    tick={{ fill: '#64748b', fontSize: 9 }} 
+                    axisLine={false}
+                    tickLine={false}
+                    tickFormatter={(v) => v >= 1000 ? `$${Math.round(v / 1000)}k` : `$${v}`}
+                    width={44}
                   />
                   <YAxis 
                     yAxisId="right"
                     orientation="right"
-                    fontSize={10} 
-                    tick={{ fill: '#64748b' }} 
-                    tickFormatter={(v) => `$${fNumber(v)}`}
-                    width={50}
+                    fontSize={9} 
+                    tick={{ fill: '#64748b', fontSize: 9 }} 
+                    axisLine={false}
+                    tickLine={false}
+                    tickFormatter={(v) => v >= 1000 ? `$${Math.round(v / 1000)}k` : `$${v}`}
+                    width={44}
                   />
                   <Tooltip 
                     cursor={{ fill: '#f8fafc' }}
-                    contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '12px' }}
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.08)', fontSize: '11px', padding: '8px 12px' }}
+                    labelFormatter={(label, payload) => payload?.[0]?.payload?.rangeLabel || label}
                     formatter={(value: number, name: string) => {
                       return [fCurrency(value), name];
                     }}
                   />
                   <Legend 
-                    wrapperStyle={{ paddingTop: '20px' }} 
-                    formatter={(value) => <span className="mr-6 inline-block font-bold" style={{ color: value === 'Revenue' ? '#4285F4' : '#34A853' }}>{value}</span>}
+                    wrapperStyle={{ paddingTop: '16px' }} 
+                    formatter={(value) => <span className="mr-6 inline-block font-semibold text-[11px]" style={{ color: value === 'Revenue' ? '#4285F4' : '#10b981' }}>{value}</span>}
                   />
-                  <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#4285F4" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar yAxisId="left" dataKey="revenue" name="Revenue" fill="#4285F4" radius={[4, 4, 0, 0]} barSize={28} />
                   <Line 
                     yAxisId="right" 
                     type="monotone" 
                     dataKey="spend" 
                     name="Spend" 
-                    stroke="#34A853" 
-                    strokeWidth={3} 
-                    dot={{ r: 4, fill: '#34A853', strokeWidth: 2, stroke: '#fff' }}
-                    activeDot={{ r: 6, strokeWidth: 0 }}
+                    stroke="#10b981" 
+                    strokeWidth={2.5} 
+                    dot={{ r: 3, fill: '#10b981', strokeWidth: 1.5, stroke: '#fff' }}
+                    activeDot={{ r: 5, strokeWidth: 0 }}
                   />
                 </ComposedChart>
               </ResponsiveContainer>

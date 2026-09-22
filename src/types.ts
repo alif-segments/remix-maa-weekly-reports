@@ -113,6 +113,60 @@ export interface DonorWeek {
   mixed_count: number;
 }
 
+export interface DonorTransaction {
+  id: string;
+  date: string; // YYYY-MM-DD
+  week: string; // Monday YYYY-MM-DD
+  cls: 'new' | 'existing' | 'guest';
+  total: number;
+  one: number;
+  rec: number;
+  mixed: boolean;
+  type: string;
+  timestamp: number;
+}
+
+export interface DonorMetricsSummary {
+  period: {
+    startDate: string;
+    endDate: string;
+    formattedRange: string;
+  };
+  total: DonorBucket;
+  new_donor: DonorBucket;
+  existing_donor: DonorBucket;
+  guest: DonorBucket;
+  recurring: DonorBucket;
+  one_time: DonorBucket;
+  prior: {
+    total: DonorBucket;
+    new_donor: DonorBucket;
+    existing_donor: DonorBucket;
+    guest: DonorBucket;
+    recurring: DonorBucket;
+    one_time: DonorBucket;
+  };
+  deltas: {
+    total: string;
+    new_donor: string;
+    existing_donor: string;
+    recurring: string;
+    one_time: string;
+  };
+  trends: {
+    total: 'up' | 'down' | 'neutral';
+    new_donor: 'up' | 'down' | 'neutral';
+    existing_donor: 'up' | 'down' | 'neutral';
+    recurring: 'up' | 'down' | 'neutral';
+    one_time: 'up' | 'down' | 'neutral';
+  };
+  avgDonation: number;
+  avgNewDonor: number;
+  avgExistingDonor: number;
+  recurringShare: number;
+  transactions: DonorTransaction[];
+}
+
 export interface DonorReportResponse {
   generated_at: string;
   timezone: string;
@@ -121,4 +175,5 @@ export interface DonorReportResponse {
   previous: DonorWeek;
   weeks: DonorWeek[];
   active_weeks?: DonorWeek[];
+  transactions?: DonorTransaction[];
 }

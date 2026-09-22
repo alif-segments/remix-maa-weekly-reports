@@ -16,7 +16,6 @@ import {
   LayoutList,
   Pencil,
   HeartHandshake,
-  Table,
   Calendar
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -44,7 +43,6 @@ import { MetaAdsSlide } from './components/slides/MetaAdsSlide';
 import { GrantsSlide } from './components/slides/GrantsSlide';
 import { GA4Slide } from './components/slides/GA4Slide';
 import { DonorInsightsSlide } from './components/slides/DonorInsightsSlide';
-import { DonorTableSlide } from './components/slides/DonorTableSlide';
 import { FooterSlide } from './components/slides/FooterSlide';
 
 export default function App() {
@@ -215,8 +213,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
       ga4_summary: `Traffic analysis from GA4 shows **${fNumber(metrics.ga4?.current?.sessions || 0)} sessions** with an engagement rate of **${(metrics.ga4?.engagementRate || 0).toFixed(1)}%**.
 
 New user acquisition remains steady, with paid channels contributing significantly to the overall traffic mix.`,
-      donor_summary: `Donor transaction data highlights supporter acquisition and retention momentum across one-time and recurring giving channels for this weekly period.`,
-      donor_table_summary: `Weekly donor breakdown details transaction volume, supporter segments, and contribution values across giving channels.`,
+      donor_summary: `Donor giving generated new supporter transactions alongside returning donor contributions, with subscription sign-ups (such as Orphan Sponsorship and Giving Friday) and one-time appeal donations actively tracked.`,
       grants_summary: `The Google Grants account generated **${fNumber(grants.clicks)} clicks** with a CPC of **${fCurrency(grants.spend / Math.max(1, grants.clicks))}** (utilizing granted credit).
 
 Focus remains on brand awareness and information discovery for core mission keywords.`
@@ -289,7 +286,6 @@ Focus remains on brand awareness and information discovery for core mission keyw
     { id: 'creatives', icon: Award },
     { id: 'ga4', icon: TrendingUp },
     { id: 'donor_insights', icon: HeartHandshake },
-    { id: 'donor_table', icon: Table },
     { id: 'grants', icon: Info },
     { id: 'footer', icon: ChevronDown }
   ];
@@ -364,14 +360,6 @@ Focus remains on brand awareness and information discovery for core mission keyw
         defaultText={defaultContents.donor_summary}
         onUpdateContent={(val) => handleUpdateContent('donor_summary', val)}
         onSave={(val) => handleSaveSection('donor_summary', val)}
-      />
-      <DonorTableSlide 
-        metrics={metrics}
-        isEditMode={isEditMode}
-        content={localPageContent.donor_table_summary}
-        defaultText={defaultContents.donor_table_summary}
-        onUpdateContent={(val) => handleUpdateContent('donor_table_summary', val)}
-        onSave={(val) => handleSaveSection('donor_table_summary', val)}
       />
       <GrantsSlide 
         metrics={metrics} 

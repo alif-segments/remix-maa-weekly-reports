@@ -7,7 +7,15 @@ export interface Env {
   STAPE_COLLECTION?: string;
 }
 
+let cachedDocs: { docs: Doc[]; timestamp: number } | null = null;
+const DOCS_CACHE_TTL_MS = 60 * 1000; // 60s in-memory cache
+
 export async function listAllDocs(env: Env): Promise<Doc[]> {
+  const now = Date.now();
+  if (cachedDocs && now - cachedDocs.timestamp < DOCS_CACHE_TTL_MS) {
+    return cachedDocs.docs;
+  }
+
   const baseUrl = (env.STAPE_BASE_URL || (typeof process !== 'undefined' ? process.env?.STAPE_BASE_URL : '') || 'https://psaeygxm.au.stape.io/stape-api').trim().replace(/\/+$/, '');
   const apiKey = (env.STAPE_API_KEY || (typeof process !== 'undefined' ? process.env?.STAPE_API_KEY : '') || '9ea3d21604ba39a094e0cdca5f93229ec16e471apsaeygxm').trim();
   const collection = (env.STAPE_COLLECTION || (typeof process !== 'undefined' ? process.env?.STAPE_COLLECTION : '') || 'donations').trim();
@@ -80,6 +88,7 @@ export async function listAllDocs(env: Env): Promise<Doc[]> {
     }
   } while (nextCursor && pageCount < MAX_PAGES);
 
+  cachedDocs = { docs: allDocs, timestamp: now };
   return allDocs;
 }
 
