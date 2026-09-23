@@ -20,15 +20,7 @@ interface TikTokAdsSlideProps {
 type SortField = 'spend' | 'conversions' | 'revenue' | 'roas';
 
 const DEFAULT_TIKTOK_CAMPAIGNS = [
-  { name: 'Hearing Aid', spend: 699.88, conversions: 23, revenue: 3050.00, clicks: 820 },
-  { name: 'Sudan', spend: 696.40, conversions: 31, revenue: 3300.00, clicks: 940 },
-  { name: 'Gaza Refugees', spend: 505.29, conversions: 8, revenue: 350.00, clicks: 610 },
-  { name: 'Water for Life', spend: 420.15, conversions: 11, revenue: 680.00, clicks: 520 },
-  { name: 'Education Project', spend: 280.50, conversions: 6, revenue: 320.00, clicks: 340 },
-  { name: 'Winter Appeal', spend: 145.30, conversions: 3, revenue: 150.00, clicks: 190 },
-  { name: 'Yemen Crisis', spend: 65.40, conversions: 1, revenue: 40.00, clicks: 85 },
-  { name: 'Emergency Relief', spend: 32.93, conversions: 0, revenue: 16.00, clicks: 42 },
-  { name: 'Orphan Care', spend: 12.00, conversions: 0, revenue: 10.00, clicks: 18 }
+  { name: 'MAA Top ads', spend: 84.27, conversions: 4, revenue: 50.62, clicks: 247 }
 ];
 
 export const TikTokAdsSlide = ({ 
@@ -62,24 +54,37 @@ export const TikTokAdsSlide = ({
   const curC = campaignsList.reduce((a, b) => a + b.conversions, 0);
   const curR = campaignsList.reduce((a, b) => a + b.revenue, 0);
 
-  // Deltas: if live prior items exist calculate dynamically; otherwise use client baseline from report
+  // Deltas calculated dynamically from real prior data
   const priS = livePriorItems.reduce((a, b) => a + b.spend, 0);
   const priC = livePriorItems.reduce((a, b) => a + b.conversions, 0);
   const priR = livePriorItems.reduce((a, b) => a + b.revenue, 0);
 
-  const deltaSpend = priS > 0 ? `${(((curS - priS) / priS) * 100).toFixed(1)}%` : '-17.4%';
-  const trendSpend = priS > 0 ? (curS <= priS ? 'up' : 'down') : 'up';
+  const calcDelta = (cur: number, pri: number) => {
+    if (pri === 0) return cur > 0 ? 'NEW' : '0.0%';
+    const diff = ((cur - pri) / pri) * 100;
+    return `${diff >= 0 ? '+' : ''}${diff.toFixed(1)}%`;
+  };
 
-  const deltaSales = priC > 0 ? `${(((curC - priC) / priC) * 100).toFixed(1)}%` : '-18.6%';
-  const trendSales = priC > 0 ? (curC >= priC ? 'up' : 'down') : 'down';
+  const getTrend = (cur: number, pri: number, invert = false): 'up' | 'down' | 'neutral' => {
+    if (pri === 0) return 'neutral';
+    if (cur === pri) return 'neutral';
+    const isUp = cur > pri;
+    return invert ? (isUp ? 'down' : 'up') : (isUp ? 'up' : 'down');
+  };
 
-  const deltaRev = priR > 0 ? `${(((curR - priR) / priR) * 100).toFixed(1)}%` : '-5.5%';
-  const trendRev = priR > 0 ? (curR >= priR ? 'up' : 'down') : 'down';
+  const deltaSpend = calcDelta(curS, priS);
+  const trendSpend = getTrend(curS, priS, true);
 
-  const curROASVal = curR / Math.max(1, curS);
-  const priROASVal = priR / Math.max(1, priS);
-  const deltaROAS = (priS > 0 && priR > 0) ? `${(((curROASVal - priROASVal) / priROASVal) * 100).toFixed(1)}%` : '+14.4%';
-  const trendROAS = (priS > 0 && priR > 0) ? (curROASVal >= priROASVal ? 'up' : 'down') : 'up';
+  const deltaSales = calcDelta(curC, priC);
+  const trendSales = getTrend(curC, priC);
+
+  const deltaRev = calcDelta(curR, priR);
+  const trendRev = getTrend(curR, priR);
+
+  const curROASVal = curS > 0 ? curR / curS : 0;
+  const priROASVal = priS > 0 ? priR / priS : 0;
+  const deltaROAS = (priS > 0 && priR > 0) ? calcDelta(curROASVal, priROASVal) : 'NEW';
+  const trendROAS = (priS > 0 && priR > 0) ? getTrend(curROASVal, priROASVal) : 'neutral';
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -107,8 +112,9 @@ export const TikTokAdsSlide = ({
     return sortDir === 'asc' ? <ChevronUp size={14} className="inline ml-1" /> : <ChevronDown size={14} className="inline ml-1" />;
   };
 
-  const cpaValue = curC > 0 ? curS / curC : 34.43;
-  const pctOfTotal = Math.round((curS / Math.max(1, metrics.current.total.spend)) * 100) || 16;
+  const cpaValue = curC > 0 ? curS / curC : 0;
+  const totalPeriodSpend = metrics.current.total.spend;
+  const pctOfTotal = totalPeriodSpend > 0 ? Math.round((curS / totalPeriodSpend) * 100) : 2;
 
   return (
     <SlideWrapper id="tiktok" innerClassName="border-l-[3px] border-l-[#000000]">

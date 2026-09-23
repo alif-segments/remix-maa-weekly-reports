@@ -183,11 +183,11 @@ export default function App() {
     const total = cur.total || { revenue: 0, spend: 0, conversions: 0 };
     const grants = cur.google_grants || { clicks: 0, spend: 0 };
 
-    const tiktokSpendVal = tads.spend > 0 ? tads.spend : 2857.85;
-    const tiktokRevVal = tads.revenue > 0 ? tads.revenue : 7916.00;
-    const tiktokConvVal = tads.conversions > 0 ? tads.conversions : 83;
-    const tiktokRoasVal = tads.spend > 0 && tads.revenue > 0 ? fROAS(tads.revenue, tads.spend) : '2.77x';
-    const tiktokCpaVal = tads.spend > 0 && tads.conversions > 0 ? fCPA(tads.spend, tads.conversions) : '$34.43';
+    const tiktokSpendVal = tads.spend;
+    const tiktokRevVal = tads.revenue;
+    const tiktokConvVal = tads.conversions;
+    const tiktokRoasVal = tads.spend > 0 ? fROAS(tads.revenue, tads.spend) : '0.00x';
+    const tiktokCpaVal = tads.conversions > 0 ? fCPA(tads.spend, tads.conversions) : '$0.00';
 
     const maxSales = Math.max(...creatives.map(c => c.conversions || 0), 1);
     const maxRevenue = Math.max(...creatives.map(c => c.revenue || 0), 1);
@@ -361,7 +361,7 @@ Focus remains on brand awareness and information discovery for core mission keyw
       <TikTokAdsSlide 
         metrics={metrics} 
         isEditMode={isEditMode}
-        content={localPageContent.tiktok_summary}
+        content={(localPageContent.tiktok_summary?.includes('7,916') || localPageContent.tiktok_summary?.includes('2,857')) ? undefined : localPageContent.tiktok_summary}
         defaultText={defaultContents.tiktok_summary}
         onUpdateContent={(val) => handleUpdateContent('tiktok_summary', val)}
         onSave={(val) => handleSaveSection('tiktok_summary', val)}

@@ -217,7 +217,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
           rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
         } else if (isTikTok) {
           conv = parse(row.complete_payment) || parse(row.conversions);
-          rev = parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
+          rev = parse(row.total_complete_payment_rate) || parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
         } else {
           conv = parse(row.conversions);
           rev = parse(row.conversion_value);
@@ -340,7 +340,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
         rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
       } else if (row.datasource?.toLowerCase() === 'tiktok') {
         conv = parse(row.complete_payment) || parse(row.conversions);
-        rev = parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
+        rev = parse(row.total_complete_payment_rate) || parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
       } else {
         conv = parse(row.conversions);
         rev = parse(row.conversion_value);
@@ -397,7 +397,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
         rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
       } else if (row.datasource?.toLowerCase() === 'tiktok') {
         conv = parse(row.complete_payment) || parse(row.conversions);
-        rev = parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
+        rev = parse(row.total_complete_payment_rate) || parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
       } else {
         conv = parse(row.conversions);
         rev = parse(row.conversion_value);
