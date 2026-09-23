@@ -2,12 +2,12 @@ export interface RawData {
   account_name: string;
   campaign: string;
   clicks: string;
-  datasource: "facebook" | "google_ads";
+  datasource: "facebook" | "google_ads" | "tiktok" | string;
   date: string;
   spend: string;
-  cost: string;
-  conversions: string;
-  ctr: string;
+  cost?: string;
+  conversions?: string;
+  ctr?: string;
   name?: string;
   actions_landing_page_view?: string;
   actions_lead?: string;
@@ -16,6 +16,10 @@ export interface RawData {
   conversion_value?: string;
   mobile_feed_standard_preview_url?: string;
   week_iso?: string;
+  currency?: string;
+  total_complete_payment_rate?: string | number;
+  complete_payment?: string | number;
+  total_complete_payment_value?: string | number;
 }
 
 export interface ProcessedMetric {
@@ -31,6 +35,7 @@ export interface PeriodMetrics {
   total: ProcessedMetric;
   google_ads: ProcessedMetric;
   meta_ads: ProcessedMetric;
+  tiktok_ads?: ProcessedMetric;
   google_grants: { clicks: number; spend: number; conversions: number; revenue: number };
   byCampaign: Record<string, ProcessedMetric & { source: string }>;
   byCreative: Record<string, ProcessedMetric & { campaign: string, preview_url?: string }>;

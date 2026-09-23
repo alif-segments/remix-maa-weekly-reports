@@ -35,6 +35,11 @@ export const WeeklyTrendSlide = ({ metrics }: WeeklyTrendSlideProps) => {
                <img src={LOGOS.google_ads} alt="Google" className="h-5 w-auto object-contain" />
                <span className="text-[10px] font-bold text-[#4285F4] uppercase">Google</span>
              </div>
+             <span className="text-[10px] font-bold text-gray-300">x</span>
+             <div className="flex items-center gap-2">
+               <img src={LOGOS.tiktok} alt="TikTok" className="h-5 w-auto object-contain" />
+               <span className="text-[10px] font-bold text-slate-800 uppercase">TikTok</span>
+             </div>
              <div className="section-label !mb-0 ml-0 sm:ml-2">12-Week Trend</div>
           </div>
           <h2 className="text-[20px] font-[800] text-slate-900 tracking-tight mb-1">Weekly Performance Overview</h2>

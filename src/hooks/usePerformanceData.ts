@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { RawData, PeriodMetrics, MetricsSummary, GA4PeriodMetrics, GA4MetricsSummary, DateRange } from '@/src/types';
-import { API_URL, GA4_API_URL } from '@/src/constants';
+import { API_URL, GA4_API_URL, TIKTOK_ADS_API_URL } from '@/src/constants';
 
 export function usePerformanceData(customRange?: DateRange | null) {
   const [data, setData] = useState<RawData[]>([]);
@@ -12,34 +12,63 @@ export function usePerformanceData(customRange?: DateRange | null) {
       try {
         let perfResult: any = null;
         let ga4Result: any = null;
+        let tiktokResult: any = null;
 
         // Try direct fetch first
         try {
-          const [perfRes, ga4Res] = await Promise.all([
+          const [perfRes, ga4Res, tiktokRes] = await Promise.all([
             fetch(API_URL),
-            fetch(GA4_API_URL)
+            fetch(GA4_API_URL),
+            fetch(TIKTOK_ADS_API_URL).catch((e) => {
+              console.warn("Direct TikTok fetch failed:", e);
+              return null;
+            })
           ]);
           if (!perfRes.ok || !ga4Res.ok) {
             throw new Error(`Direct fetch response status: ${perfRes.status} / ${ga4Res.status}`);
           }
           perfResult = await perfRes.json();
           ga4Result = await ga4Res.json();
+          if (tiktokRes && tiktokRes.ok) {
+            tiktokResult = await tiktokRes.json();
+          }
         } catch (directErr) {
           // If direct fetch is blocked by client ad-blocker or CORS, fallback to proxy
           console.warn("[usePerformanceData] Direct fetch unavailable, falling back to server proxy:", directErr);
-          const [perfRes, ga4Res] = await Promise.all([
+          const [perfRes, ga4Res, tiktokRes] = await Promise.all([
             fetch('/api/proxy/perf'),
-            fetch('/api/proxy/ga4')
+            fetch('/api/proxy/ga4'),
+            fetch('/api/proxy/tiktok').catch(() => null)
           ]);
           if (!perfRes.ok || !ga4Res.ok) {
             throw new Error(`Proxy response status: ${perfRes.status} / ${ga4Res.status}`);
           }
           perfResult = await perfRes.json();
           ga4Result = await ga4Res.json();
+          if (tiktokRes && tiktokRes.ok) {
+            tiktokResult = await tiktokRes.json();
+          }
+        }
+
+        // If direct succeeded for perf and ga4, but tiktok failed or was blocked, attempt proxy for tiktok
+        if (!tiktokResult) {
+          try {
+            const proxyTikTok = await fetch('/api/proxy/tiktok');
+            if (proxyTikTok.ok) {
+              tiktokResult = await proxyTikTok.json();
+            }
+          } catch (e) {
+            console.warn("TikTok proxy fallback failed:", e);
+          }
         }
         
-        setData(perfResult.data || perfResult);
-        setGa4Data(ga4Result.data || ga4Result);
+        const perfRows: RawData[] = Array.isArray(perfResult?.data) ? perfResult.data : (Array.isArray(perfResult) ? perfResult : []);
+        const tiktokRows: RawData[] = Array.isArray(tiktokResult?.data) 
+          ? tiktokResult.data.map((r: any) => ({ ...r, datasource: 'tiktok' })) 
+          : (Array.isArray(tiktokResult) ? tiktokResult.map((r: any) => ({ ...r, datasource: 'tiktok' })) : []);
+
+        setData([...perfRows, ...tiktokRows]);
+        setGa4Data(ga4Result?.data || ga4Result || []);
       } catch (err) {
         console.error("Performance data fetch failed:", err);
       } finally {
@@ -154,6 +183,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
         total: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
         google_ads: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
         meta_ads: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
+        tiktok_ads: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
         google_grants: { clicks: 0, spend: 0, conversions: 0, revenue: 0 },
         byCampaign: {},
         byCreative: {}
@@ -168,10 +198,11 @@ export function usePerformanceData(customRange?: DateRange | null) {
       pData.forEach(row => {
         const ds = row.datasource?.toLowerCase() || '';
         const isFacebook = ds === 'facebook';
-        const isGoogle = ds === 'googleads' || ds === 'google_ads' || (ds !== 'facebook' && row.account_name.includes("-")); // Fallback for IDs
+        const isTikTok = ds === 'tiktok';
+        const isGoogle = ds === 'googleads' || ds === 'google_ads' || (!isFacebook && !isTikTok && (row.account_name || '').includes("-")); // Fallback for IDs
 
-        const isGrants = row.account_name.toLowerCase().includes("grants");
-        const accountId = row.account_name.match(/(\d{3}-\d{3}-\d{4})/)?.[0] || "";
+        const isGrants = (row.account_name || '').toLowerCase().includes("grants");
+        const accountId = (row.account_name || '').match(/(\d{3}-\d{3}-\d{4})/)?.[0] || "";
         const isSeparate = isGrants || accountId === "328-834-3137";
         
         const spend = parse(row.spend || row.cost);
@@ -184,6 +215,9 @@ export function usePerformanceData(customRange?: DateRange | null) {
         if (isFacebook) {
           conv = parse(row.actions_offsite_conversion_fb_pixel_purchase) || parse(row.conversions);
           rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
+        } else if (isTikTok) {
+          conv = parse(row.complete_payment) || parse(row.conversions);
+          rev = parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
         } else {
           conv = parse(row.conversions);
           rev = parse(row.conversion_value);
@@ -202,6 +236,12 @@ export function usePerformanceData(customRange?: DateRange | null) {
             result.meta_ads.conversions += conv;
             result.meta_ads.revenue += rev;
             result.meta_ads.lpv += lpv;
+          } else if (isTikTok && result.tiktok_ads) {
+            result.tiktok_ads.spend += spend;
+            result.tiktok_ads.clicks += clicks;
+            result.tiktok_ads.conversions += conv;
+            result.tiktok_ads.revenue += rev;
+            result.tiktok_ads.lpv += lpv;
           } else {
             result.google_ads.spend += spend;
             result.google_ads.clicks += clicks;
@@ -216,10 +256,19 @@ export function usePerformanceData(customRange?: DateRange | null) {
           result.google_grants.revenue += rev;
         }
 
-        if (!result.byCampaign[row.campaign]) {
-          result.byCampaign[row.campaign] = { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0, source: ds + (isSeparate ? "_separate" : "") };
+        const campaignKey = row.campaign || (isTikTok ? 'TikTok Campaign' : 'Unnamed Campaign');
+        if (!result.byCampaign[campaignKey]) {
+          result.byCampaign[campaignKey] = { 
+            spend: 0, 
+            clicks: 0, 
+            conversions: 0, 
+            revenue: 0, 
+            lpv: 0, 
+            ctr: 0, 
+            source: isTikTok ? 'tiktok' : (ds + (isSeparate ? "_separate" : "")) 
+          };
         }
-        const c = result.byCampaign[row.campaign];
+        const c = result.byCampaign[campaignKey];
         c.spend += spend;
         c.clicks += clicks;
         c.conversions += conv;
@@ -289,12 +338,15 @@ export function usePerformanceData(customRange?: DateRange | null) {
       if (row.datasource?.toLowerCase() === 'facebook') {
         conv = parse(row.actions_offsite_conversion_fb_pixel_purchase) || parse(row.conversions);
         rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
+      } else if (row.datasource?.toLowerCase() === 'tiktok') {
+        conv = parse(row.complete_payment) || parse(row.conversions);
+        rev = parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
       } else {
         conv = parse(row.conversions);
         rev = parse(row.conversion_value);
       }
       
-      const isSeparate = row.account_name.includes("Grants") || row.account_name.includes("328-834-3137");
+      const isSeparate = (row.account_name || '').includes("Grants") || (row.account_name || '').includes("328-834-3137");
       if (!isSeparate) {
         weeks[weekKey].spend += spend;
         weeks[weekKey].conversions += conv;
@@ -329,7 +381,12 @@ export function usePerformanceData(customRange?: DateRange | null) {
     const dailyPerf = dailyDataRaw.reduce((acc: any, row) => {
       const date = formatD(row.date);
       if (!acc[date]) {
-        acc[date] = { date, facebook: { spend: 0, revenue: 0, conv: 0 }, google: { spend: 0, revenue: 0, conv: 0 } };
+        acc[date] = { 
+          date, 
+          facebook: { spend: 0, revenue: 0, conv: 0 }, 
+          google: { spend: 0, revenue: 0, conv: 0 },
+          tiktok: { spend: 0, revenue: 0, conv: 0 }
+        };
       }
       
       const spend = parse(row.spend || row.cost);
@@ -338,15 +395,21 @@ export function usePerformanceData(customRange?: DateRange | null) {
       if (row.datasource?.toLowerCase() === 'facebook') {
         conv = parse(row.actions_offsite_conversion_fb_pixel_purchase) || parse(row.conversions);
         rev = parse(row.action_values_omni_purchase) || parse(row.conversion_value);
+      } else if (row.datasource?.toLowerCase() === 'tiktok') {
+        conv = parse(row.complete_payment) || parse(row.conversions);
+        rev = parse(row.total_complete_payment_value) || parse(row.conversion_value) || parse(row.action_values_omni_purchase) || 0;
       } else {
         conv = parse(row.conversions);
         rev = parse(row.conversion_value);
       }
 
-      const source = row.datasource?.toLowerCase() === 'facebook' ? 'facebook' : 'google';
-      const isSeparate = row.account_name.includes("Grants") || row.account_name.includes("328-834-3137");
+      let source = 'google';
+      if (row.datasource?.toLowerCase() === 'facebook') source = 'facebook';
+      else if (row.datasource?.toLowerCase() === 'tiktok') source = 'tiktok';
+      
+      const isSeparate = (row.account_name || '').includes("Grants") || (row.account_name || '').includes("328-834-3137");
 
-      if (!isSeparate) {
+      if (!isSeparate && acc[date][source]) {
         acc[date][source].spend += spend;
         acc[date][source].revenue += rev;
         acc[date][source].conv += conv;

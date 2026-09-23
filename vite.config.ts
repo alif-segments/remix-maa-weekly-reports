@@ -18,6 +18,8 @@ function donorReportPlugin(env: Record<string, string>): Plugin {
             targetUrl = 'https://connectors.windsor.ai/all?api_key=3f317e7be46a1f3d3e055cb5842471356862&date_preset=last_180d&fields=account_name,action_values_omni_purchase,actions_landing_page_view,actions_lead,actions_offsite_conversion_fb_pixel_purchase,campaign,clicks,ctr,datasource,date,mobile_feed_standard_preview_url,name,spend,conversion_value,conversions,cost&select_accounts=facebook__10158483724430125,google_ads__328-834-3137,google_ads__977-586-1799';
           } else if (proxyType === 'ga4') {
             targetUrl = 'https://connectors.windsor.ai/googleanalytics4?api_key=3f317e7be46a1f3d3e055cb5842471356862&date_preset=last_180d&fields=account_name,campaign,conversions,datasource,date,sessions,transactions,ecommerce_purchases,purchase_revenue,totalrevenue,week,totalusers,session_default_channel_group&select_accounts=387513347';
+          } else if (proxyType === 'tiktok') {
+            targetUrl = 'https://connectors.windsor.ai/tiktok?api_key=3f317e7be46a1f3d3e055cb5842471356862&date_preset=last_180d&fields=date,datasource,account_name,campaign,clicks,spend,currency,total_complete_payment_rate,complete_payment&select_accounts=7083339921917870081';
           } else if (proxyType === 'gas') {
             targetUrl = env.VITE_GAS_URL || 'https://script.google.com/macros/s/AKfycbyVNGRjATsDF4o67DMzidjm1QymBKj7Z5tJPD_hMWVqwkwiIT7RHf4jtTj4n9bpCNUq/exec';
           }

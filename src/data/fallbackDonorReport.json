@@ -1,0 +1,3871 @@
+{
+  "generated_at": "2026-09-23T17:47:29.617Z",
+  "timezone": "Australia/Sydney",
+  "currency": "AUD",
+  "current": {
+    "week_start": "2026-09-14",
+    "week_end": "2026-09-20",
+    "total": {
+      "count": 70,
+      "value": 80293.51
+    },
+    "new_donor": {
+      "count": 45,
+      "value": 78400.31
+    },
+    "existing_donor": {
+      "count": 5,
+      "value": 514
+    },
+    "guest": {
+      "count": 20,
+      "value": 1379.2
+    },
+    "recurring": {
+      "count": 2,
+      "value": 180
+    },
+    "one_time": {
+      "count": 68,
+      "value": 80113.51
+    },
+    "mixed_count": 0
+  },
+  "previous": {
+    "week_start": "2026-09-07",
+    "week_end": "2026-09-13",
+    "total": {
+      "count": 0,
+      "value": 0
+    },
+    "new_donor": {
+      "count": 0,
+      "value": 0
+    },
+    "existing_donor": {
+      "count": 0,
+      "value": 0
+    },
+    "guest": {
+      "count": 0,
+      "value": 0
+    },
+    "recurring": {
+      "count": 0,
+      "value": 0
+    },
+    "one_time": {
+      "count": 0,
+      "value": 0
+    },
+    "mixed_count": 0
+  },
+  "weeks": [
+    {
+      "week_start": "2026-06-29",
+      "week_end": "2026-07-05",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-07-06",
+      "week_end": "2026-07-12",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-07-13",
+      "week_end": "2026-07-19",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-07-20",
+      "week_end": "2026-07-26",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-07-27",
+      "week_end": "2026-08-02",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-08-03",
+      "week_end": "2026-08-09",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-08-10",
+      "week_end": "2026-08-16",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-08-17",
+      "week_end": "2026-08-23",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-08-24",
+      "week_end": "2026-08-30",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-08-31",
+      "week_end": "2026-09-06",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-09-07",
+      "week_end": "2026-09-13",
+      "total": {
+        "count": 0,
+        "value": 0
+      },
+      "new_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "existing_donor": {
+        "count": 0,
+        "value": 0
+      },
+      "guest": {
+        "count": 0,
+        "value": 0
+      },
+      "recurring": {
+        "count": 0,
+        "value": 0
+      },
+      "one_time": {
+        "count": 0,
+        "value": 0
+      },
+      "mixed_count": 0
+    },
+    {
+      "week_start": "2026-09-14",
+      "week_end": "2026-09-20",
+      "total": {
+        "count": 70,
+        "value": 80293.51
+      },
+      "new_donor": {
+        "count": 45,
+        "value": 78400.31
+      },
+      "existing_donor": {
+        "count": 5,
+        "value": 514
+      },
+      "guest": {
+        "count": 20,
+        "value": 1379.2
+      },
+      "recurring": {
+        "count": 2,
+        "value": 180
+      },
+      "one_time": {
+        "count": 68,
+        "value": 80113.51
+      },
+      "mixed_count": 0
+    }
+  ],
+  "active_weeks": [
+    {
+      "week_start": "2026-09-21",
+      "week_end": "2026-09-27",
+      "total": {
+        "count": 213,
+        "value": 50001.7
+      },
+      "new_donor": {
+        "count": 91,
+        "value": 34873.35
+      },
+      "existing_donor": {
+        "count": 45,
+        "value": 5545
+      },
+      "guest": {
+        "count": 77,
+        "value": 9583.35
+      },
+      "recurring": {
+        "count": 7,
+        "value": 7995
+      },
+      "one_time": {
+        "count": 207,
+        "value": 42006.7
+      },
+      "mixed_count": 1
+    },
+    {
+      "week_start": "2026-09-14",
+      "week_end": "2026-09-20",
+      "total": {
+        "count": 70,
+        "value": 80293.51
+      },
+      "new_donor": {
+        "count": 45,
+        "value": 78400.31
+      },
+      "existing_donor": {
+        "count": 5,
+        "value": 514
+      },
+      "guest": {
+        "count": 20,
+        "value": 1379.2
+      },
+      "recurring": {
+        "count": 2,
+        "value": 180
+      },
+      "one_time": {
+        "count": 68,
+        "value": 80113.51
+      },
+      "mixed_count": 0
+    }
+  ],
+  "transactions": [
+    {
+      "id": "W2609240007",
+      "date": "2026-09-24",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790184519479
+    },
+    {
+      "id": "W2609240006",
+      "date": "2026-09-24",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790175587498
+    },
+    {
+      "id": "W2609240002",
+      "date": "2026-09-24",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 46.05,
+      "one": 46.05,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790172213677
+    },
+    {
+      "id": "W2609230108",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790171679655
+    },
+    {
+      "id": "W2609230106",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 31,
+      "one": 31,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790168884179
+    },
+    {
+      "id": "W2609230105",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790168533280
+    },
+    {
+      "id": "W2609230103",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790167725219
+    },
+    {
+      "id": "W2609230102",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 40,
+      "one": 40,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790167649344
+    },
+    {
+      "id": "W2609230101",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790167204571
+    },
+    {
+      "id": "W2609230098",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 3000,
+      "one": 3000,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790166465161
+    },
+    {
+      "id": "W2609230096",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790165092667
+    },
+    {
+      "id": "W2609230094",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790164087228
+    },
+    {
+      "id": "W2609230093",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790162549924
+    },
+    {
+      "id": "W2609230092",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790161647077
+    },
+    {
+      "id": "W2609230090",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790161120510
+    },
+    {
+      "id": "W2609230088",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790160664685
+    },
+    {
+      "id": "W2609230086",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 400,
+      "one": 400,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790159504180
+    },
+    {
+      "id": "W2609230084",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 225,
+      "one": 225,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790157819339
+    },
+    {
+      "id": "W2609230083",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 185,
+      "one": 185,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790155434313
+    },
+    {
+      "id": "W2609230082",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790154920054
+    },
+    {
+      "id": "W2609230081",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790154717191
+    },
+    {
+      "id": "W2609230078",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790150135389
+    },
+    {
+      "id": "W2609230074",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790140135555
+    },
+    {
+      "id": "W2609230073",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 3000,
+      "one": 3000,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790138777353
+    },
+    {
+      "id": "W2609230071",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790138131156
+    },
+    {
+      "id": "W2609230070",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790136697675
+    },
+    {
+      "id": "W2609230069",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790136679454
+    },
+    {
+      "id": "W2609230068",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790136142467
+    },
+    {
+      "id": "W2609230066",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790134674180
+    },
+    {
+      "id": "W2609230065",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 150,
+      "one": 150,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790133426358
+    },
+    {
+      "id": "W2609230064",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790133018208
+    },
+    {
+      "id": "W2609230060",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 60,
+      "one": 60,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790132494896
+    },
+    {
+      "id": "W2609230059",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790132296760
+    },
+    {
+      "id": "W2609230058",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790131902672
+    },
+    {
+      "id": "W2609230057",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790128167708
+    },
+    {
+      "id": "W2609230053",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790127539184
+    },
+    {
+      "id": "W2609230044",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790126651262
+    },
+    {
+      "id": "W2609230043",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 500,
+      "one": 500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790124354496
+    },
+    {
+      "id": "W2609230042",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790123041534
+    },
+    {
+      "id": "W2609230040",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790117615238
+    },
+    {
+      "id": "W2609230039",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790116708265
+    },
+    {
+      "id": "W2609230031",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790116525008
+    },
+    {
+      "id": "W2609230029",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790114809490
+    },
+    {
+      "id": "W2609230028",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790113710319
+    },
+    {
+      "id": "W2609230027",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790113578186
+    },
+    {
+      "id": "W2609230026",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790112881955
+    },
+    {
+      "id": "W2609230021",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790109353201
+    },
+    {
+      "id": "W2609230017",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 295,
+      "one": 295,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790106622431
+    },
+    {
+      "id": "W2609230018",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 400,
+      "one": 400,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790106961426
+    },
+    {
+      "id": "W2609230010",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790096899648
+    },
+    {
+      "id": "W2609230009",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790095676788
+    },
+    {
+      "id": "W2609230008",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790095584297
+    },
+    {
+      "id": "W2609230007",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790094586571
+    },
+    {
+      "id": "W2609230006",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790094326294
+    },
+    {
+      "id": "W2609230004",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 150,
+      "one": 150,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790093028500
+    },
+    {
+      "id": "W2609230002",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 4.3,
+      "one": 4.3,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790089183965
+    },
+    {
+      "id": "W2609230003",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790088096354
+    },
+    {
+      "id": "W2609230001",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790085806606
+    },
+    {
+      "id": "W2609220086",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790083895575
+    },
+    {
+      "id": "W2609220085",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790082454480
+    },
+    {
+      "id": "W2609220084",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10000,
+      "one": 10000,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790082196052
+    },
+    {
+      "id": "W2609220082",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 130,
+      "one": 130,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790080881601
+    },
+    {
+      "id": "W2609220081",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790080844478
+    },
+    {
+      "id": "W2609220080",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 500,
+      "one": 500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790078835752
+    },
+    {
+      "id": "W2609220079",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790077534727
+    },
+    {
+      "id": "W2609220078",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 150,
+      "one": 150,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790076581349
+    },
+    {
+      "id": "W2609220077",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 40,
+      "one": 40,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790076435043
+    },
+    {
+      "id": "W2609220075",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 500,
+      "one": 500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790075393436
+    },
+    {
+      "id": "W2609220074",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 940,
+      "one": 940,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790075302162
+    },
+    {
+      "id": "W2609220073",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790074288011
+    },
+    {
+      "id": "W2609220071",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790071130963
+    },
+    {
+      "id": "W2609220067",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790066271135
+    },
+    {
+      "id": "W2609220066",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 400,
+      "one": 400,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790064998678
+    },
+    {
+      "id": "W2609220064",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790061632531
+    },
+    {
+      "id": "W2609220062",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790060009272
+    },
+    {
+      "id": "R2609220004",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 3000,
+      "one": 0,
+      "rec": 3000,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1790059677502
+    },
+    {
+      "id": "W2609220061",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790054534307
+    },
+    {
+      "id": "R2609220003",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 1440,
+      "one": 0,
+      "rec": 1440,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1790051689807
+    },
+    {
+      "id": "W2609220059",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790050834535
+    },
+    {
+      "id": "W2609220058",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790050474959
+    },
+    {
+      "id": "W2609220049",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790047676927
+    },
+    {
+      "id": "W2609220048",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5400,
+      "one": 5400,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790044543206
+    },
+    {
+      "id": "W2609220047",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790042159622
+    },
+    {
+      "id": "W2609220046",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790042076100
+    },
+    {
+      "id": "W2609220045",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790041286521
+    },
+    {
+      "id": "W2609220043",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 150,
+      "one": 150,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790037134184
+    },
+    {
+      "id": "W2609220042",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790036359163
+    },
+    {
+      "id": "F2609220001",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790035978925
+    },
+    {
+      "id": "R2609220001",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 360,
+      "one": 0,
+      "rec": 360,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1790033853675
+    },
+    {
+      "id": "R2609220002",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 720,
+      "one": 0,
+      "rec": 720,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1790034677415
+    },
+    {
+      "id": "W2609220032",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790033370761
+    },
+    {
+      "id": "W2609220031",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790033255128
+    },
+    {
+      "id": "W2609220029",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790031464863
+    },
+    {
+      "id": "W2609220025",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790030289712
+    },
+    {
+      "id": "W2609220024",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790029521271
+    },
+    {
+      "id": "W2609220022",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 70,
+      "one": 70,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790026904116
+    },
+    {
+      "id": "W2609220020",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790026391641
+    },
+    {
+      "id": "W2609230013",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790101637717
+    },
+    {
+      "id": "W2609220019",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790025644524
+    },
+    {
+      "id": "W2609220018",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790025365114
+    },
+    {
+      "id": "W2609220017",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 500,
+      "one": 500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790023614785
+    },
+    {
+      "id": "W2609220016",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790023353210
+    },
+    {
+      "id": "W2609220015",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790021633653
+    },
+    {
+      "id": "W2609220014",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790021444539
+    },
+    {
+      "id": "W2609220011",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790019502482
+    },
+    {
+      "id": "W2609220010",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790016834738
+    },
+    {
+      "id": "W2609220008",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790016253684
+    },
+    {
+      "id": "W2609220005",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790012929719
+    },
+    {
+      "id": "W2609220004",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790012444002
+    },
+    {
+      "id": "W2609220002",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790001354149
+    },
+    {
+      "id": "R2609210003",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 150,
+      "one": 0,
+      "rec": 150,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1789996516839
+    },
+    {
+      "id": "W2609210079",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789993571113
+    },
+    {
+      "id": "W2609210075",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 21.35,
+      "one": 21.35,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789992604588
+    },
+    {
+      "id": "W2609210074",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789991879909
+    },
+    {
+      "id": "W2609210073",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789990235859
+    },
+    {
+      "id": "W2609210072",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 15,
+      "one": 15,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789989782392
+    },
+    {
+      "id": "W2609210070",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789986283437
+    },
+    {
+      "id": "W2609210069",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789985506344
+    },
+    {
+      "id": "W2609210067",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789984885181
+    },
+    {
+      "id": "W2609210066",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789984406466
+    },
+    {
+      "id": "W2609210065",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 55,
+      "one": 55,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789982710655
+    },
+    {
+      "id": "W2609210064",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 770,
+      "one": 770,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789981392592
+    },
+    {
+      "id": "W2609210063",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789980639588
+    },
+    {
+      "id": "W2609210062",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789980001265
+    },
+    {
+      "id": "W2609210061",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789979602240
+    },
+    {
+      "id": "W2609210060",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 250,
+      "one": 250,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789978897502
+    },
+    {
+      "id": "W2609210059",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789978293513
+    },
+    {
+      "id": "W2609210058",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 185,
+      "one": 185,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789978241917
+    },
+    {
+      "id": "W2609210057",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 70,
+      "one": 70,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789977902958
+    },
+    {
+      "id": "W2609210055",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789974725980
+    },
+    {
+      "id": "W2609210054",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789973605417
+    },
+    {
+      "id": "W2609210052",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789972199871
+    },
+    {
+      "id": "W2609210051",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 7,
+      "one": 7,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789970403813
+    },
+    {
+      "id": "W2609210049",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 7,
+      "one": 7,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789966647978
+    },
+    {
+      "id": "W2609210047",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789962792826
+    },
+    {
+      "id": "W2609210046",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 300,
+      "one": 300,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789961995071
+    },
+    {
+      "id": "W2609210045",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789958464385
+    },
+    {
+      "id": "W2609210044",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 1600,
+      "one": 1600,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789955075767
+    },
+    {
+      "id": "W2609210043",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 700,
+      "one": 700,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789952847130
+    },
+    {
+      "id": "W2609210042",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 40,
+      "one": 40,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789952763464
+    },
+    {
+      "id": "W2609210041",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 70,
+      "one": 70,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789952633610
+    },
+    {
+      "id": "W2609210038",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789949281164
+    },
+    {
+      "id": "W2609210037",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 505,
+      "one": 5,
+      "rec": 500,
+      "mixed": true,
+      "type": "mixed",
+      "timestamp": 1789948573758
+    },
+    {
+      "id": "W2609210036",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789948545295
+    },
+    {
+      "id": "W2609210035",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789947993233
+    },
+    {
+      "id": "W2609210034",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 11,
+      "one": 11,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789947126438
+    },
+    {
+      "id": "W2609230080",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 11,
+      "one": 11,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790151692466
+    },
+    {
+      "id": "W2609210033",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789945848425
+    },
+    {
+      "id": "W2609210032",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789945410085
+    },
+    {
+      "id": "W2609210031",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789945309767
+    },
+    {
+      "id": "W2609210030",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789945136817
+    },
+    {
+      "id": "W2609210029",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789945056893
+    },
+    {
+      "id": "R2609210001",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 1825,
+      "one": 0,
+      "rec": 1825,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1789944402011
+    },
+    {
+      "id": "W2609210028",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789944041256
+    },
+    {
+      "id": "W2609210027",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789940812619
+    },
+    {
+      "id": "W2609230041",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790118353149
+    },
+    {
+      "id": "W2609210026",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789940659812
+    },
+    {
+      "id": "W2609210025",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789940515707
+    },
+    {
+      "id": "W2609210022",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789939660772
+    },
+    {
+      "id": "W2609210023",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789939633040
+    },
+    {
+      "id": "W2609210020",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 1000,
+      "one": 1000,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789937941343
+    },
+    {
+      "id": "W2609210019",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789937322311
+    },
+    {
+      "id": "W2609210017",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789935146673
+    },
+    {
+      "id": "W2609210016",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789933533571
+    },
+    {
+      "id": "W2609210015",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 9,
+      "one": 9,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789933490039
+    },
+    {
+      "id": "W2609220012",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 9,
+      "one": 9,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790019948370
+    },
+    {
+      "id": "W2609230016",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 9,
+      "one": 9,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790106326280
+    },
+    {
+      "id": "W2609210014",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789933012044
+    },
+    {
+      "id": "W2609210010",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789928769474
+    },
+    {
+      "id": "W2609220006",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790014945565
+    },
+    {
+      "id": "W2609230012",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790101335910
+    },
+    {
+      "id": "W2609210009",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789928711886
+    },
+    {
+      "id": "W2609210008",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789918582552
+    },
+    {
+      "id": "W2609210007",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789916694083
+    },
+    {
+      "id": "W2609210006",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 55,
+      "one": 55,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789915320263
+    },
+    {
+      "id": "W2609210005",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "new",
+      "total": 120,
+      "one": 120,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789914588015
+    },
+    {
+      "id": "W2609210003",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789913108150
+    },
+    {
+      "id": "W2609200056",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789910998450
+    },
+    {
+      "id": "W2609200055",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789910616392
+    },
+    {
+      "id": "W2609200050",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 600,
+      "one": 600,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789904561110
+    },
+    {
+      "id": "W2609200048",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789904322113
+    },
+    {
+      "id": "W2609200047",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789904196123
+    },
+    {
+      "id": "W2609200046",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789903199345
+    },
+    {
+      "id": "W2609200045",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789902507522
+    },
+    {
+      "id": "W2609200044",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 6,
+      "one": 6,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789902216859
+    },
+    {
+      "id": "W2609210018",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789936347413
+    },
+    {
+      "id": "W2609210053",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 6,
+      "one": 6,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789973100579
+    },
+    {
+      "id": "W2609220013",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 6,
+      "one": 6,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790021293508
+    },
+    {
+      "id": "W2609230022",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790110922879
+    },
+    {
+      "id": "W2609230023",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 12,
+      "one": 12,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790111057062
+    },
+    {
+      "id": "W2609200043",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789896870898
+    },
+    {
+      "id": "W2609200041",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789896441574
+    },
+    {
+      "id": "R2609200001",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 120,
+      "one": 0,
+      "rec": 120,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1789890213589
+    },
+    {
+      "id": "W2609200037",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 1500,
+      "one": 1500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789888955349
+    },
+    {
+      "id": "W2609200036",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789888672391
+    },
+    {
+      "id": "W2609200035",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 800,
+      "one": 800,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789888096010
+    },
+    {
+      "id": "W2609220033",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 2100,
+      "one": 2100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790034302354
+    },
+    {
+      "id": "W2609200034",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789883282935
+    },
+    {
+      "id": "W2609200033",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789882314979
+    },
+    {
+      "id": "W2609240004",
+      "date": "2026-09-24",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790173847194
+    },
+    {
+      "id": "W2609200032",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789881077710
+    },
+    {
+      "id": "W2609200031",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 400,
+      "one": 400,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789879477066
+    },
+    {
+      "id": "W2609200030",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 60,
+      "one": 60,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789878715273
+    },
+    {
+      "id": "W2609210071",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789988226929
+    },
+    {
+      "id": "W2609220068",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790067041280
+    },
+    {
+      "id": "W2609220070",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790069908977
+    },
+    {
+      "id": "W2609230072",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 17,
+      "one": 17,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790138523622
+    },
+    {
+      "id": "W2609230085",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 12,
+      "one": 12,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790158441178
+    },
+    {
+      "id": "W2609200029",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789877670890
+    },
+    {
+      "id": "W2609210050",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 60,
+      "one": 60,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789970104673
+    },
+    {
+      "id": "W2609220065",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790063838940
+    },
+    {
+      "id": "W2609230030",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 60,
+      "one": 60,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790116001565
+    },
+    {
+      "id": "W2609230079",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790150175080
+    },
+    {
+      "id": "W2609230095",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790164642431
+    },
+    {
+      "id": "W2609200028",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789875567386
+    },
+    {
+      "id": "W2609200027",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789873081720
+    },
+    {
+      "id": "W2609200025",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789867631276
+    },
+    {
+      "id": "W2609200024",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 37.31,
+      "one": 37.31,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789866796869
+    },
+    {
+      "id": "W2609200022",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789865016722
+    },
+    {
+      "id": "W2609200021",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789864559122
+    },
+    {
+      "id": "W2609200020",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789863772966
+    },
+    {
+      "id": "W2609200019",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 85,
+      "one": 85,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789862657758
+    },
+    {
+      "id": "W2609230025",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790112090015
+    },
+    {
+      "id": "W2609200018",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789862413040
+    },
+    {
+      "id": "W2609200017",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789859168598
+    },
+    {
+      "id": "W2609200015",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789857451616
+    },
+    {
+      "id": "W2609200014",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 10242,
+      "one": 10242,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789855264270
+    },
+    {
+      "id": "W2609200013",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789853431623
+    },
+    {
+      "id": "W2609200012",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789850683662
+    },
+    {
+      "id": "W2609200009",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 14,
+      "one": 14,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789845877429
+    },
+    {
+      "id": "W2609210021",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 45,
+      "one": 45,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789938228178
+    },
+    {
+      "id": "W2609200008",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789845867201
+    },
+    {
+      "id": "W2609210011",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789931236174
+    },
+    {
+      "id": "W2609220007",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790015326672
+    },
+    {
+      "id": "W2609220060",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 15,
+      "one": 15,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790051865031
+    },
+    {
+      "id": "W2609230011",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790100091063
+    },
+    {
+      "id": "W2609200006",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789839057233
+    },
+    {
+      "id": "W2609200005",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 4.2,
+      "one": 4.2,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789835187663
+    },
+    {
+      "id": "W2609200004",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789834889246
+    },
+    {
+      "id": "W2609220003",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790006623236
+    },
+    {
+      "id": "W2609200003",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 150,
+      "one": 150,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789832010061
+    },
+    {
+      "id": "W2609200002",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789828759710
+    },
+    {
+      "id": "W2609200001",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 126,
+      "one": 126,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789826962455
+    },
+    {
+      "id": "W2609200007",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "existing",
+      "total": 247,
+      "one": 247,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789844837855
+    },
+    {
+      "id": "W2609200010",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "existing",
+      "total": 25,
+      "one": 25,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789846513430
+    },
+    {
+      "id": "W2609200057",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "existing",
+      "total": 127,
+      "one": 127,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789912333678
+    },
+    {
+      "id": "W2609210012",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 250,
+      "one": 250,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789931310702
+    },
+    {
+      "id": "W2609210076",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 125,
+      "one": 125,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789992786570
+    },
+    {
+      "id": "W2609220009",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 249,
+      "one": 249,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790016690661
+    },
+    {
+      "id": "W2609220083",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 126,
+      "one": 126,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790082131505
+    },
+    {
+      "id": "W2609230015",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 249,
+      "one": 249,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790104208724
+    },
+    {
+      "id": "W2609230100",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 129,
+      "one": 129,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790166801539
+    },
+    {
+      "id": "W2609190086",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789825484682
+    },
+    {
+      "id": "W2609190085",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789825366689
+    },
+    {
+      "id": "W2609190084",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 560,
+      "one": 560,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789825341420
+    },
+    {
+      "id": "W2609190083",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789823975873
+    },
+    {
+      "id": "W2609190082",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789823668955
+    },
+    {
+      "id": "W2609190081",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789823654960
+    },
+    {
+      "id": "W2609220044",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790039989779
+    },
+    {
+      "id": "W2609230089",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790160937330
+    },
+    {
+      "id": "W2609190080",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789821974923
+    },
+    {
+      "id": "W2609190079",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789821937772
+    },
+    {
+      "id": "W2609190078",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789821667355
+    },
+    {
+      "id": "W2609190077",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 200,
+      "one": 200,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789821500984
+    },
+    {
+      "id": "W2609190076",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 5,
+      "one": 5,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789818974568
+    },
+    {
+      "id": "W2609230045",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 140,
+      "one": 140,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790126768705
+    },
+    {
+      "id": "W2609190075",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 15,
+      "one": 15,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789815700965
+    },
+    {
+      "id": "W2609200051",
+      "date": "2026-09-20",
+      "week": "2026-09-14",
+      "cls": "existing",
+      "total": 15,
+      "one": 15,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789904814101
+    },
+    {
+      "id": "W2609210078",
+      "date": "2026-09-21",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789993196513
+    },
+    {
+      "id": "W2609220076",
+      "date": "2026-09-22",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790075831297
+    },
+    {
+      "id": "W2609230091",
+      "date": "2026-09-23",
+      "week": "2026-09-21",
+      "cls": "existing",
+      "total": 15,
+      "one": 15,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1790161339949
+    },
+    {
+      "id": "W2609190074",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 60,
+      "one": 60,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789813340775
+    },
+    {
+      "id": "W2609190073",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 62500,
+      "one": 62500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789811327943
+    },
+    {
+      "id": "W2609190070",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 500,
+      "one": 500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789809774573
+    },
+    {
+      "id": "W2609190069",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 30,
+      "one": 30,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789808260238
+    },
+    {
+      "id": "W2609190068",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "guest",
+      "total": 10,
+      "one": 10,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789805597387
+    },
+    {
+      "id": "W2609190067",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789799162476
+    },
+    {
+      "id": "R2609190003",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 60,
+      "one": 0,
+      "rec": 60,
+      "mixed": false,
+      "type": "recurring",
+      "timestamp": 1789798476660
+    },
+    {
+      "id": "W2609190066",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 50,
+      "one": 50,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789798287380
+    },
+    {
+      "id": "W2609190065",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789798003100
+    },
+    {
+      "id": "W2609190063",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 500,
+      "one": 500,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789796794958
+    },
+    {
+      "id": "W2609190064",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "existing",
+      "total": 100,
+      "one": 100,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789796862027
+    },
+    {
+      "id": "W2609190062",
+      "date": "2026-09-19",
+      "week": "2026-09-14",
+      "cls": "new",
+      "total": 20,
+      "one": 20,
+      "rec": 0,
+      "mixed": false,
+      "type": "one_time",
+      "timestamp": 1789795512792
+    }
+  ]
+}

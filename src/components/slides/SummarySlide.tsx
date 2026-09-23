@@ -43,6 +43,11 @@ export const SummarySlide = ({
                <img src={LOGOS.google_ads} alt="Google" className="h-5 w-auto object-contain" />
                <span className="text-[10px] font-bold text-[#4285F4]">Google</span>
              </div>
+             <span className="text-[10px] font-bold text-gray-300">x</span>
+             <div className="flex items-center gap-2">
+               <img src={LOGOS.tiktok} alt="TikTok" className="h-5 w-auto object-contain" />
+               <span className="text-[10px] font-bold text-black">TikTok</span>
+             </div>
              <div className="section-label !mb-0 ml-2">Consolidated Overview</div>
           </div>
           <div className="text-[13px] text-[#64748b] font-[500] whitespace-nowrap">

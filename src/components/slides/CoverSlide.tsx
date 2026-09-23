@@ -36,6 +36,11 @@ export const CoverSlide = ({ metrics, hasDateFilter }: CoverSlideProps) => {
             </div>
             <div className="text-[10px] font-bold text-gray-300 mx-0.5 md:mx-1">x</div>
             <div className="flex items-center gap-1.5 md:gap-2">
+              <img src={LOGOS.tiktok} alt="TikTok" className="w-[14px] md:w-[16.5px] h-[14px] md:h-[16.5px] object-contain" referrerPolicy="no-referrer" />
+              <span className="text-[10px] md:text-[11px] font-bold text-black">TikTok</span>
+            </div>
+            <div className="text-[10px] font-bold text-gray-300 mx-0.5 md:mx-1">x</div>
+            <div className="flex items-center gap-1.5 md:gap-2">
               <img src={LOGOS.ga4} alt="GA4" className="w-[14px] md:w-[16.5px] h-[14px] md:h-[16.5px] object-contain" referrerPolicy="no-referrer" />
               <span className="text-[10px] md:text-[11px] font-bold text-[#F9AB00]">GA4</span>
             </div>

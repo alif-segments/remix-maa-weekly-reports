@@ -13,6 +13,7 @@ const PRELOAD_STEPS: PreloadStep[] = [
   { id: 'init', name: 'App Init', desc: 'Application initialized' },
   { id: 'meta', name: 'Getting Facebook data...', desc: 'Fetching Meta Ads performance API' },
   { id: 'google', name: 'Getting Google data', desc: 'Fetching Google Ads performance API' },
+  { id: 'tiktok', name: 'Getting TikTok data', desc: 'Fetching TikTok Ads performance API' },
   { id: 'grants', name: 'Getting Google Grants', desc: 'Fetching Google Grants Ads API' },
   { id: 'ga4', name: 'Getting GA4 data', desc: 'Fetching GA4 analytics sessions' },
   { id: 'donor', name: 'Getting Donor data', desc: 'Fetching Stape donor transactions' },

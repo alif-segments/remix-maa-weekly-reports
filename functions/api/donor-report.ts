@@ -104,7 +104,18 @@ export const onRequestGet = async ({ request, env }: { request: Request; env: En
       : addDays(mondayOf(nowSydney), -7);
 
     const weekStart = p ? mondayOf(p) : defaultCompletedWeek;
-    const report = buildReport(await listAllDocs(env), weekStart, 12);
+    let docs: Doc[] = [];
+    try {
+      docs = await listAllDocs(env);
+    } catch (listErr) {
+      console.warn('Stape Store live list failed, using cached docs if available:', listErr);
+      if (cachedDocs && cachedDocs.docs.length > 0) {
+        docs = cachedDocs.docs;
+      } else {
+        throw listErr;
+      }
+    }
+    const report = buildReport(docs, weekStart, 12);
     return new Response(JSON.stringify(report), {
       headers: {
         'content-type': 'application/json',
@@ -112,9 +123,18 @@ export const onRequestGet = async ({ request, env }: { request: Request; env: En
       },
     });
   } catch (e) {
-    return new Response(JSON.stringify({ error: 'donor data unavailable' }), {
-      status: 502,
-      headers: { 'content-type': 'application/json' },
-    });
+    console.error('onRequestGet error in donor report:', e);
+    // If live call failed completely and no cached docs, import fallback report to keep UI uninterrupted
+    try {
+      const fallback = await import('../../src/data/fallbackDonorReport.json');
+      return new Response(JSON.stringify(fallback.default || fallback), {
+        headers: { 'content-type': 'application/json' },
+      });
+    } catch (fallbackErr) {
+      return new Response(JSON.stringify({ error: 'donor data unavailable' }), {
+        status: 502,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
   }
 };
