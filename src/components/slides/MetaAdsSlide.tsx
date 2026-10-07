@@ -31,11 +31,11 @@ export const MetaAdsSlide = ({
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
   const metaItems = Object.entries(metrics.current.byCampaign)
-    .filter(([, c]) => (c as any).source?.includes('facebook'))
+    .filter(([, c]) => (c as any).source === 'facebook')
     .map(([name, c]) => ({ name, ...(c as any) }));
   
   const pMetaItems = Object.entries(metrics.prior.byCampaign)
-    .filter(([, c]) => (c as any).source?.includes('facebook'))
+    .filter(([, c]) => (c as any).source === 'facebook')
     .map(([name, c]) => ({ name, ...(c as any) }));
   
   const curS = metaItems.reduce((a, b) => a + b.spend, 0);

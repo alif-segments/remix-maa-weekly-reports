@@ -17,7 +17,8 @@ import {
   Pencil,
   HeartHandshake,
   Calendar,
-  Video
+  Video,
+  Ticket
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -43,6 +44,7 @@ import { GoogleAdsSlide } from './components/slides/GoogleAdsSlide';
 import { MetaAdsSlide } from './components/slides/MetaAdsSlide';
 import { TikTokAdsSlide } from './components/slides/TikTokAdsSlide';
 import { GrantsSlide } from './components/slides/GrantsSlide';
+import { EventCampaignsSlide } from './components/slides/EventCampaignsSlide';
 import { GA4Slide } from './components/slides/GA4Slide';
 import { DonorInsightsSlide } from './components/slides/DonorInsightsSlide';
 import { FooterSlide } from './components/slides/FooterSlide';
@@ -150,7 +152,7 @@ export default function App() {
   const platformStats = useMemo(() => {
     if (!metrics) return null;
     const metaConv = Object.values(metrics.current.byCampaign)
-      .filter(c => (c as any).source?.includes('facebook'))
+      .filter(c => (c as any).source === 'facebook')
       .reduce((acc, c) => acc + (c as any).conversions, 0);
     const googleConv = Object.values(metrics.current.byCampaign)
       .filter(c => (c as any).source === 'google_ads')
@@ -289,6 +291,11 @@ Focus remains on brand awareness and information discovery for core mission keyw
     );
   }
 
+  const hasEventCampaigns = Boolean(
+    (metrics.current.events && (metrics.current.events.spend > 0 || metrics.current.events.conversions > 0)) ||
+    Object.values(metrics.current.byCampaign).some((c: any) => c.source === 'event')
+  );
+
   const slidesMapping = [
     { id: 'cover', icon: Layers },
     { id: 'summary', icon: TrendingUp },
@@ -300,6 +307,7 @@ Focus remains on brand awareness and information discovery for core mission keyw
     { id: 'ga4', icon: TrendingUp },
     { id: 'donor_insights', icon: HeartHandshake },
     { id: 'grants', icon: Info },
+    ...(hasEventCampaigns ? [{ id: 'events', icon: Ticket }] : []),
     { id: 'footer', icon: ChevronDown }
   ];
 
@@ -390,6 +398,15 @@ Focus remains on brand awareness and information discovery for core mission keyw
         onUpdateContent={(val) => handleUpdateContent('grants_summary', val)}
         onSave={(val) => handleSaveSection('grants_summary', val)}
       />
+      {hasEventCampaigns && (
+        <EventCampaignsSlide 
+          metrics={metrics} 
+          isEditMode={isEditMode}
+          content={localPageContent.events_summary}
+          onUpdateContent={(val) => handleUpdateContent('events_summary', val)}
+          onSave={(val) => handleSaveSection('events_summary', val)}
+        />
+      )}
       <FooterSlide />
 
       {/* Top Right Date Filter Trigger & Popover (when ?date=true is in URL or toggled) */}

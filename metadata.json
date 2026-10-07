@@ -1,5 +1,5 @@
 {
-  "name": "Remix: Segments | MAA Performance Dashboard",
+  "name": "Segments | MAA Performance Dashboard",
   "description": "Premium slide-based performance report for MAA International, tracking Meta and Google Ads performance with deep-dive creative analysis.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

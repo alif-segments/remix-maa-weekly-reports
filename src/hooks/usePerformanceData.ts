@@ -185,6 +185,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
         meta_ads: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
         tiktok_ads: { spend: 0, clicks: 0, conversions: 0, revenue: 0, lpv: 0, ctr: 0 },
         google_grants: { clicks: 0, spend: 0, conversions: 0, revenue: 0 },
+        events: { clicks: 0, spend: 0, conversions: 0, revenue: 0 },
         byCampaign: {},
         byCreative: {}
       };
@@ -203,7 +204,11 @@ export function usePerformanceData(customRange?: DateRange | null) {
 
         const isGrants = (row.account_name || '').toLowerCase().includes("grants");
         const accountId = (row.account_name || '').match(/(\d{3}-\d{3}-\d{4})/)?.[0] || "";
-        const isSeparate = isGrants || accountId === "328-834-3137";
+        const isGrantsAccount = isGrants || accountId === "328-834-3137";
+        
+        // Exclude all Event campaign data from main/consolidated MAA performance calculations
+        const isEvent = (row.campaign || '').toLowerCase().includes("event");
+        const isSeparate = isGrantsAccount || isEvent;
         
         const spend = parse(row.spend || row.cost);
         const clicks = parseInt(String(row.clicks || "0"));
@@ -223,7 +228,20 @@ export function usePerformanceData(customRange?: DateRange | null) {
           rev = parse(row.conversion_value);
         }
 
-        if (!isSeparate) {
+        if (isEvent) {
+          // Event campaigns kept separate - excluded from consolidated MAA totals & platform rollups
+          if (result.events) {
+            result.events.spend += spend;
+            result.events.clicks += clicks;
+            result.events.conversions += conv;
+            result.events.revenue += rev;
+          }
+        } else if (isGrantsAccount) {
+          result.google_grants.spend += spend;
+          result.google_grants.clicks += clicks;
+          result.google_grants.conversions += conv;
+          result.google_grants.revenue += rev;
+        } else {
           result.total.spend += spend;
           result.total.clicks += clicks;
           result.total.conversions += conv;
@@ -249,14 +267,22 @@ export function usePerformanceData(customRange?: DateRange | null) {
             result.google_ads.revenue += rev;
             result.google_ads.lpv += lpv;
           }
-        } else {
-          result.google_grants.spend += spend;
-          result.google_grants.clicks += clicks;
-          result.google_grants.conversions += conv;
-          result.google_grants.revenue += rev;
         }
 
         const campaignKey = row.campaign || (isTikTok ? 'TikTok Campaign' : 'Unnamed Campaign');
+        let campaignSource = ds;
+        if (isTikTok) {
+          campaignSource = 'tiktok';
+        } else if (isEvent) {
+          campaignSource = 'event';
+        } else if (isGrantsAccount) {
+          campaignSource = 'google_ads_separate';
+        } else if (isFacebook) {
+          campaignSource = 'facebook';
+        } else {
+          campaignSource = 'google_ads';
+        }
+
         if (!result.byCampaign[campaignKey]) {
           result.byCampaign[campaignKey] = { 
             spend: 0, 
@@ -265,7 +291,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
             revenue: 0, 
             lpv: 0, 
             ctr: 0, 
-            source: isTikTok ? 'tiktok' : (ds + (isSeparate ? "_separate" : "")) 
+            source: campaignSource 
           };
         }
         const c = result.byCampaign[campaignKey];
@@ -275,7 +301,8 @@ export function usePerformanceData(customRange?: DateRange | null) {
         c.revenue += rev;
         c.lpv += lpv;
 
-        if (isFacebook) {
+        // Exclude Event creatives from creative leaderboard to prevent distorting creative analysis
+        if (isFacebook && !isEvent) {
           const creativeName = row.name || row.campaign || "Unnamed Creative";
           if (!result.byCreative[creativeName]) {
             result.byCreative[creativeName] = { 
@@ -288,6 +315,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
           cr.clicks += clicks;
           cr.conversions += conv;
           cr.revenue += rev;
+          cr.lpv += lpv;
         }
       });
 
@@ -346,7 +374,9 @@ export function usePerformanceData(customRange?: DateRange | null) {
         rev = parse(row.conversion_value);
       }
       
-      const isSeparate = (row.account_name || '').includes("Grants") || (row.account_name || '').includes("328-834-3137");
+      const isEvent = (row.campaign || '').toLowerCase().includes("event");
+      const isGrants = (row.account_name || '').includes("Grants") || (row.account_name || '').includes("328-834-3137");
+      const isSeparate = isGrants || isEvent;
       if (!isSeparate) {
         weeks[weekKey].spend += spend;
         weeks[weekKey].conversions += conv;
@@ -407,9 +437,11 @@ export function usePerformanceData(customRange?: DateRange | null) {
       if (row.datasource?.toLowerCase() === 'facebook') source = 'facebook';
       else if (row.datasource?.toLowerCase() === 'tiktok') source = 'tiktok';
       
-      const isSeparate = (row.account_name || '').includes("Grants") || (row.account_name || '').includes("328-834-3137");
+      const isEventRow = (row.campaign || '').toLowerCase().includes("event");
+      const isGrantsRow = (row.account_name || '').includes("Grants") || (row.account_name || '').includes("328-834-3137");
+      const isSeparateRow = isGrantsRow || isEventRow;
 
-      if (!isSeparate && acc[date][source]) {
+      if (!isSeparateRow && acc[date][source]) {
         acc[date][source].spend += spend;
         acc[date][source].revenue += rev;
         acc[date][source].conv += conv;

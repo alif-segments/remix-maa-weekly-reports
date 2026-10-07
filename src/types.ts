@@ -37,6 +37,7 @@ export interface PeriodMetrics {
   meta_ads: ProcessedMetric;
   tiktok_ads?: ProcessedMetric;
   google_grants: { clicks: number; spend: number; conversions: number; revenue: number };
+  events?: { clicks: number; spend: number; conversions: number; revenue: number };
   byCampaign: Record<string, ProcessedMetric & { source: string }>;
   byCreative: Record<string, ProcessedMetric & { campaign: string, preview_url?: string }>;
 }
