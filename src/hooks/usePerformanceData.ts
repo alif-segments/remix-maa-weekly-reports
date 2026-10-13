@@ -3,14 +3,20 @@ import { RawData, PeriodMetrics, MetricsSummary, GA4PeriodMetrics, GA4MetricsSum
 import { API_URL, GA4_API_URL, TIKTOK_ADS_API_URL } from '@/src/constants';
 import { getDefaultDateRange } from '@/src/utils/datePresets';
 
+// In-memory client cache to make subsequent renders, date changes, and tab switches instantaneous
+let memoryCachedData: { combinedData: RawData[]; loadedGa4: any[] } | null = null;
+
 export function usePerformanceData(customRange?: DateRange | null) {
-  const [data, setData] = useState<RawData[]>([]);
-  const [ga4Data, setGa4Data] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<RawData[]>(() => memoryCachedData?.combinedData || []);
+  const [ga4Data, setGa4Data] = useState<any[]>(() => memoryCachedData?.loadedGa4 || []);
+  const [loading, setLoading] = useState<boolean>(() => !memoryCachedData);
 
   useEffect(() => {
     const fetchData = async () => {
-      console.info("[usePerformanceData] Fetching ads performance and GA4 web analytics data...");
+      // If we already have memory cache, skip verbose initial log unless refreshing
+      if (!memoryCachedData) {
+        console.info("[usePerformanceData] Fetching ads performance and GA4 web analytics data...");
+      }
       try {
         let perfResult: any = null;
         let ga4Result: any = null;
@@ -62,6 +68,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
           `  • GA4 analytics rows: ${Array.isArray(loadedGa4) ? loadedGa4.length : 0}`
         );
 
+        memoryCachedData = { combinedData, loadedGa4 };
         setData(combinedData);
         setGa4Data(loadedGa4);
       } catch (err) {

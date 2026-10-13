@@ -89,28 +89,33 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
   const ok = '#1F8A5B';
 
   useEffect(() => {
-    // Fast, responsive progression across all steps
+    // High-cadence timer (25ms) for silk-smooth, responsive animation
     const timer = setInterval(() => {
       setProgressVal((prev) => {
         if (isDataLoaded) {
-          // If data is ready, advance rapidly to 100%
-          const next = prev + 0.45;
+          // If data is ready, advance rapidly and smoothly to 100%
+          const next = prev + 0.35;
           if (next >= n) {
             setIsDone(true);
             return n;
           }
           return next;
         } else {
-          // Progress smoothly up to step 7 (90-92%), then patiently hold until data arrives
-          // This prevents prematurely unmounting the preloader before data is ready
-          const ceiling = n - 0.7; // ~91%
-          if (prev < ceiling) {
-            return prev + 0.14;
+          // When waiting for data, progress smoothly through steps without ever freezing
+          // Steps 0 to 6 move at an active, natural pace (~0.12 per tick)
+          // Steps 7+ gracefully ease asymptotically up to 96% rather than hitting a hard stop at 86%
+          if (prev < 6.2) {
+            return prev + 0.12;
+          } else if (prev < 7.2) {
+            return prev + 0.05;
+          } else if (prev < 7.7) {
+            // Smoothly ease forward (never gets stuck dead)
+            return prev + 0.015;
           }
-          return prev;
+          return Math.min(7.85, prev + 0.005);
         }
       });
-    }, 40);
+    }, 25);
 
     return () => clearInterval(timer);
   }, [isDataLoaded, n]);
@@ -120,7 +125,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
     if (isDone && onFinish) {
       const finishTimeout = setTimeout(() => {
         onFinish();
-      }, 250);
+      }, 180);
       return () => clearTimeout(finishTimeout);
     }
   }, [isDone, onFinish]);
