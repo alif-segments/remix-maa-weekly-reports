@@ -17,7 +17,8 @@ export function getAustralianReferenceDate(date: Date = new Date()): Date {
   });
   const parts = formatter.format(date); // e.g. "2026-10-13"
   const [year, month, day] = parts.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day));
+  const auDate = new Date(Date.UTC(year, month - 1, day));
+  return auDate;
 }
 
 /**
@@ -82,8 +83,18 @@ export function getPresets(referenceDate?: Date): DatePreset[] {
  * Gets default date range (Previous completed Monday to Sunday in Australia)
  */
 export function getDefaultDateRange(): DateRange {
+  const ref = getAustralianReferenceDate();
+  const auDateStr = ref.toISOString().split('T')[0];
   const presets = getPresets();
   const prevWeek = presets.find(p => p.id === 'prev_week') || presets[0];
+  
+  console.info(
+    `[Timezone / DateRange] Evaluating default date range anchored to ${AUSTRALIA_TIMEZONE}.\n` +
+    `  • Australia Calendar Today: ${auDateStr}\n` +
+    `  • Default Range (Previous Week): ${prevWeek.startDate} to ${prevWeek.endDate}\n` +
+    `  • Local Browser Time: ${new Date().toString()}`
+  );
+
   return {
     startDate: prevWeek.startDate,
     endDate: prevWeek.endDate

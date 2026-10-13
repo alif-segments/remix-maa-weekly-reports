@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { RawData, PeriodMetrics, MetricsSummary, GA4PeriodMetrics, GA4MetricsSummary, DateRange } from '@/src/types';
 import { API_URL, GA4_API_URL, TIKTOK_ADS_API_URL } from '@/src/constants';
+import { getDefaultDateRange } from '@/src/utils/datePresets';
 
 export function usePerformanceData(customRange?: DateRange | null) {
   const [data, setData] = useState<RawData[]>([]);
@@ -9,6 +10,7 @@ export function usePerformanceData(customRange?: DateRange | null) {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.info("[usePerformanceData] Fetching ads performance and GA4 web analytics data...");
       try {
         let perfResult: any = null;
         let ga4Result: any = null;
@@ -67,10 +69,19 @@ export function usePerformanceData(customRange?: DateRange | null) {
           ? tiktokResult.data.map((r: any) => ({ ...r, datasource: 'tiktok' })) 
           : (Array.isArray(tiktokResult) ? tiktokResult.map((r: any) => ({ ...r, datasource: 'tiktok' })) : []);
 
-        setData([...perfRows, ...tiktokRows]);
-        setGa4Data(ga4Result?.data || ga4Result || []);
+        const combinedData = [...perfRows, ...tiktokRows];
+        const loadedGa4 = ga4Result?.data || ga4Result || [];
+
+        console.info(
+          `[usePerformanceData] Data successfully loaded:\n` +
+          `  • Total ad rows: ${combinedData.length} (Meta & Google: ${perfRows.length}, TikTok: ${tiktokRows.length})\n` +
+          `  • GA4 analytics rows: ${Array.isArray(loadedGa4) ? loadedGa4.length : 0}`
+        );
+
+        setData(combinedData);
+        setGa4Data(loadedGa4);
       } catch (err) {
-        console.error("Performance data fetch failed:", err);
+        console.error("[usePerformanceData] Performance data fetch failed:", err);
       } finally {
         setLoading(false);
       }
@@ -90,33 +101,12 @@ export function usePerformanceData(customRange?: DateRange | null) {
     let selectedEndDate = customRange?.endDate;
 
     if (!selectedStartDate || !selectedEndDate) {
-      const now = new Date();
-      // Format current date in Australia/Sydney timezone (client timezone & Stape store timezone)
-      const sydneyFormatter = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'Australia/Sydney',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      });
-      const sydneyDateParts = sydneyFormatter.format(now); // e.g. "2026-09-21"
-      const [sYear, sMonth, sDay] = sydneyDateParts.split('-').map(Number);
-      const sydneyToday = new Date(Date.UTC(sYear, sMonth - 1, sDay));
-      
-      // Day of week in Sydney: 0=Sun, 1=Mon, ..., 6=Sat
-      const dayOfWeek = sydneyToday.getUTCDay();
-      
-      // The most recent completed full week (Monday to Sunday):
-      // On Sunday (0), the completed full week ends today (Sunday).
-      // On Monday to Saturday (1-6), the completed full week ended on last Sunday.
-      const daysSinceLastSunday = dayOfWeek === 0 ? 0 : dayOfWeek;
-      const lastSunday = new Date(sydneyToday);
-      lastSunday.setUTCDate(sydneyToday.getUTCDate() - daysSinceLastSunday);
-      
-      const lastMonday = new Date(lastSunday);
-      lastMonday.setUTCDate(lastSunday.getUTCDate() - 6);
-      
-      selectedStartDate = lastMonday.toISOString().split('T')[0];
-      selectedEndDate = lastSunday.toISOString().split('T')[0];
+      const defaultRange = getDefaultDateRange();
+      selectedStartDate = defaultRange.startDate;
+      selectedEndDate = defaultRange.endDate;
+      console.info(`[usePerformanceData] No custom date range specified. Applied Australia/Sydney default: ${selectedStartDate} to ${selectedEndDate}`);
+    } else {
+      console.info(`[usePerformanceData] Active date range: ${selectedStartDate} to ${selectedEndDate}`);
     }
 
     if (selectedStartDate > selectedEndDate) {
@@ -324,6 +314,16 @@ export function usePerformanceData(customRange?: DateRange | null) {
 
     const current = processPeriod(currentDates);
     const prior = processPeriod(priorDates);
+
+    console.info(
+      `[usePerformanceData] Performance calculated for ${selectedStartDate} to ${selectedEndDate}:\n` +
+      `  • Consolidated Spend: $${current.total.spend.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n` +
+      `  • Consolidated Revenue: $${current.total.revenue.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n` +
+      `  • Consolidated ROAS: ${current.total.spend > 0 ? (current.total.revenue / current.total.spend).toFixed(2) : '0.00'}x\n` +
+      `  • Consolidated Conversions: ${current.total.conversions}\n` +
+      `  • Excluded Event Campaign Spend: $${current.events?.spend.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'} (Kept separate from main totals)\n` +
+      `  • Excluded Google Grants Spend: $${current.google_grants?.spend.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`
+    );
 
     const weeks: Record<string, { week: string, year: string, spend: number, conversions: number, revenue: number, startDate: string, endDate: string }> = {};
     const parse = (v: any) => {

@@ -70,6 +70,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   }, [isOpen, onClose]);
 
   const handleSelectPreset = (preset: DatePreset) => {
+    console.info(`[DateRangePicker] Selected quick preset "${preset.label}": ${preset.startDate} to ${preset.endDate}`);
     setTempStartDate(preset.startDate);
     setTempEndDate(preset.endDate);
     setSelectedPresetId(preset.id);
@@ -77,6 +78,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
   const handleReset = () => {
     const defaultRange = getDefaultDateRange();
+    console.info(`[DateRangePicker] Resetting filter to Australian default range: ${defaultRange.startDate} to ${defaultRange.endDate}`);
     setTempStartDate(defaultRange.startDate);
     setTempEndDate(defaultRange.endDate);
     setSelectedPresetId('prev_week');
@@ -95,8 +97,10 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
       end = temp;
       setTempStartDate(start);
       setTempEndDate(end);
+      console.info(`[DateRangePicker] Inverted dates detected and auto-corrected.`);
     }
 
+    console.info(`[DateRangePicker] Applied date range filter: ${start} to ${end}`);
     onChange({ startDate: start, endDate: end });
     onClose();
   };

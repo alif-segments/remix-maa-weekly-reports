@@ -60,9 +60,12 @@ export default function App() {
     const startParam = params.get('start_date');
     const endParam = params.get('end_date');
     if (startParam && endParam) {
+      console.info(`[App] Initialized date range from URL query params: ${startParam} to ${endParam}`);
       return { startDate: startParam, endDate: endParam };
     }
-    return getDefaultDateRange();
+    const defaultRange = getDefaultDateRange();
+    console.info(`[App] Initialized date range from Australian timezone default: ${defaultRange.startDate} to ${defaultRange.endDate}`);
+    return defaultRange;
   });
 
   // When loaded with date=true, popup appears automatically as requested
