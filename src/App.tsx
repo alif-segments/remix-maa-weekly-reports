@@ -276,10 +276,12 @@ Focus remains on brand awareness and information discovery for core mission keyw
     return () => observer.disconnect();
   }, [loading]);
 
+  const [isPreloaderDone, setIsPreloaderDone] = useState(false);
+
   const topCreative = creatives[0];
 
-  if (loading) {
-    return <Preloader />;
+  if (!isPreloaderDone) {
+    return <Preloader isDataLoaded={!loading && Boolean(metrics)} onFinish={() => setIsPreloaderDone(true)} />;
   }
 
   if (!metrics) {
