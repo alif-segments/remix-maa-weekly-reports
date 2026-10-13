@@ -4,6 +4,7 @@ import {
   DollarSign, 
   Award,
   ChevronDown,
+  ChevronUp,
   Info,
   Layers,
   Facebook,
@@ -116,6 +117,7 @@ export default function App() {
   const { metrics, loading } = usePerformanceData(dateRange);
   const { viewMode, setViewMode } = useViewMode();
   const [activeSlide, setActiveSlide] = useState('cover');
+  const [isPreloaderDone, setIsPreloaderDone] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [pageContent, setPageContent] = useState<Record<string, string>>({});
   const [localPageContent, setLocalPageContent] = useState<Record<string, string>>({});
@@ -257,26 +259,146 @@ Focus remains on brand awareness and information discovery for core mission keyw
     }
   };
 
-  // Observer for active slide
+  const hasEventCampaigns = Boolean(
+    (metrics?.current?.events && (metrics.current.events.spend > 0 || metrics.current.events.conversions > 0)) ||
+    (metrics && Object.values(metrics.current.byCampaign).some((c: any) => c.source === 'event'))
+  );
+
+  const slidesMapping = useMemo(() => [
+    { id: 'cover', icon: Layers, label: 'Cover' },
+    { id: 'summary', icon: TrendingUp, label: 'Executive Summary' },
+    { id: 'charts', icon: DollarSign, label: 'Weekly Trend' },
+    { id: 'google', icon: Globe, label: 'Google Ads' },
+    { id: 'meta', icon: Facebook, label: 'Meta Ads' },
+    { id: 'creatives', icon: Award, label: 'Top Creatives' },
+    { id: 'tiktok', icon: Video, label: 'TikTok Ads' },
+    { id: 'ga4', icon: TrendingUp, label: 'GA4 Traffic' },
+    { id: 'donor_insights', icon: HeartHandshake, label: 'Donor Insights' },
+    { id: 'grants', icon: Info, label: 'Google Grants' },
+    ...(hasEventCampaigns ? [{ id: 'events', icon: Ticket, label: 'Event Campaigns' }] : []),
+    { id: 'footer', icon: ChevronDown, label: 'End of Report' }
+  ], [hasEventCampaigns]);
+
+  const activeSlideIndex = useMemo(() => {
+    const idx = slidesMapping.findIndex(s => s.id === activeSlide);
+    return idx >= 0 ? idx : 0;
+  }, [slidesMapping, activeSlide]);
+
+  const navigateToSlide = (id: string) => {
+    setActiveSlide(id);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Robust Active Slide Detection on Scroll & Window Resize
   useEffect(() => {
-    if (loading) return;
+    if (!isPreloaderDone || loading) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSlide(entry.target.id);
+    let rafId: number | null = null;
+
+    const updateActiveSlide = () => {
+      const slides = Array.from(document.querySelectorAll<HTMLElement>('.slide'));
+      if (!slides.length) return;
+
+      const windowHeight = window.innerHeight;
+      const scrollY = window.scrollY || window.pageYOffset;
+      const scrollHeight = document.documentElement.scrollHeight;
+
+      // Top of page edge case
+      if (scrollY <= 60) {
+        if (slides[0]) setActiveSlide(slides[0].id);
+        return;
+      }
+
+      // Bottom of page edge case
+      if (windowHeight + scrollY >= scrollHeight - 60) {
+        const lastSlide = slides[slides.length - 1];
+        if (lastSlide) setActiveSlide(lastSlide.id);
+        return;
+      }
+
+      // Focal point: 35% down the viewport
+      const focalLine = windowHeight * 0.35;
+      let matchingId: string | null = null;
+
+      for (const slide of slides) {
+        const rect = slide.getBoundingClientRect();
+        if (rect.top <= focalLine && rect.bottom > focalLine) {
+          matchingId = slide.id;
+          break;
+        }
+      }
+
+      // Fallback: slide with greatest visible portion in viewport
+      if (!matchingId) {
+        let maxVisibleRatio = -1;
+        for (const slide of slides) {
+          const rect = slide.getBoundingClientRect();
+          const visibleHeight = Math.max(0, Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0));
+          if (visibleHeight > maxVisibleRatio) {
+            maxVisibleRatio = visibleHeight;
+            matchingId = slide.id;
           }
-        });
-      },
-      { threshold: 0.5 }
-    );
+        }
+      }
 
-    document.querySelectorAll('.slide').forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [loading]);
+      if (matchingId) {
+        setActiveSlide(matchingId);
+      }
+    };
 
-  const [isPreloaderDone, setIsPreloaderDone] = useState(false);
+    const handleScroll = () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateActiveSlide);
+    };
+
+    // Initial check after DOM renders
+    const timer = setTimeout(updateActiveSlide, 100);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [isPreloaderDone, loading, viewMode, hasEventCampaigns]);
+
+  // Keyboard slide navigation (ArrowUp, ArrowDown, PageUp, PageDown)
+  useEffect(() => {
+    if (!isPreloaderDone) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        (e.target as HTMLElement)?.isContentEditable
+      ) {
+        return;
+      }
+
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        const curIdx = slidesMapping.findIndex(s => s.id === activeSlide);
+        if (curIdx >= 0 && curIdx < slidesMapping.length - 1) {
+          e.preventDefault();
+          navigateToSlide(slidesMapping[curIdx + 1].id);
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        const curIdx = slidesMapping.findIndex(s => s.id === activeSlide);
+        if (curIdx > 0) {
+          e.preventDefault();
+          navigateToSlide(slidesMapping[curIdx - 1].id);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPreloaderDone, activeSlide, slidesMapping]);
 
   const topCreative = creatives[0];
 
@@ -296,43 +418,38 @@ Focus remains on brand awareness and information discovery for core mission keyw
     );
   }
 
-  const hasEventCampaigns = Boolean(
-    (metrics.current.events && (metrics.current.events.spend > 0 || metrics.current.events.conversions > 0)) ||
-    Object.values(metrics.current.byCampaign).some((c: any) => c.source === 'event')
-  );
-
-  const slidesMapping = [
-    { id: 'cover', icon: Layers },
-    { id: 'summary', icon: TrendingUp },
-    { id: 'charts', icon: DollarSign },
-    { id: 'google', icon: Globe },
-    { id: 'meta', icon: Facebook },
-    { id: 'creatives', icon: Award },
-    { id: 'tiktok', icon: Video },
-    { id: 'ga4', icon: TrendingUp },
-    { id: 'donor_insights', icon: HeartHandshake },
-    { id: 'grants', icon: Info },
-    ...(hasEventCampaigns ? [{ id: 'events', icon: Ticket }] : []),
-    { id: 'footer', icon: ChevronDown }
-  ];
-
   return (
     <div className="relative">
       {/* Dot Navigation */}
-      <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 hidden md:flex">
-        {slidesMapping.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' })}
-            className={cn(
-              "w-2.5 h-2.5 rounded-full transition-all duration-300 border-2",
-              activeSlide === s.id 
-                ? "bg-primary border-primary scale-125" 
-                : "bg-transparent border-[#cbd5e1] hover:border-gray-400"
-            )}
-            title={s.id.toUpperCase()}
-          />
-        ))}
+      <nav 
+        className="fixed right-5 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-2.5 hidden md:flex bg-white/80 backdrop-blur-md px-2 py-3 rounded-full border border-slate-200/80 shadow-md transition-all"
+        aria-label="Slide Navigation"
+      >
+        {slidesMapping.map((s, idx) => {
+          const isActive = activeSlide === s.id;
+          return (
+            <div key={s.id} className="relative group flex items-center justify-center">
+              {/* Tooltip on hover */}
+              <div className="absolute right-full mr-3.5 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-[11px] font-semibold tracking-tight whitespace-nowrap shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 translate-x-1 group-hover:translate-x-0 z-50">
+                <span className="text-slate-400 font-mono text-[10px] mr-1.5">{String(idx + 1).padStart(2, '0')}</span>
+                {s.label}
+              </div>
+
+              {/* Dot Button */}
+              <button
+                onClick={() => navigateToSlide(s.id)}
+                className={cn(
+                  "rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer",
+                  isActive
+                    ? "w-3.5 h-3.5 bg-primary ring-4 ring-primary/25 scale-110 shadow-xs"
+                    : "w-2 h-2 bg-slate-300 hover:bg-slate-400 hover:scale-125"
+                )}
+                title={`${idx + 1}. ${s.label}`}
+                aria-label={`Slide ${idx + 1}: ${s.label}`}
+              />
+            </div>
+          );
+        })}
       </nav>
 
       <CoverSlide metrics={metrics} hasDateFilter={showDateFilter} />
@@ -473,6 +590,45 @@ Focus remains on brand awareness and information discovery for core mission keyw
 
       {/* Floating Controls Bar */}
       <div className="fixed bottom-6 right-6 z-[60] flex items-center bg-white p-1.5 px-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-200/90 gap-2">
+        {/* Active Slide Counter & Stepper */}
+        <div className="flex items-center gap-1 bg-[#f1f5f9] px-2 py-1 rounded-[14px] text-slate-700 text-[12px] font-bold">
+          <button
+            onClick={() => {
+              if (activeSlideIndex > 0) {
+                navigateToSlide(slidesMapping[activeSlideIndex - 1].id);
+              }
+            }}
+            disabled={activeSlideIndex <= 0}
+            className="p-1 rounded-[8px] hover:bg-white text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+            title="Previous Slide (Arrow Up)"
+            aria-label="Previous Slide"
+          >
+            <ChevronUp size={15} />
+          </button>
+          <span 
+            className="font-mono text-[12px] px-1 text-slate-800 min-w-[46px] text-center select-none"
+            title={`Slide ${activeSlideIndex + 1} of ${slidesMapping.length}: ${slidesMapping[activeSlideIndex]?.label || 'Cover'}`}
+          >
+            {activeSlideIndex + 1} / {slidesMapping.length}
+          </span>
+          <button
+            onClick={() => {
+              if (activeSlideIndex < slidesMapping.length - 1) {
+                navigateToSlide(slidesMapping[activeSlideIndex + 1].id);
+              }
+            }}
+            disabled={activeSlideIndex >= slidesMapping.length - 1}
+            className="p-1 rounded-[8px] hover:bg-white text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+            title="Next Slide (Arrow Down)"
+            aria-label="Next Slide"
+          >
+            <ChevronDown size={15} />
+          </button>
+        </div>
+
+        {/* Vertical Divider */}
+        <div className="w-[1px] h-5 bg-gray-200/80 mx-0.5" />
+
         {/* View Mode Segmented Control */}
         <div className="bg-[#f1f5f9] p-1 rounded-[14px] flex items-center gap-1">
           <button 
