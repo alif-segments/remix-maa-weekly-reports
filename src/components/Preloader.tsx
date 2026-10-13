@@ -89,36 +89,38 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
   const ok = '#1F8A5B';
 
   useEffect(() => {
-    // Progress smoothly across steps
+    // Fast, responsive progression across all steps
     const timer = setInterval(() => {
       setProgressVal((prev) => {
         if (isDataLoaded) {
-          // If data is ready, advance rapidly to end
-          const next = prev + 0.35;
+          // If data is ready, advance rapidly to 100%
+          const next = prev + 0.45;
           if (next >= n) {
             setIsDone(true);
             return n;
           }
           return next;
         } else {
-          // Progress naturally up to step 7 (waiting for API payload)
-          if (prev < n - 1.2) {
-            return prev + 0.07;
+          // Progress smoothly up to step 7 (90-92%), then patiently hold until data arrives
+          // This prevents prematurely unmounting the preloader before data is ready
+          const ceiling = n - 0.7; // ~91%
+          if (prev < ceiling) {
+            return prev + 0.14;
           }
           return prev;
         }
       });
-    }, 60);
+    }, 40);
 
     return () => clearInterval(timer);
   }, [isDataLoaded, n]);
 
-  // When completed, trigger onFinish callback
+  // When completed, trigger onFinish callback swiftly
   useEffect(() => {
     if (isDone && onFinish) {
       const finishTimeout = setTimeout(() => {
         onFinish();
-      }, 500);
+      }, 250);
       return () => clearTimeout(finishTimeout);
     }
   }, [isDone, onFinish]);
