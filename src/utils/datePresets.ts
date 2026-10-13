@@ -1,15 +1,35 @@
 import { DateRange, DatePreset } from '../types';
 
+// Standard reference timezone for MAA International operations & reporting
+export const AUSTRALIA_TIMEZONE = 'Australia/Sydney';
+
 /**
- * Returns preset ranges calculated relative to the latest reference date.
- * Uses UTC date calculations to avoid local timezone offset artifacts.
+ * Returns a UTC midnight Date object representing "today" in Australia (Australia/Sydney).
+ * This ensures users across any geography (Australia, Asia, Europe, US) calculate
+ * identical calendar days and week boundaries regardless of their local browser timezone.
  */
-export function getPresets(referenceDate: Date = new Date()): DatePreset[] {
-  // Normalize to UTC midnight
-  const ref = new Date(Date.UTC(referenceDate.getUTCFullYear(), referenceDate.getUTCMonth(), referenceDate.getUTCDate()));
+export function getAustralianReferenceDate(date: Date = new Date()): Date {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: AUSTRALIA_TIMEZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const parts = formatter.format(date); // e.g. "2026-10-13"
+  const [year, month, day] = parts.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+/**
+ * Returns preset ranges calculated relative to Australia/Sydney date.
+ * Uses UTC date calculations on the Australian date to avoid local timezone offset artifacts.
+ */
+export function getPresets(referenceDate?: Date): DatePreset[] {
+  // Normalize to Australian date midnight
+  const ref = referenceDate ? getAustralianReferenceDate(referenceDate) : getAustralianReferenceDate();
   const toISO = (d: Date) => d.toISOString().split('T')[0];
 
-  // 1. Previous Week: Monday to Sunday of previous calendar week
+  // 1. Previous Week: Monday to Sunday of previous calendar week in Australia
   const day = ref.getUTCDay(); // 0=Sun, 1=Mon, ..., 6=Sat
   const offsetToMon = (day + 6) % 7;
   const lastMon = new Date(ref);
@@ -17,33 +37,33 @@ export function getPresets(referenceDate: Date = new Date()): DatePreset[] {
   const lastSun = new Date(lastMon);
   lastSun.setUTCDate(lastMon.getUTCDate() + 6);
 
-  // 2. Yesterday
+  // 2. Yesterday (in Australia)
   const yest = new Date(ref);
   yest.setUTCDate(ref.getUTCDate() - 1);
 
-  // 3. Last 7 Days (ending yesterday)
+  // 3. Last 7 Days (ending yesterday in Australia)
   const l7Start = new Date(ref);
   l7Start.setUTCDate(ref.getUTCDate() - 7);
   const l7End = new Date(ref);
   l7End.setUTCDate(ref.getUTCDate() - 1);
 
-  // 4. Last 14 Days (ending yesterday)
+  // 4. Last 14 Days (ending yesterday in Australia)
   const l14Start = new Date(ref);
   l14Start.setUTCDate(ref.getUTCDate() - 14);
   const l14End = new Date(ref);
   l14End.setUTCDate(ref.getUTCDate() - 1);
 
-  // 5. Last 30 Days (ending yesterday)
+  // 5. Last 30 Days (ending yesterday in Australia)
   const l30Start = new Date(ref);
   l30Start.setUTCDate(ref.getUTCDate() - 30);
   const l30End = new Date(ref);
   l30End.setUTCDate(ref.getUTCDate() - 1);
 
-  // 6. This Month (1st to today)
+  // 6. This Month (1st to today in Australia)
   const thisMonthStart = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), 1));
   const thisMonthEnd = ref;
 
-  // 7. Last Month (1st to last day of previous month)
+  // 7. Last Month (1st to last day of previous month in Australia)
   const lastMonthStart = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - 1, 1));
   const lastMonthEnd = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), 0));
 
@@ -59,7 +79,7 @@ export function getPresets(referenceDate: Date = new Date()): DatePreset[] {
 }
 
 /**
- * Gets default date range (Previous completed Monday to Sunday)
+ * Gets default date range (Previous completed Monday to Sunday in Australia)
  */
 export function getDefaultDateRange(): DateRange {
   const presets = getPresets();
