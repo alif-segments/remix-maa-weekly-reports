@@ -173,7 +173,33 @@ export interface DonorMetricsSummary {
   transactions: DonorTransaction[];
 }
 
+export interface MaaDonationSplit {
+  amount: number;
+  transactions: number;
+}
+
+export interface MaaFrequencySplit {
+  amount: number;
+  count: number;
+}
+
+export interface MaaDonationSummary {
+  total_raised: number;
+  transactions: number;
+  avg_donation: number;
+  currency: string;
+  date_from: string;
+  date_to: string;
+  generated_at_utc?: string;
+  new_donors: MaaDonationSplit;
+  existing_donors: MaaDonationSplit;
+  guest_checkouts: MaaDonationSplit;
+  recurring: MaaFrequencySplit;
+  one_time: MaaFrequencySplit;
+}
+
 export interface DonorReportResponse {
+  source?: string;
   generated_at: string;
   timezone: string;
   currency: string;
@@ -182,4 +208,7 @@ export interface DonorReportResponse {
   weeks: DonorWeek[];
   active_weeks?: DonorWeek[];
   transactions?: DonorTransaction[];
+  current_summary?: MaaDonationSummary;
+  prior_summary?: MaaDonationSummary;
+  api_error?: string;
 }

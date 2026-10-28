@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 import { LOGOS } from './constants';
 import { usePerformanceData } from './hooks/usePerformanceData';
+import { useDonorReport } from './hooks/useDonorReport';
 import { contentService } from './services/contentService';
 import { fCurrency, fNumber, fROAS, fCPA } from './lib/formatters';
 import { useViewMode } from './context/ViewModeContext';
@@ -114,7 +115,12 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const { metrics, loading } = usePerformanceData(dateRange);
+  const { metrics, loading: perfLoading } = usePerformanceData(dateRange);
+  const { data: donorData, summary: donorSummary, loading: donorLoading } = useDonorReport(dateRange.startDate, dateRange.endDate);
+
+  const isPerfLoaded = !perfLoading && Boolean(metrics);
+  const isDonorLoaded = !donorLoading && Boolean(donorData);
+  const isEntireDataLoaded = isPerfLoaded && isDonorLoaded;
   const { viewMode, setViewMode } = useViewMode();
   const [activeSlide, setActiveSlide] = useState('cover');
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
@@ -232,7 +238,7 @@ UGC-style content remains dominant in driving conversions, specifically in the *
       ga4_summary: `Traffic analysis from GA4 shows **${fNumber(metrics.ga4?.current?.sessions || 0)} sessions** with an engagement rate of **${(metrics.ga4?.engagementRate || 0).toFixed(1)}%**.
 
 New user acquisition remains steady, with paid channels contributing significantly to the overall traffic mix.`,
-      donor_summary: `Donor acquisition and giving frequency tracked via Stape Store (started 19 Sep).`,
+      donor_summary: `Donor acquisition and giving frequency tracked via MAA International Datafeed API.`,
       grants_summary: `The Google Grants account generated **${fNumber(grants.clicks)} clicks** with a CPC of **${fCurrency(grants.spend / Math.max(1, grants.clicks))}** (utilizing granted credit).
 
 Focus remains on brand awareness and information discovery for core mission keywords.`
@@ -294,7 +300,7 @@ Focus remains on brand awareness and information discovery for core mission keyw
 
   // Robust Active Slide Detection on Scroll & Window Resize
   useEffect(() => {
-    if (!isPreloaderDone || loading) return;
+    if (!isPreloaderDone || perfLoading || donorLoading) return;
 
     let rafId: number | null = null;
 
@@ -366,7 +372,7 @@ Focus remains on brand awareness and information discovery for core mission keyw
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, [isPreloaderDone, loading, viewMode, hasEventCampaigns]);
+  }, [isPreloaderDone, perfLoading, donorLoading, viewMode, hasEventCampaigns]);
 
   // Keyboard slide navigation (ArrowUp, ArrowDown, PageUp, PageDown)
   useEffect(() => {
@@ -403,7 +409,14 @@ Focus remains on brand awareness and information discovery for core mission keyw
   const topCreative = creatives[0];
 
   if (!isPreloaderDone) {
-    return <Preloader isDataLoaded={!loading && Boolean(metrics)} onFinish={() => setIsPreloaderDone(true)} />;
+    return (
+      <Preloader 
+        isDataLoaded={isEntireDataLoaded} 
+        isPerfLoaded={isPerfLoaded}
+        isDonorLoaded={isDonorLoaded}
+        onFinish={() => setIsPreloaderDone(true)} 
+      />
+    );
   }
 
   if (!metrics) {
@@ -422,7 +435,7 @@ Focus remains on brand awareness and information discovery for core mission keyw
     <div className="relative">
       {/* Dot Navigation */}
       <nav 
-        className="fixed right-5 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-2.5 hidden md:flex bg-white/80 backdrop-blur-md px-2 py-3 rounded-full border border-slate-200/80 shadow-md transition-all"
+        className="fixed right-5 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-2.5 hidden md:flex py-2 px-1 transition-all"
         aria-label="Slide Navigation"
       >
         {slidesMapping.map((s, idx) => {
@@ -506,6 +519,8 @@ Focus remains on brand awareness and information discovery for core mission keyw
       />
       <DonorInsightsSlide 
         metrics={metrics}
+        donorSummary={donorSummary}
+        donorLoading={donorLoading}
         isEditMode={isEditMode}
         content={localPageContent.donor_summary}
         defaultText={defaultContents.donor_summary}

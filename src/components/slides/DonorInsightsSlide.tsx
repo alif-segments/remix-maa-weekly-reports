@@ -10,12 +10,14 @@ import {
 import { SlideWrapper } from '../SlideWrapper';
 import { KpiCard } from '../KpiCard';
 import { EditableContent } from '../EditableContent';
-import { MetricsSummary } from '@/src/types';
+import { MetricsSummary, DonorMetricsSummary } from '@/src/types';
 import { fCurrency, fNumber } from '@/src/lib/formatters';
 import { useDonorReport } from '@/src/hooks/useDonorReport';
 
 interface DonorInsightsSlideProps {
   metrics: MetricsSummary;
+  donorSummary?: DonorMetricsSummary;
+  donorLoading?: boolean;
   isEditMode?: boolean;
   content?: string;
   defaultText: string;
@@ -25,14 +27,18 @@ interface DonorInsightsSlideProps {
 
 export const DonorInsightsSlide = ({
   metrics,
+  donorSummary: propSummary,
+  donorLoading: propLoading,
   isEditMode = false,
   content,
   defaultText,
   onUpdateContent,
   onSave
 }: DonorInsightsSlideProps) => {
-  // Pass both start and end date so transactions are filtered in-memory instantly with zero reload latency!
-  const { summary, loading } = useDonorReport(metrics?.startDate, metrics?.endDate);
+  // Use passed donor summary or fallback hook
+  const hookResult = useDonorReport(metrics?.startDate, metrics?.endDate);
+  const summary = propSummary || hookResult.summary;
+  const loading = propLoading !== undefined ? propLoading : hookResult.loading;
 
   const totalValue = summary.total.value || 0;
   const totalCount = summary.total.count || 0;
@@ -95,7 +101,7 @@ export const DonorInsightsSlide = ({
               value={fCurrency(totalValue)} 
               sublabel="Gross donor contributions" 
               variant="g_green" 
-              tooltip="Total gross donor contributions tracked via Stape Store"
+              tooltip="Total gross donor contributions tracked via MAA Datafeed"
             />
 
             {/* Transactions */}

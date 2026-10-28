@@ -110,6 +110,7 @@ function donorReportPlugin(env: Record<string, string>): Plugin {
 
         if (req.url && req.url.startsWith('/api/donor-report')) {
           try {
+            console.log('[Dev Proxy] Processing /api/donor-report request...');
             const { onRequestGet } = await import('./functions/api/donor-report');
             const protocol = req.headers['x-forwarded-proto'] || 'http';
             const host = req.headers.host || 'localhost:3000';
@@ -119,9 +120,9 @@ function donorReportPlugin(env: Record<string, string>): Plugin {
               headers: req.headers as any,
             });
             const cfEnv = {
-              STAPE_BASE_URL: env.STAPE_BASE_URL || process.env.STAPE_BASE_URL,
-              STAPE_API_KEY: env.STAPE_API_KEY || process.env.STAPE_API_KEY,
-              STAPE_COLLECTION: env.STAPE_COLLECTION || process.env.STAPE_COLLECTION,
+              MAA_BASE_URL: env.MAA_BASE_URL || process.env.MAA_BASE_URL,
+              MAA_EMAIL: env.MAA_EMAIL || process.env.MAA_EMAIL,
+              MAA_PASSWORD: env.MAA_PASSWORD || process.env.MAA_PASSWORD,
             };
             const response = await onRequestGet({ request: webReq, env: cfEnv });
             res.statusCode = response.status;

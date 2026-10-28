@@ -65,7 +65,7 @@ const SOURCES: SourceStep[] = [
     tint: '#E3F1F5', 
     ink: '#1F5A6B', 
     title: 'Getting donor data', 
-    desc: 'Fetching Stape donor transactions' 
+    desc: 'Connecting to MAA donor feed' 
   }
 ];
 
@@ -77,10 +77,17 @@ const ALL_STEPS = [
 
 interface PreloaderProps {
   isDataLoaded?: boolean;
+  isPerfLoaded?: boolean;
+  isDonorLoaded?: boolean;
   onFinish?: () => void;
 }
 
-export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFinish }) => {
+export const Preloader: React.FC<PreloaderProps> = ({ 
+  isDataLoaded = false, 
+  isPerfLoaded = false, 
+  isDonorLoaded = false, 
+  onFinish 
+}) => {
   const [progressVal, setProgressVal] = useState(0); // 0 to ALL_STEPS.length
   const [isDone, setIsDone] = useState(false);
 
@@ -88,12 +95,14 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
   const accent = '#2557D6';
   const ok = '#1F8A5B';
 
+  const isCompletelyLoaded = isDataLoaded || (isPerfLoaded && isDonorLoaded);
+
   useEffect(() => {
     // High-cadence timer (25ms) for silk-smooth, responsive animation
     const timer = setInterval(() => {
       setProgressVal((prev) => {
-        if (isDataLoaded) {
-          // If data is ready, advance rapidly and smoothly to 100%
+        if (isCompletelyLoaded) {
+          // If all datasets (Ads + Donors) are ready, advance rapidly and smoothly to 100%
           const next = prev + 0.35;
           if (next >= n) {
             setIsDone(true);
@@ -101,24 +110,22 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
           }
           return next;
         } else {
-          // When waiting for data, progress smoothly through steps without ever freezing
-          // Steps 0 to 6 move at an active, natural pace (~0.12 per tick)
-          // Steps 7+ gracefully ease asymptotically up to 96% rather than hitting a hard stop at 86%
-          if (prev < 6.2) {
+          // When waiting for data, progress smoothly through earlier steps (0 to 6)
+          // Once it reaches step 6.0 (the Donors step), hold smoothly on Donors (~86%)
+          // until the MAA Datafeed API confirms data retrieval
+          if (prev < 6.0) {
             return prev + 0.12;
-          } else if (prev < 7.2) {
-            return prev + 0.05;
-          } else if (prev < 7.7) {
-            // Smoothly ease forward (never gets stuck dead)
-            return prev + 0.015;
+          } else if (prev < 6.85) {
+            return prev + 0.025;
           }
-          return Math.min(7.85, prev + 0.005);
+          // Smoothly hold at the Donors step without freezing dead
+          return Math.min(6.92, prev + 0.002);
         }
       });
     }, 25);
 
     return () => clearInterval(timer);
-  }, [isDataLoaded, n]);
+  }, [isCompletelyLoaded, n]);
 
   // When completed, trigger onFinish callback swiftly
   useEffect(() => {
@@ -141,9 +148,15 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
   let doneCount = 0;
   SOURCES.forEach((_, j) => {
     const stepIdx = j + 1;
-    if (done || stepIdx < idx) {
-      doneCount += 1;
+    let isSrcDone = false;
+    if (done) {
+      isSrcDone = true;
+    } else if (j === 5) {
+      isSrcDone = Boolean(isDonorLoaded);
+    } else {
+      isSrcDone = Boolean(isPerfLoaded) || stepIdx < idx;
     }
+    if (isSrcDone) doneCount += 1;
   });
 
   return (
@@ -258,9 +271,33 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
           <div className="grid grid-cols-2 gap-2">
             {SOURCES.map((src, j) => {
               const stepIdx = j + 1;
-              const isSrcDone = done || stepIdx < idx;
-              const isSrcActive = !done && stepIdx === idx;
-              const isSrcQueued = !done && stepIdx > idx;
+              let isSrcDone = false;
+              let isSrcActive = false;
+              let isSrcQueued = false;
+
+              if (done) {
+                isSrcDone = true;
+              } else if (j === 5) {
+                // Donors card linked to MAA Datafeed API
+                if (isDonorLoaded) {
+                  isSrcDone = true;
+                } else if (idx >= 6) {
+                  isSrcActive = true;
+                } else {
+                  isSrcQueued = true;
+                }
+              } else {
+                // Ad performance sources linked to Windsor.ai
+                if (isPerfLoaded && stepIdx <= idx) {
+                  isSrcDone = true;
+                } else if (stepIdx < idx) {
+                  isSrcDone = true;
+                } else if (stepIdx === idx) {
+                  isSrcActive = true;
+                } else {
+                  isSrcQueued = true;
+                }
+              }
 
               return (
                 <div
@@ -340,7 +377,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ isDataLoaded = false, onFi
             <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="#5C6874" strokeWidth="1.4" />
             <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="#5C6874" strokeWidth="1.4" />
           </svg>
-          <span>Secure connection via Windsor.ai &amp; Stape</span>
+          <span>Secure connection via Windsor.ai &amp; MAA Datafeed</span>
         </div>
       </motion.div>
     </div>
