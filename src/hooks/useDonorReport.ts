@@ -5,6 +5,34 @@ import fallbackReportData from '../data/fallbackDonorReport.json';
 // In-memory range cache so switching between date filters is instantaneous (<1ms)
 const rangeCache = new Map<string, { data: DonorReportResponse; timestamp: number }>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
+// Shared in-flight requests: App and DonorInsightsSlide both use this hook for the same
+// range. Two parallel calls would hit the MAA API at once and get 429s.
+const inFlight = new Map<string, Promise<DonorReportResponse | null>>();
+
+async function requestDonorReport(url: string): Promise<DonorReportResponse | null> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
+      });
+      if (res.ok) {
+        const parsed = await res.json();
+        if (parsed && (parsed.current_summary || parsed.current || parsed.total_raised !== undefined)) {
+          console.log('[MAA Datafeed] Donor summary data successfully retrieved.');
+          return parsed;
+        }
+      } else {
+        const body = await res.text().catch(() => '');
+        console.warn(`[MAA Datafeed] /api/donor-report returned ${res.status}: ${body.slice(0, 300)}`);
+      }
+    } catch (fetchErr) {
+      console.warn(`[MAA Datafeed] Fetch attempt ${attempt + 1} failed:`, fetchErr);
+    }
+    if (attempt === 0) await new Promise((r) => setTimeout(r, 2000));
+  }
+  return null;
+}
 
 const calcDelta = (curr: number, prev: number) => {
   if (prev === 0) {
@@ -114,44 +142,24 @@ export function useDonorReport(startDate?: string, endDate?: string) {
         console.log('[MAA Datafeed] Generating token & connecting to MAA Datafeed...');
         console.log(`[MAA Datafeed] Getting donor summary data for range: ${startDate || 'default'} to ${endDate || 'default'}...`);
 
-        let json: DonorReportResponse | null = null;
         const queryParams = new URLSearchParams();
         if (startDate) queryParams.set('date_from', startDate);
         if (endDate) queryParams.set('date_to', endDate);
-
         const url = `/api/donor-report${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
-        for (let attempt = 0; attempt < 2; attempt++) {
-          try {
-            const res = await fetch(url, {
-              cache: 'no-store',
-              headers: {
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-              },
-            });
-            if (res.ok) {
-              const parsed = await res.json();
-              if (parsed && (parsed.current_summary || parsed.current || parsed.total_raised !== undefined)) {
-                json = parsed;
-                console.log('[MAA Datafeed] Donor summary data successfully retrieved.');
-                break;
-              }
-            }
-          } catch (fetchErr) {
-            console.warn(`[MAA Datafeed] Fetch attempt ${attempt + 1} retry:`, fetchErr);
-            if (attempt === 0) {
-              await new Promise((r) => setTimeout(r, 600));
-            }
-          }
+        let pending = inFlight.get(url);
+        if (!pending) {
+          pending = requestDonorReport(url).finally(() => inFlight.delete(url));
+          inFlight.set(url, pending);
         }
+        let json = await pending;
 
         if (!json) {
           console.info('[MAA Datafeed] Using snapshot baseline donor dataset.');
           json = fallbackReportData as unknown as DonorReportResponse;
+        } else {
+          rangeCache.set(key, { data: json, timestamp: Date.now() });
         }
-
-        rangeCache.set(key, { data: json, timestamp: Date.now() });
         if (!isCancelled) {
           setData(json);
           setError(null);
@@ -159,7 +167,6 @@ export function useDonorReport(startDate?: string, endDate?: string) {
       } catch (err: any) {
         console.warn('[MAA Datafeed] Using snapshot baseline donor dataset on recovery');
         const fallbackJson = fallbackReportData as unknown as DonorReportResponse;
-        rangeCache.set(key, { data: fallbackJson, timestamp: Date.now() });
         if (!isCancelled) {
           setData(fallbackJson);
           setError(null);

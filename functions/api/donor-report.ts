@@ -5,83 +5,11 @@ import {
   MaaConfig,
   MaaSummaryData
 } from '../_lib/maa-client';
-import fallbackReportData from '../../src/data/fallbackDonorReport.json';
 
 export interface Env extends MaaConfig {
   MAA_BASE_URL?: string;
   MAA_EMAIL?: string;
   MAA_PASSWORD?: string;
-}
-
-function buildFallbackResponse(date_from: string, date_to: string) {
-  const fallback = (fallbackReportData as any) || {};
-  const cur = {
-    week_start: date_from,
-    week_end: date_to,
-    total: { count: 4803, value: 336795.82 },
-    new_donor: { count: 13, value: 2111.28 },
-    existing_donor: { count: 4308, value: 314670.94 },
-    guest: { count: 482, value: 20013.6 },
-    recurring: { count: 2852, value: 74429.64 },
-    one_time: { count: 1951, value: 262366.18 },
-    mixed_count: 0
-  };
-
-  const pri = {
-    week_start: computePriorDateRange(date_from, date_to).priorStartDate,
-    week_end: computePriorDateRange(date_from, date_to).priorEndDate,
-    total: { count: 4120, value: 295400.0 },
-    new_donor: { count: 18, value: 2850.0 },
-    existing_donor: { count: 3710, value: 274200.0 },
-    guest: { count: 392, value: 18350.0 },
-    recurring: { count: 2680, value: 68900.0 },
-    one_time: { count: 1440, value: 226500.0 },
-    mixed_count: 0
-  };
-
-  const currentSummary: MaaSummaryData = {
-    total_raised: cur.total.value,
-    transactions: cur.total.count,
-    avg_donation: cur.total.count > 0 ? cur.total.value / cur.total.count : 70.12,
-    currency: 'AUD',
-    date_from,
-    date_to,
-    generated_at_utc: fallback.generated_at || new Date().toISOString(),
-    new_donors: { amount: cur.new_donor.value, transactions: cur.new_donor.count },
-    existing_donors: { amount: cur.existing_donor.value, transactions: cur.existing_donor.count },
-    guest_checkouts: { amount: cur.guest.value, transactions: cur.guest.count },
-    recurring: { amount: cur.recurring.value, count: cur.recurring.count },
-    one_time: { amount: cur.one_time.value, count: cur.one_time.count }
-  };
-
-  const priorSummary: MaaSummaryData = {
-    total_raised: pri.total.value,
-    transactions: pri.total.count,
-    avg_donation: pri.total.count > 0 ? pri.total.value / pri.total.count : 71.70,
-    currency: 'AUD',
-    date_from: pri.week_start,
-    date_to: pri.week_end,
-    generated_at_utc: fallback.generated_at || new Date().toISOString(),
-    new_donors: { amount: pri.new_donor.value, transactions: pri.new_donor.count },
-    existing_donors: { amount: pri.existing_donor.value, transactions: pri.existing_donor.count },
-    guest_checkouts: { amount: pri.guest.value, transactions: pri.guest.count },
-    recurring: { amount: pri.recurring.value, count: pri.recurring.count },
-    one_time: { amount: pri.one_time.value, count: pri.one_time.count }
-  };
-
-  return {
-    source: 'fallback_snapshot',
-    currency: 'AUD',
-    timezone: 'Australia/Sydney',
-    generated_at: new Date().toISOString(),
-    current: cur,
-    previous: pri,
-    current_summary: currentSummary,
-    prior_summary: priorSummary,
-    weeks: fallback.weeks || [pri, cur],
-    active_weeks: fallback.active_weeks || [cur, pri],
-    transactions: fallback.transactions || []
-  };
 }
 
 export const onRequestOptions = async () => {
@@ -166,28 +94,29 @@ export const onRequestGet = async (context: any) => {
     'access-control-allow-headers': 'Content-Type, Authorization',
   };
 
-  // If credentials are not yet set in environment, return graceful fallback data
+  // No credentials: report the problem instead of serving made-up numbers.
   if (!email || !password) {
-    console.info('[MAA Datafeed] MAA credentials not configured in environment. Serving snapshot baseline donor data.');
-    const fallbackPayload = buildFallbackResponse(date_from, date_to);
-    return new Response(JSON.stringify(fallbackPayload), {
-      status: 200,
-      headers: {
-        ...corsHeaders,
-        'cache-control': 'no-cache, no-store, must-revalidate'
-      }
+    console.error('[MAA Datafeed] MAA_EMAIL / MAA_PASSWORD are not configured.');
+    return new Response(JSON.stringify({ error: 'MAA_EMAIL / MAA_PASSWORD are not configured on the server.' }), {
+      status: 503,
+      headers: { ...corsHeaders, 'cache-control': 'no-store' }
     });
   }
 
   try {
     console.log(`[MAA Datafeed] Querying live MAA Datafeed API for current (${date_from} to ${date_to}) and prior periods...`);
-    // Sequentially fetch current and prior period from MAA Datafeed API
-    const currentSummary = await fetchMaaSummaryForRange(date_from, date_to, maaConfig);
+    // Each summary call takes ~20s and the API allows one at a time per user, so the
+    // calls run one after another. Stay well under Cloudflare's ~100s response limit.
+    const deadline = Date.now() + 90_000;
+    const currentSummary = await fetchMaaSummaryForRange(date_from, date_to, maaConfig, deadline);
     let priorSummary: MaaSummaryData;
+    let priorMissing = false;
     try {
-      priorSummary = await fetchMaaSummaryForRange(priorStartDate, priorEndDate, maaConfig);
-    } catch (priErr) {
-      console.warn('[MAA Datafeed] Could not fetch prior period summary, using zero baseline');
+      if (deadline - Date.now() < 25_000) throw new Error('not enough time left for prior period');
+      priorSummary = await fetchMaaSummaryForRange(priorStartDate, priorEndDate, maaConfig, deadline);
+    } catch (priErr: any) {
+      priorMissing = true;
+      console.warn('[MAA Datafeed] Could not fetch prior period summary, using zero baseline:', priErr?.message || priErr);
       priorSummary = {
         total_raised: 0,
         transactions: 0,
@@ -229,6 +158,7 @@ export const onRequestGet = async (context: any) => {
 
     const payload = {
       source: 'maa_datafeed',
+      prior_missing: priorMissing,
       currency: currentSummary.currency || 'AUD',
       timezone: 'Australia/Sydney',
       generated_at: currentSummary.generated_at_utc || new Date().toISOString(),
@@ -245,19 +175,15 @@ export const onRequestGet = async (context: any) => {
       status: 200,
       headers: {
         ...corsHeaders,
-        'cache-control': 'public, max-age=60'
+        // Don't let browsers keep a zero-baseline response around
+        'cache-control': priorMissing ? 'no-store' : 'private, max-age=300'
       }
     });
   } catch (err: any) {
     console.error('[MAA Datafeed] Error querying MAA Datafeed API:', err?.message || err);
-    // Return fallback with error details attached so the UI never crashes
-    const fallbackPayload = buildFallbackResponse(date_from, date_to);
-    return new Response(JSON.stringify({ ...fallbackPayload, api_error: err?.message || String(err) }), {
-      status: 200,
-      headers: {
-        ...corsHeaders,
-        'cache-control': 'no-cache, no-store, must-revalidate'
-      }
+    return new Response(JSON.stringify({ error: 'MAA Datafeed request failed', api_error: err?.message || String(err) }), {
+      status: 502,
+      headers: { ...corsHeaders, 'cache-control': 'no-store' }
     });
   }
 };

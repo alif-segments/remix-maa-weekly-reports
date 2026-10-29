@@ -47,18 +47,15 @@ export const ERROR_HINTS: Record<string, Record<number, string>> = {
   },
 };
 
-// Global in-memory cache for auth session and date-range summaries
+// In-memory caches (plain data only). Never share Promises across requests:
+// on Cloudflare Workers a request cannot await a promise created by another
+// request, which made /api/donor-report hang in production.
 let sessionCache: { token: string; expiresAt: number } | null = null;
 const summaryCache = new Map<string, { data: MaaSummaryData; timestamp: number }>();
-const SUMMARY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
+const SUMMARY_CACHE_TTL_MS = 15 * 60 * 1000;
 
-// Serialization queue to guarantee summary calls run one at a time (preventing 429)
-let requestQueue: Promise<any> = Promise.resolve();
-function runSerialized<T>(task: () => Promise<T>): Promise<T> {
-  const next = requestQueue.then(() => task(), () => task());
-  requestQueue = next.catch(() => {});
-  return next;
-}
+const LOGIN_TIMEOUT_MS = 20_000;
+const SUMMARY_TIMEOUT_MS = 70_000; // the summary call itself takes ~20s
 
 export interface MaaConfig {
   baseUrl?: string;
@@ -102,16 +99,29 @@ export function getMaaCredentials(config?: MaaConfig): { baseUrl: string; email:
   return { baseUrl, email, password };
 }
 
-async function postJson(baseUrl: string, path: string, body: any, token?: string) {
+async function postJson(baseUrl: string, path: string, body: any, token?: string, timeoutMs = SUMMARY_TIMEOUT_MS) {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const started = Date.now();
-  const res = await fetch(baseUrl + path, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), Math.max(1000, timeoutMs));
+  let res: Response;
+  try {
+    res = await fetch(baseUrl + path, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (err: any) {
+    if (controller.signal.aborted) {
+      throw new Error(`MAA ${path} timed out after ${Math.round((Date.now() - started) / 1000)}s`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
   const ms = Date.now() - started;
 
   const text = await res.text();
@@ -138,7 +148,7 @@ export async function loginToMaa(config?: MaaConfig): Promise<{ token: string; e
   }
 
   console.log('[MAA Datafeed] Generating authentication token...');
-  const { status, data, ms } = await postJson(baseUrl, '/api/v1/auth/login', { email, password });
+  const { status, data, ms } = await postJson(baseUrl, '/api/v1/auth/login', { email, password }, undefined, LOGIN_TIMEOUT_MS);
   if (status !== 200) {
     const hint = ERROR_HINTS.login[status] || 'Unexpected login response';
     console.error(`[MAA Datafeed] Authentication failed with status ${status}: ${hint}`);
@@ -183,41 +193,42 @@ export function checkSummaryShape(s: any): string[] {
 export async function fetchMaaSummaryForRange(
   date_from: string,
   date_to: string,
-  config?: MaaConfig
+  config?: MaaConfig,
+  deadline: number = Date.now() + 90_000
 ): Promise<MaaSummaryData> {
   const cacheKey = `${date_from}_${date_to}`;
-  const now = Date.now();
   const cached = summaryCache.get(cacheKey);
-  if (cached && now - cached.timestamp < SUMMARY_CACHE_TTL_MS) {
+  if (cached && Date.now() - cached.timestamp < SUMMARY_CACHE_TTL_MS) {
     return cached.data;
   }
 
-  return runSerialized(async () => {
-    // Re-check cache inside serialized lock
-    const freshCheck = summaryCache.get(cacheKey);
-    if (freshCheck && Date.now() - freshCheck.timestamp < SUMMARY_CACHE_TTL_MS) {
-      return freshCheck.data;
-    }
-
+  {
     const { baseUrl } = getMaaCredentials(config);
+    const remaining = () => deadline - Date.now();
     console.log(`[MAA Datafeed] Getting donor summary data for range: ${date_from} to ${date_to}...`);
     let session = await loginToMaa(config);
 
-    let res = await postJson(baseUrl, '/api/v1/donations/summary', { date_from, date_to }, session.token);
+    const callSummary = (token: string) =>
+      postJson(baseUrl, '/api/v1/donations/summary', { date_from, date_to }, token, Math.min(SUMMARY_TIMEOUT_MS, remaining()));
 
-    // If 401 or expired, refresh token and retry once
+    let res = await callSummary(session.token);
+
+    // If 401, refresh token and retry once
     if (res.status === 401) {
       console.warn('[MAA Datafeed] 401 received, refreshing token and retrying...');
       sessionCache = null;
       session = await loginToMaa(config);
-      res = await postJson(baseUrl, '/api/v1/donations/summary', { date_from, date_to }, session.token);
+      res = await callSummary(session.token);
     }
 
-    // If 429 (rate limited or concurrent call), wait 1.5s and retry once
-    if (res.status === 429) {
-      console.warn('[MAA Datafeed] 429 rate limit encountered, waiting 1500ms...');
-      await new Promise((r) => setTimeout(r, 1500));
-      res = await postJson(baseUrl, '/api/v1/donations/summary', { date_from, date_to }, session.token);
+    // 429 = another summary call for this user is still running (they take ~20s).
+    // Back off and retry while there is still time left.
+    let wait = 3000;
+    while (res.status === 429 && remaining() > wait + 25_000) {
+      console.warn(`[MAA Datafeed] 429 (another call running), retrying in ${wait}ms...`);
+      await new Promise((r) => setTimeout(r, wait));
+      wait = Math.min(wait * 2, 10_000);
+      res = await callSummary(session.token);
     }
 
     if (res.status !== 200) {
@@ -266,7 +277,7 @@ export async function fetchMaaSummaryForRange(
 
     summaryCache.set(cacheKey, { data: summary, timestamp: Date.now() });
     return summary;
-  });
+  }
 }
 
 export function computePriorDateRange(date_from: string, date_to: string) {
