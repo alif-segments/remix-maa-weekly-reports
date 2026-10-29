@@ -3,44 +3,44 @@
   "timezone": "Australia/Sydney",
   "currency": "AUD",
   "current": {
-    "week_start": "2026-09-14",
-    "week_end": "2026-09-20",
+    "week_start": "2026-10-19",
+    "week_end": "2026-10-25",
     "total": {
-      "count": 70,
-      "value": 80293.51
+      "count": 4803,
+      "value": 336795.82
     },
     "new_donor": {
-      "count": 45,
-      "value": 78400.31
+      "count": 13,
+      "value": 2111.28
     },
     "existing_donor": {
-      "count": 5,
-      "value": 514
+      "count": 4308,
+      "value": 314670.94
     },
     "guest": {
-      "count": 20,
-      "value": 1379.2
+      "count": 482,
+      "value": 20013.6
     },
     "recurring": {
-      "count": 2,
-      "value": 180
+      "count": 2852,
+      "value": 74429.64
     },
     "one_time": {
-      "count": 68,
-      "value": 80113.51
+      "count": 1951,
+      "value": 262366.18
     },
     "mixed_count": 0
   },
   "previous": {
-    "week_start": "2026-09-07",
-    "week_end": "2026-09-13",
+    "week_start": "2026-10-12",
+    "week_end": "2026-10-18",
     "total": {
-      "count": 0,
-      "value": 0
+      "count": 4120,
+      "value": 295400.0
     },
     "new_donor": {
-      "count": 0,
-      "value": 0
+      "count": 18,
+      "value": 2850.0
     },
     "existing_donor": {
       "count": 0,

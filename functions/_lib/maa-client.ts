@@ -60,15 +60,45 @@ function runSerialized<T>(task: () => Promise<T>): Promise<T> {
   return next;
 }
 
-export function getDefaultBaseUrl(customUrl?: string): string {
-  const url = customUrl || (typeof process !== 'undefined' ? process.env?.MAA_BASE_URL : '') || 'https://datafeed.maainternational.org.au';
+export interface MaaConfig {
+  baseUrl?: string;
+  email?: string;
+  password?: string;
+  MAA_BASE_URL?: string;
+  MAA_EMAIL?: string;
+  MAA_PASSWORD?: string;
+  [key: string]: any;
+}
+
+export function getDefaultBaseUrl(customUrl?: string, config?: MaaConfig): string {
+  const url =
+    customUrl ||
+    config?.baseUrl ||
+    config?.MAA_BASE_URL ||
+    config?.maa_base_url ||
+    (typeof process !== 'undefined' ? process.env?.MAA_BASE_URL : '') ||
+    'https://datafeed.maainternational.org.au';
   return url.trim().replace(/\/+$/, '');
 }
 
 export function getMaaCredentials(config?: MaaConfig): { baseUrl: string; email: string; password: string } {
-  const baseUrl = getDefaultBaseUrl(config?.baseUrl);
-  const email = (config?.email || (typeof process !== 'undefined' ? process.env?.MAA_EMAIL : '') || '').trim();
-  const password = (config?.password || (typeof process !== 'undefined' ? process.env?.MAA_PASSWORD : '') || '').trim();
+  const baseUrl = getDefaultBaseUrl(config?.baseUrl, config);
+  const email = (
+    config?.email ||
+    config?.MAA_EMAIL ||
+    config?.maa_email ||
+    config?.Email ||
+    (typeof process !== 'undefined' ? process.env?.MAA_EMAIL : '') ||
+    ''
+  ).trim();
+  const password = (
+    config?.password ||
+    config?.MAA_PASSWORD ||
+    config?.maa_password ||
+    config?.Password ||
+    (typeof process !== 'undefined' ? process.env?.MAA_PASSWORD : '') ||
+    ''
+  ).trim();
   return { baseUrl, email, password };
 }
 

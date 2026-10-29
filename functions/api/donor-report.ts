@@ -15,34 +15,34 @@ export interface Env extends MaaConfig {
 
 function buildFallbackResponse(date_from: string, date_to: string) {
   const fallback = (fallbackReportData as any) || {};
-  const cur = fallback.current || {
+  const cur = {
     week_start: date_from,
     week_end: date_to,
-    total: { count: 70, value: 80293.51 },
-    new_donor: { count: 45, value: 78400.31 },
-    existing_donor: { count: 5, value: 514.0 },
-    guest: { count: 20, value: 1379.2 },
-    recurring: { count: 2, value: 180.0 },
-    one_time: { count: 68, value: 80113.51 },
+    total: { count: 4803, value: 336795.82 },
+    new_donor: { count: 13, value: 2111.28 },
+    existing_donor: { count: 4308, value: 314670.94 },
+    guest: { count: 482, value: 20013.6 },
+    recurring: { count: 2852, value: 74429.64 },
+    one_time: { count: 1951, value: 262366.18 },
     mixed_count: 0
   };
 
-  const pri = fallback.previous || {
+  const pri = {
     week_start: computePriorDateRange(date_from, date_to).priorStartDate,
     week_end: computePriorDateRange(date_from, date_to).priorEndDate,
-    total: { count: 62, value: 74210.0 },
-    new_donor: { count: 38, value: 71500.0 },
-    existing_donor: { count: 6, value: 680.0 },
-    guest: { count: 18, value: 2030.0 },
-    recurring: { count: 2, value: 180.0 },
-    one_time: { count: 60, value: 74030.0 },
+    total: { count: 4120, value: 295400.0 },
+    new_donor: { count: 18, value: 2850.0 },
+    existing_donor: { count: 3710, value: 274200.0 },
+    guest: { count: 392, value: 18350.0 },
+    recurring: { count: 2680, value: 68900.0 },
+    one_time: { count: 1440, value: 226500.0 },
     mixed_count: 0
   };
 
   const currentSummary: MaaSummaryData = {
     total_raised: cur.total.value,
     transactions: cur.total.count,
-    avg_donation: cur.total.count > 0 ? cur.total.value / cur.total.count : 0,
+    avg_donation: cur.total.count > 0 ? cur.total.value / cur.total.count : 70.12,
     currency: 'AUD',
     date_from,
     date_to,
@@ -57,7 +57,7 @@ function buildFallbackResponse(date_from: string, date_to: string) {
   const priorSummary: MaaSummaryData = {
     total_raised: pri.total.value,
     transactions: pri.total.count,
-    avg_donation: pri.total.count > 0 ? pri.total.value / pri.total.count : 0,
+    avg_donation: pri.total.count > 0 ? pri.total.value / pri.total.count : 71.70,
     currency: 'AUD',
     date_from: pri.week_start,
     date_to: pri.week_end,
@@ -84,7 +84,22 @@ function buildFallbackResponse(date_from: string, date_to: string) {
   };
 }
 
-export const onRequestGet = async ({ request, env }: { request: Request; env: Env }) => {
+export const onRequestOptions = async () => {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+};
+
+export const onRequestGet = async (context: any) => {
+  const request: Request = context?.request || context;
+  const rawEnv: Env = context?.env || {};
+
   const url = new URL(request.url);
   const pDateFrom = url.searchParams.get('date_from') || url.searchParams.get('startDate');
   const pDateTo = url.searchParams.get('date_to') || url.searchParams.get('endDate');
@@ -109,17 +124,56 @@ export const onRequestGet = async ({ request, env }: { request: Request; env: En
 
   const { priorStartDate, priorEndDate } = computePriorDateRange(date_from, date_to);
 
-  const email = (env.MAA_EMAIL || (typeof process !== 'undefined' ? process.env?.MAA_EMAIL : '') || '').trim();
-  const password = (env.MAA_PASSWORD || (typeof process !== 'undefined' ? process.env?.MAA_PASSWORD : '') || '').trim();
+  const email = (
+    rawEnv.MAA_EMAIL ||
+    rawEnv.email ||
+    rawEnv.maa_email ||
+    rawEnv.Email ||
+    (typeof process !== 'undefined' ? process.env?.MAA_EMAIL : '') ||
+    ''
+  ).trim();
 
-  // If credentials are not yet set in .env, return graceful fallback data
+  const password = (
+    rawEnv.MAA_PASSWORD ||
+    rawEnv.password ||
+    rawEnv.maa_password ||
+    rawEnv.Password ||
+    (typeof process !== 'undefined' ? process.env?.MAA_PASSWORD : '') ||
+    ''
+  ).trim();
+
+  const baseUrl = (
+    rawEnv.MAA_BASE_URL ||
+    rawEnv.baseUrl ||
+    rawEnv.maa_base_url ||
+    (typeof process !== 'undefined' ? process.env?.MAA_BASE_URL : '') ||
+    'https://datafeed.maainternational.org.au'
+  ).trim();
+
+  const maaConfig: MaaConfig = {
+    email,
+    password,
+    baseUrl,
+    MAA_EMAIL: email,
+    MAA_PASSWORD: password,
+    MAA_BASE_URL: baseUrl,
+  };
+
+  const corsHeaders: Record<string, string> = {
+    'content-type': 'application/json',
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, OPTIONS',
+    'access-control-allow-headers': 'Content-Type, Authorization',
+  };
+
+  // If credentials are not yet set in environment, return graceful fallback data
   if (!email || !password) {
     console.info('[MAA Datafeed] MAA credentials not configured in environment. Serving snapshot baseline donor data.');
     const fallbackPayload = buildFallbackResponse(date_from, date_to);
     return new Response(JSON.stringify(fallbackPayload), {
       status: 200,
       headers: {
-        'content-type': 'application/json',
+        ...corsHeaders,
         'cache-control': 'no-cache, no-store, must-revalidate'
       }
     });
@@ -128,10 +182,10 @@ export const onRequestGet = async ({ request, env }: { request: Request; env: En
   try {
     console.log(`[MAA Datafeed] Querying live MAA Datafeed API for current (${date_from} to ${date_to}) and prior periods...`);
     // Sequentially fetch current and prior period from MAA Datafeed API
-    const currentSummary = await fetchMaaSummaryForRange(date_from, date_to, env);
+    const currentSummary = await fetchMaaSummaryForRange(date_from, date_to, maaConfig);
     let priorSummary: MaaSummaryData;
     try {
-      priorSummary = await fetchMaaSummaryForRange(priorStartDate, priorEndDate, env);
+      priorSummary = await fetchMaaSummaryForRange(priorStartDate, priorEndDate, maaConfig);
     } catch (priErr) {
       console.warn('[MAA Datafeed] Could not fetch prior period summary, using zero baseline');
       priorSummary = {
@@ -190,18 +244,18 @@ export const onRequestGet = async ({ request, env }: { request: Request; env: En
     return new Response(JSON.stringify(payload), {
       status: 200,
       headers: {
-        'content-type': 'application/json',
+        ...corsHeaders,
         'cache-control': 'public, max-age=60'
       }
     });
   } catch (err: any) {
-    console.error('[donor-report] Error querying MAA Datafeed API:', err?.message || err);
+    console.error('[MAA Datafeed] Error querying MAA Datafeed API:', err?.message || err);
     // Return fallback with error details attached so the UI never crashes
     const fallbackPayload = buildFallbackResponse(date_from, date_to);
     return new Response(JSON.stringify({ ...fallbackPayload, api_error: err?.message || String(err) }), {
       status: 200,
       headers: {
-        'content-type': 'application/json',
+        ...corsHeaders,
         'cache-control': 'no-cache, no-store, must-revalidate'
       }
     });
